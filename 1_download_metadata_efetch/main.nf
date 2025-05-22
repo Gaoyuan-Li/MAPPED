@@ -5,7 +5,7 @@ def runStartTime = System.currentTimeMillis()
 params.organism = null
 params.outdir = null
 
-process fetch_metadata {
+process FETCH_METADATA {
 
     publishDir 'tmp', mode: 'copy'
 
@@ -25,7 +25,7 @@ process fetch_metadata {
         """
 }
 
-process format_metadata {
+process FORMAT_METADATA {
 
     publishDir "${params.outdir}/metadata", mode: 'copy'   // ⬅ copy results into metadata subfolder of outdir
 
@@ -50,34 +50,25 @@ process format_metadata {
         """
 }
 
-// Add a dedicated cleanup process to prune tmp and old work dirs
-process clean_metadata_tmp {
-    cache false
-    input:
-        path metadata_tsv
-    script:
-    """
-    rm -rf ${projectDir}/tmp
-    # remove old Nextflow log rotations, keep only .nextflow.log
-    rm -f ${projectDir}/.nextflow.log.[0-9]* || true
-    """
-}
-
 workflow {
     if ( !params.organism || !params.outdir ) {
         error "You must provide both --organism and --outdir parameters."
     }
 
-    raw_metadata = fetch_metadata( params.organism )
+    raw_metadata = FETCH_METADATA( params.organism )
 
     clean_script = file( 'bin/clean_metadata_file.py' )
 
-    ( cleaned_metadata, sample_ids ) = format_metadata(
+    ( cleaned_metadata, sample_ids ) = FORMAT_METADATA(
         raw_metadata,
         clean_script,
         params.organism,
         params.library_layout
     )
 
-    clean_metadata_tmp(cleaned_metadata)
+    // Cleanup tmp and logs after workflow quietly
+    workflow.onComplete {
+        ["bash","-c","rm -rf ${projectDir}/tmp"].execute().waitFor()
+        ["bash","-c","rm -f ${projectDir}/.nextflow.log.[0-9]* || true"].execute().waitFor()
+    }
 }
