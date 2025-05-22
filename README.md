@@ -36,5 +36,5 @@ ${outdir}/
 ├── expression_matrices   # TPM and counts matrices
 └── multiqc               # MultiQC report
 ```
-- `--library_layout`: Sequencing layout type; use `paired` for paired-end reads or `single` for single-end reads, which affects download and processing settings.
+- `--library_layout`: Sequencing layout type; use `paired` for paired-end samples only or `single` for single-end samples only, `both` for no filtration.
 
