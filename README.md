@@ -2,10 +2,10 @@
 
 MAPPED is a nextflow-based workflow orchestrates four modules for processing public expression data:
 
-1. **1_download_metadata_efetch**: Download and format metadata from NCBI SRA.
-2. **2_download_fastq**: Download FASTQ files for samples.
-3. **3_download_reference_genome**: Download reference genome from NCBI.
-4. **4_generate_count_matrix**: Perform QC, trimming, quantification, and generate count/tpm matrices.
+1. **download_metadata_efetch**: Download and format metadata from NCBI SRA.
+2. **download_fastq**: Download FASTQ files for samples.
+3. **download_reference_genome**: Download reference genome from NCBI.
+4. **generate_count_matrix**: Perform QC, trimming, quantification, and generate count/tpm matrices.
 
 ## Prerequisites
 
