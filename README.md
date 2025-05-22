@@ -17,11 +17,12 @@ MAPPED is a nextflow-based workflow orchestrates four modules for processing pub
 To run the entire MAPPED pipeline with a single command, use the provided `run_MAPPED.sh` script:
 
 ```bash
-./run_MAPPED.sh --organism "Acinetobacter baylyi" --outdir /path/to/output --library_layout paired
+./run_MAPPED.sh --cpu 20 --organism "Acinetobacter baylyi" --outdir /path/to/output --library_layout paired
 ```
 
 **Parameters:**
 
+- `--cpu`: Number of threads to be used in the workflow
 - `--organism`: Full taxonomic name of the target organism (e.g., "Acinetobacter baylyi") used by metadata and reference genome download modules.
 - `--outdir`: Path to the output directory where all results will be saved. If a relative path is provided, it will be converted to an absolute path. The output directory is organized as follows:
 
