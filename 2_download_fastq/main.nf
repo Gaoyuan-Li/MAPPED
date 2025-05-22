@@ -15,7 +15,7 @@ include { SRA_TO_SAMPLESHEET      } from './modules/sra_to_samplesheet'
 
 // Define input channel for sample IDs from metadata CSV in workdir
 Channel
-    .fromPath("${params.workdir}/metadata/sample_id.csv")
+    .fromPath("${params.outdir}/metadata/sample_id.csv")
     .splitCsv(header:true)
     .map { row -> row.values().first() }
     .set { ids }
@@ -116,7 +116,7 @@ workflow {
         .map { it[1] }
         .collectFile(name:'tmp_samplesheet.csv', newLine: true, keepHeader: true, sort: { it.baseName })
         .map { it.text.tokenize('\n').join('\n') }
-        .collectFile(name:'samplesheet.csv', storeDir: "${params.workdir}/samplesheet")
+        .collectFile(name:'samplesheet.csv', storeDir: "${params.outdir}/samplesheet")
         .set { ch_samplesheet }
     }
 

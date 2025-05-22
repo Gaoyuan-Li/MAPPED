@@ -4,7 +4,7 @@ process SRA_FASTQ_FTP {
     tag "$meta.id"
     label 'process_low'
     label 'error_retry'
-    publishDir "${params.workdir}/seqFiles/fastq", mode: params.publish_dir_mode
+    publishDir "${params.outdir}/seqFiles/fastq", mode: params.publish_dir_mode
 
     container 'quay.io/biocontainers/wget:1.20.1'
 
