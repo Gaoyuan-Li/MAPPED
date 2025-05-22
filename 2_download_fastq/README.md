@@ -1,43 +1,46 @@
-# Download FASTQ Files with Nextflow
+# Step 2: Download FASTQ Files Pipeline
 
-This pipeline downloads FASTQ files for SRA accessions specified in a CSV file and generates a consolidated sample sheet.
+This Nextflow DSL2 pipeline downloads FASTQ files for specified SRA accessions and generates a consolidated samplesheet.
 
 ## Prerequisites
 
-- Nextflow (version >= 21.04)
+- Nextflow
 - Docker
 
-## Input
-
-Place your `sample_id.csv` file in the `metadata` subdirectory of your work directory. The CSV should have a header and a single column of SRA accession IDs. For example:
-
-    metadata/sample_id.csv
-    ------------------------
-    id
-    SRR123456
-    SRR234567
-
 ## Usage
-
-Run the pipeline from this directory:
 
 ```bash
 nextflow run main.nf \
   --workdir /path/to/your/workdir
 ```
 
-By default, output files (fastq, MD5 checksums, runinfo TSVs, and the final samplesheet) will be stored in `/path/to/your/workdir/metadata`.
-
 ## Parameters
 
-- `--workdir`: Path to your working directory containing `metadata/sample_id.csv`.
-- `--outdir`: (Optional) Override the default output directory (defaults to `<workdir>/metadata`).
-- `--ena_metadata_fields`: (Optional) Additional ENA metadata fields to fetch.
-- `--skip_fastq_download`: (Optional) Set to `true` to fetch metadata only without downloading FASTQ files.
+- `--workdir <Path>`: Directory containing `metadata/sample_id.csv`.
+- `--outdir <Path>`: (Optional) Override default output directory (defaults to `<workdir>/metadata`).
+- `--ena_metadata_fields <Fields>`: (Optional) Additional ENA metadata fields to fetch.
+- `--skip_fastq_download <true|false>`: (Optional) Fetch metadata only without downloading FASTQ files if set to true.
+
+## Inputs
+
+- `metadata/sample_id.csv`: CSV file with header `id` and a column of SRA accession IDs. Example:
+
+  ```csv
+  id
+  SRR123456
+  SRR234567
+  ```
 
 ## Outputs
 
 - `metadata/runinfo_ftp.tsv`: FTP links for FASTQ files.
 - `metadata/fastq/`: Downloaded FASTQ files.
-- `metadata/samplesheet/samplesheet.csv`: Consolidated samplesheet for downstream nf-core pipelines.
-- `metadata/samplesheet/id_mappings.csv`: Sample ID mappings file.
+- `metadata/samplesheet/samplesheet.csv`: Samplesheet for downstream pipelines.
+- `metadata/samplesheet/id_mappings.csv`: Sample ID mapping file.
+
+## Example
+
+```bash
+nextflow run main.nf \
+  --workdir /path/to/your/workdir
+```

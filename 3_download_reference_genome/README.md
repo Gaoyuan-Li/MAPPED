@@ -1,23 +1,12 @@
-# Step 3: Download Reference Genome
+# Step 3: Download Reference Genome Pipeline
 
-This Nextflow workflow downloads the reference genome and annotation files for a specified organism from NCBI using the `ncbi-datasets` command-line tool, then publishes the results to the desired output directory.
+This Nextflow DSL2 pipeline downloads reference genome and annotation files for a specified organism from NCBI using the `ncbi-datasets` tool.
 
 ## Prerequisites
 
 - Nextflow
 - Docker
-- Internet connection for accessing NCBI datasets
-
-## Configuration
-
-The pipeline uses DSL2 and is configured to run inside the `staphb/ncbi-datasets:18.0.2` Docker container by default (see `nextflow.config`).
-
-## Parameters
-
-- `--organism <String>` (required)
-  - The scientific name or taxon ID of the organism to download (e.g., `Escherichia coli`).
-- `--outdir <Path>` (required)
-  - Path to the directory where output files will be published. The workflow will create a subdirectory named `seqFiles` under this path.
+- Internet connection
 
 ## Usage
 
@@ -27,15 +16,25 @@ nextflow run main.nf \
   --outdir ../test_results
 ```
 
+## Parameters
+
+- `--organism <String>`: Scientific name or taxon ID of the organism (e.g., `Escherichia coli`).
+- `--outdir <Path>`: Directory where outputs will be published (workflow creates `<outdir>/seqFiles`).
+
 ## Outputs
 
-Upon successful completion, the following files will be available under `<outdir>/seqFiles/ref_genome/`:
+- `<outdir>/seqFiles/ref_genome/*.fna`: Reference genome FASTA files.
+- `<outdir>/seqFiles/ref_genome/*.gff`: Genome annotation GFF3 files.
 
-- `*.fna` &nbsp;&nbsp;– FASTA file(s) containing the reference genome sequence.
-- `*.gff` &nbsp;&nbsp;– GFF3 file(s) containing genome annotations.
+## Example
 
-All files are copied in world-readable mode to ensure they can be accessed by downstream steps.
+```bash
+nextflow run main.nf \
+  --organism 'Escherichia coli' \
+  --outdir ../test_results
+```
 
-## Cleaning Up
+## Notes
 
-An `onComplete` handler automatically removes any rotated Nextflow log files (`.nextflow.log.<n>`). To clean up temporary files created during the download process, simply delete any remaining `tmp/` directories or `.zip` archives if present.
+- Default Docker container: `staphb/ncbi-datasets:18.0.2`.
+- Rotated Nextflow log files (`.nextflow.log.<n>`) are removed automatically.

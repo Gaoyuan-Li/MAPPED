@@ -1,39 +1,48 @@
-# Download RNAseq metadata (Nextflow pipeline)
+# Step 1: Download RNA-seq Metadata Pipeline
 
-This folder now contains a Nextflow pipeline to download and clean all RNA-seq metadata for an organism from NCBI SRA, using only the scripts in this folder and two Biocontainers images: `quay.io/biocontainers/entrez-direct:22.4--he881be0_0` (for `fetch_metadata`) and `felixlohmeier/pandas:1.3.3` (for `format_metadata`).
+This Nextflow DSL2 pipeline downloads and cleans RNA-seq metadata for a specified organism from NCBI SRA, using Entrez Direct and a Pandas-based formatting script.
 
-## Requirements
-- [Nextflow](https://www.nextflow.io/)
-- Docker or Singularity/Apptainer (to use the Biocontainers image)
+## Prerequisites
+
+- Nextflow
+- Docker or Singularity/Apptainer
 
 ## Usage
 
 ```bash
-nextflow run main.nf --organism 'Bacillus subtilis' --workdir ../../test_results
+nextflow run main.nf \
+  --organism 'Bacillus subtilis' \
+  --workdir ../../test_results
 ```
 
-- `--organism`: Name of the organism (in quotes if it contains spaces)
-- `--workdir`: Path to the working/output folder (will be created if it does not exist)
-- `--library-layout`: One of `paired`, `single`, or `both` (default), filters metadata to runs with the specified library layout
+## Parameters
 
-The output file will be named `{organism_name}_metadata.tsv` (spaces replaced with underscores) and placed in the specified folder.
+- `--organism <String>`: Scientific name of the organism (in quotes if containing spaces).
+- `--workdir <Path>`: Directory where output will be saved (created if it does not exist).
+- `--library-layout <paired|single|both>`: Filter runs by library layout (default: both).
 
-## Pipeline steps
-1. **fetch_metadata**: Uses `esearch` and `efetch` to download SRA run info for the organism.
-2. **format_metadata**: Cleans and aggregates the metadata using the provided Python script (`clean_metadata_file.py`).
-3. **clean_metadata_tmp**: Prunes the `tmp` directory and old work subdirectories, retaining only the two most recent runs and removing rotated logs.
+## Outputs
+
+- `{organism_name}_metadata.tsv`: Cleaned metadata file with spaces replaced by underscores.
+
+## Pipeline Steps
+
+1. **fetch_metadata**: Uses `esearch` and `efetch` to retrieve SRA run info.
+2. **format_metadata**: Cleans and formats the metadata via `clean_metadata_file.py`.
+3. **clean_metadata_tmp**: Removes temporary directories and old logs, keeping the two most recent runs.
 
 ## Example
 
 ```bash
-nextflow run main.nf --organism 'Escherichia coli' --workdir ../../test_results
+nextflow run main.nf \
+  --organism 'Escherichia coli' \
+  --workdir ../../test_results
 # Output: ../../test_results/Escherichia_coli_metadata.tsv
 ```
 
 ## Notes
-- Only the code in this folder is used.
-- The output is a cleaned metadata file suitable for downstream analysis.
-- The pipeline uses two containers:
-  - `quay.io/biocontainers/entrez-direct:22.4--he881be0_0` for metadata fetching.
-  - `felixlohmeier/pandas:1.3.3` for metadata formatting.
-- A temporary `tmp` directory and older work subdirectories/rotated logs are pruned by `clean_metadata_tmp`.
+
+- Only scripts in this folder are used.
+- Containers:
+  - `quay.io/biocontainers/entrez-direct:22.4--he881be0_0`
+  - `felixlohmeier/pandas:1.3.3`
