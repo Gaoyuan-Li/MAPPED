@@ -4,8 +4,8 @@ This Nextflow DSL2 pipeline processes raw FASTQ files to produce a gene-level co
 
 ## Prerequisites
 
-- Nextflow (>=20.10.0)
-- Docker daemon running
+- Nextflow
+- Docker
 
 ## Usage
 

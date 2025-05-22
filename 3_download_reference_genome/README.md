@@ -6,7 +6,6 @@ This Nextflow DSL2 pipeline downloads reference genome and annotation files for 
 
 - Nextflow
 - Docker
-- Internet connection
 
 ## Usage
 

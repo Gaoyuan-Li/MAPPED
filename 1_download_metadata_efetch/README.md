@@ -5,7 +5,7 @@ This Nextflow DSL2 pipeline downloads and cleans RNA-seq metadata for a specifie
 ## Prerequisites
 
 - Nextflow
-- Docker or Singularity/Apptainer
+- Docker
 
 ## Usage
 
