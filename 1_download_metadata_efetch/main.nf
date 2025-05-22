@@ -66,9 +66,15 @@ workflow {
         params.library_layout
     )
 
-    // Cleanup tmp and logs after workflow quietly
-    workflow.onComplete {
-        ["bash","-c","rm -rf ${projectDir}/tmp"].execute().waitFor()
-        ["bash","-c","rm -f ${projectDir}/.nextflow.log.[0-9]* || true"].execute().waitFor()
+}
+
+// Add an onComplete event handler to always delete rotated Nextflow log files
+workflow.onComplete {
+    def logPattern = ~/\.nextflow\.log\.\d+/  
+    new File('.').listFiles().findAll { it.name ==~ logPattern }.each { it.delete() }
+    // delete the tmp directory
+    def tmpDir = new File('tmp')
+    if (tmpDir.exists()) {
+        tmpDir.deleteDir()
     }
 }
