@@ -1,13 +1,21 @@
 //
 // Required parameters
 //
-params.workdir    = null
-params.ref_genome = null
-params.ref_gff    = null
+params.outdir    = null
 
-if ( ! params.workdir )    error "Please provide --workdir"
-if ( ! params.ref_genome ) error "Please provide --ref_genome"
-if ( ! params.ref_gff )    error "Please provide --ref_gff"
+if ( ! params.outdir )    error "Please provide --outdir"
+
+// Auto-detect reference genome and GFF in seqFiles/ref_genome under outdir
+def refDir = new File("${params.outdir}/seqFiles/ref_genome")
+if ( ! refDir.exists() ) error "Reference genome directory not found: ${refDir}"
+def fastaFiles = refDir.list().findAll { it.endsWith('.fna') || it.endsWith('.fa') }
+if ( fastaFiles.size() == 0 ) error "No FASTA (.fna/.fa) file found in ${refDir}"
+if ( fastaFiles.size() > 1 ) error "Multiple FASTA files found in ${refDir}: ${fastaFiles}"
+params.ref_genome = "${refDir}/${fastaFiles[0]}"
+def gffFiles = refDir.list().findAll { it.endsWith('.gff') }
+if ( gffFiles.size() == 0 ) error "No GFF (.gff) file found in ${refDir}"
+if ( gffFiles.size() > 1 ) error "Multiple GFF files found in ${refDir}: ${gffFiles}"
+params.ref_gff = "${refDir}/${gffFiles[0]}"
 
 // Process: extract CDS
 //
@@ -53,7 +61,7 @@ process SALMON_INDEX {
 process FASTQC_RAW {
     tag '$sample'
     container 'quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0'
-    publishDir "${params.workdir}/fastqc", mode: 'copy'
+    publishDir "${params.outdir}/fastqc", mode: 'copy'
 
     input:
       tuple val(sample), path(fq1), path(fq2)
@@ -73,7 +81,7 @@ process FASTQC_RAW {
 process TRIMGALORE {
     tag '$sample'
     container 'quay.io/biocontainers/trim-galore:0.6.9--hdfd78af_0'
-    publishDir "${params.workdir}/trimmed", mode: 'copy'
+    publishDir "${params.outdir}/trimmed", mode: 'copy'
 
     input:
       tuple val(sample), path(fq1), path(fq2)
@@ -95,7 +103,7 @@ process TRIMGALORE {
 process SALMON_QUANT {
     tag '$sample'
     container 'quay.io/biocontainers/salmon:1.10.3--h45fbf2d_4'
-    publishDir "${params.workdir}/salmon", mode: 'copy'
+    publishDir "${params.outdir}/salmon", mode: 'copy'
 
     input:
       tuple val(sample), path(fq1), path(fq2)
@@ -118,7 +126,7 @@ process SALMON_QUANT {
 // Process: merge count matrices
 //
 process MERGE_COUNTS {
-    publishDir "${params.workdir}/expression_matrices", mode: 'copy'
+    publishDir "${params.outdir}/expression_matrices", mode: 'copy'
 
     input:
       path quant_dirs
@@ -174,7 +182,7 @@ process MERGE_COUNTS {
 //
 process MULTIQC {
     container 'quay.io/biocontainers/multiqc:1.12--pyhdfd78af_0'
-    publishDir "${params.workdir}/multiqc", mode: 'copy'
+    publishDir "${params.outdir}/multiqc", mode: 'copy'
 
     input:
       path qc_files
@@ -194,8 +202,8 @@ process MULTIQC {
 workflow {
     // load samples
     samples_ch = Channel
-        .fromPath( file("${params.workdir}/samplesheet/samplesheet.csv") )
-        .ifEmpty { error "Sample sheet not found at: ${params.workdir}/samplesheet/samplesheet.csv" }
+        .fromPath( file("${params.outdir}/samplesheet/samplesheet.csv") )
+        .ifEmpty { error "Sample sheet not found at: ${params.outdir}/samplesheet/samplesheet.csv" }
         .splitCsv(header: true, sep: ',')
         // remove surrounding quotes and normalize keys
         .map { row ->
@@ -220,8 +228,8 @@ workflow {
         .map { row ->
             tuple(
                 "${row.sample}_${row.run_accession}",
-                file(row.fastq_1),
-                file(row.fastq_2)
+                file("${params.outdir}/${row.fastq_1}"),
+                file("${params.outdir}/${row.fastq_2}")
             )
         }
 
