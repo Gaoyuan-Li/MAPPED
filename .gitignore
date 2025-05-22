@@ -1,4 +1,5 @@
 .nextflow/
 .nextflow.log
 **/work/ 
-test_results/seqFiles/fastq/*
+test_results/seqFiles/fastq/*.fastq.gz
+test_results/seqFiles/fastq/*.fastq.gz.md5
