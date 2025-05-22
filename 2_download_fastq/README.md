@@ -41,6 +41,5 @@ nextflow run main.nf \
 ## Example
 
 ```bash
-nextflow run main.nf \
-  --workdir /path/to/your/workdir
+nextflow run main.nf --outdir ../test_results -resume
 ```

@@ -34,10 +34,8 @@ nextflow run main.nf \
 ## Example
 
 ```bash
-nextflow run main.nf \
-  --organism 'Acinetobacter baylyi' \
-  --outdir ../../test_results
-# Output: ../../test_results/Escherichia_coli_metadata.tsv
+nextflow run main.nf --organism 'Acinetobacter baylyi' --outdir ../test_results --library_layout paired -resume
+# Output: ../test_results/Acinetobacter_baylyi_metadata.tsv and sample_id.csv
 ```
 
 ## Notes

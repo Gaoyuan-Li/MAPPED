@@ -28,9 +28,7 @@ nextflow run main.nf \
 ## Example
 
 ```bash
-nextflow run main.nf \
-  --organism 'Acinetobacter baylyi' \
-  --outdir ../test_results
+nextflow run main.nf --organism 'Acinetobacter baylyi' --outdir ../test_results
 ```
 
 ## Notes

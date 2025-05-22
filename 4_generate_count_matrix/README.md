@@ -10,8 +10,7 @@ This Nextflow DSL2 pipeline processes raw FASTQ files to produce a gene-level co
 ## Usage
 
 ```bash
-nextflow run main.nf \
-  --outdir ~/PhD/iMM_2/test_results
+nextflow run main.nf --outdir ../test_results/  -resume
 ```
 
 ## Parameters
