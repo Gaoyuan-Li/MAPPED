@@ -3,7 +3,7 @@
 def runStartTime = System.currentTimeMillis()
 
 params.organism = null
-params.workdir = null
+params.outdir = null
 
 process fetch_metadata {
 
@@ -27,7 +27,7 @@ process fetch_metadata {
 
 process format_metadata {
 
-    publishDir "${params.workdir}/metadata", mode: 'copy'   // ⬅ copy results into metadata subfolder of workdir
+    publishDir "${params.outdir}/metadata", mode: 'copy'   // ⬅ copy results into metadata subfolder of outdir
 
     container 'felixlohmeier/pandas:1.3.3'
 
@@ -64,8 +64,8 @@ process clean_metadata_tmp {
 }
 
 workflow {
-    if ( !params.organism || !params.workdir ) {
-        error "You must provide both --organism and --workdir parameters."
+    if ( !params.organism || !params.outdir ) {
+        error "You must provide both --organism and --outdir parameters."
     }
 
     raw_metadata = fetch_metadata( params.organism )

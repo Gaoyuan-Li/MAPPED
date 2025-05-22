@@ -12,13 +12,13 @@ This Nextflow DSL2 pipeline downloads and cleans RNA-seq metadata for a specifie
 ```bash
 nextflow run main.nf \
   --organism 'Bacillus subtilis' \
-  --workdir ../../test_results
+  --outdir ../../test_results
 ```
 
 ## Parameters
 
 - `--organism <String>`: Scientific name of the organism (in quotes if containing spaces).
-- `--workdir <Path>`: Directory where output will be saved (created if it does not exist).
+- `--outdir <Path>`: Directory where output will be saved (created if it does not exist).
 - `--library-layout <paired|single|both>`: Filter runs by library layout (default: both).
 
 ## Outputs
@@ -36,7 +36,7 @@ nextflow run main.nf \
 ```bash
 nextflow run main.nf \
   --organism 'Acinetobacter baylyi' \
-  --workdir ../../test_results
+  --outdir ../../test_results
 # Output: ../../test_results/Escherichia_coli_metadata.tsv
 ```
 
