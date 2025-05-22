@@ -27,18 +27,8 @@ nextflow run main.nf \
 
 ## Outputs
 
-- `fastqc/`: FastQC reports (raw & trimmed).
+- `fastqc/`: FastQC reports.
 - `trimmed/`: Trimmed FASTQ files.
-- `bbsplit/`: BBSplit output (microbial reads).
 - `salmon/`: Salmon quantification results.
 - `multiqc/`: MultiQC report.
-- `count_matrix.tsv`: Gene count matrix at the top level of `<workdir>`.
-
-## Example
-
-```bash
-nextflow run main.nf \
-  --workdir ~/PhD/iMM_2/test_results \
-  --ref_genome ~/PhD/iMM_2/test_results/seqFiles/ref_genome/GCF_000046845.1_ASM4684v1_genomic.fna \
-  --ref_gff ~/PhD/iMM_2/test_results/seqFiles/ref_genome/genomic.gff
-```
+- `expression_matrix/`: TPM and counts matrices

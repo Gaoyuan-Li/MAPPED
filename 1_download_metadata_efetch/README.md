@@ -35,7 +35,7 @@ nextflow run main.nf \
 
 ```bash
 nextflow run main.nf \
-  --organism 'Escherichia coli' \
+  --organism 'Acinetobacter baylyi' \
   --workdir ../../test_results
 # Output: ../../test_results/Escherichia_coli_metadata.tsv
 ```

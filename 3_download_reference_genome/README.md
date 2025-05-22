@@ -29,7 +29,7 @@ nextflow run main.nf \
 
 ```bash
 nextflow run main.nf \
-  --organism 'Escherichia coli' \
+  --organism 'Acinetobacter baylyi' \
   --outdir ../test_results
 ```
 
