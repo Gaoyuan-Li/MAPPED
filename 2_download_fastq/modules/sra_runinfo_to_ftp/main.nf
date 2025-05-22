@@ -1,7 +1,6 @@
 process SRA_RUNINFO_TO_FTP {
 
-    conda "conda-forge::python=3.9.5"
-    container 'biocontainers/python:3.9--1'
+    container 'quay.io/biocontainers/biopython:1.79'
 
     input:
     path runinfo

@@ -9,6 +9,10 @@ include { SRA_IDS_TO_RUNINFO      } from './modules/sra_ids_to_runinfo'
 include { SRA_RUNINFO_TO_FTP      } from './modules/sra_runinfo_to_ftp'
 include { SRA_TO_SAMPLESHEET      } from './modules/sra_to_samplesheet'
 
+// Make Python scripts in bin folder executable
+"chmod +x ${projectDir}/bin/sra_ids_to_runinfo.py".execute().waitFor()
+"chmod +x ${projectDir}/bin/sra_runinfo_to_ftp.py".execute().waitFor()
+
 // Define input channel for sample IDs from metadata CSV in workdir
 Channel
     .fromPath("${params.workdir}/metadata/sample_id.csv")

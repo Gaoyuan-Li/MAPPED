@@ -6,8 +6,7 @@ process SRA_FASTQ_FTP {
     label 'error_retry'
     publishDir "${params.workdir}/seqFiles/fastq", mode: params.publish_dir_mode
 
-    conda "conda-forge::wget=1.20.1"
-    container 'biocontainers/wget:1.20.1'
+    container 'quay.io/biocontainers/wget:1.20.1'
 
     input:
     tuple val(meta), val(fastq)

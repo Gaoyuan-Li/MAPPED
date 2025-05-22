@@ -2,8 +2,7 @@ process SRA_IDS_TO_RUNINFO {
     tag "$id"
     label 'error_retry'
 
-    conda "conda-forge::python=3.9.5"
-    container 'biocontainers/python:3.9--1'
+    container 'quay.io/biocontainers/biopython:1.79'
 
     input:
     val id

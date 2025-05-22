@@ -1,0 +1,762 @@
+May-21 21:15:53.592 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf --workdir /home/gaoyuan/PhD/iMM_2/MAPPED/test_results -resume
+May-21 21:15:53.629 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.2
+May-21 21:15:53.639 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/gaoyuan/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.0,nf-k8s@1.0.0,nf-tower@1.11.2,nf-wave@1.12.1
+May-21 21:15:53.651 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-21 21:15:53.651 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-21 21:15:53.652 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+May-21 21:15:53.657 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-21 21:15:53.665 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/nextflow.config
+May-21 21:15:53.665 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/nextflow.config
+May-21 21:15:53.677 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/gaoyuan/.nextflow/secrets/store.json
+May-21 21:15:53.679 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@2234078] - activable => nextflow.secret.LocalSecretsProvider@2234078
+May-21 21:15:53.684 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+May-21 21:15:53.877 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 by global default
+May-21 21:15:53.883 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [loving_goodall] DSL2 - revision: e35d706689
+May-21 21:15:53.884 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-21 21:15:53.884 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+May-21 21:15:53.905 [main] DEBUG nextflow.Session - Session UUID: eb3c21fa-2e2c-46d2-9999-18a25ac0a548
+May-21 21:15:53.905 [main] DEBUG nextflow.Session - Run name: loving_goodall
+May-21 21:15:53.905 [main] DEBUG nextflow.Session - Executor pool size: 32
+May-21 21:15:53.908 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+May-21 21:15:53.910 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=96; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+May-21 21:15:53.919 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.04.2 build 5947
+  Created: 13-05-2025 21:58 UTC (14:58 PDT)
+  System: Linux 6.11.0-25-generic
+  Runtime: Groovy 4.0.26 on OpenJDK 64-Bit Server VM 22.0.1-internal-adhoc.conda.src
+  Encoding: UTF-8 (UTF-8)
+  Process: 1264342@Entero-UCSD [127.0.1.1]
+  CPUs: 32 - Mem: 31 GB (22.9 GB) - Swap: 8 GB (5.7 GB)
+May-21 21:15:53.931 [main] DEBUG nextflow.Session - Work-dir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work [ext2/ext3]
+May-21 21:15:53.945 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-21 21:15:53.949 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+May-21 21:15:53.952 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+May-21 21:15:53.962 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+May-21 21:15:53.966 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 33; maxThreads: 1000
+May-21 21:15:54.020 [main] DEBUG nextflow.Session - Session start
+May-21 21:15:54.179 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+May-21 21:15:54.415 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-21 21:15:54.415 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-21 21:15:54.417 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+May-21 21:15:54.421 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=32; memory=31 GB; capacity=32; pollInterval=100ms; dumpInterval=5m
+May-21 21:15:54.422 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+May-21 21:15:54.433 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SRA_IDS_TO_RUNINFO': maxForks=0; fair=false; array=0
+May-21 21:15:54.454 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-21 21:15:54.454 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-21 21:15:54.455 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SRA_RUNINFO_TO_FTP': maxForks=0; fair=false; array=0
+May-21 21:15:54.477 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-21 21:15:54.478 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-21 21:15:54.478 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SRA_FASTQ_FTP': maxForks=0; fair=false; array=0
+May-21 21:15:54.484 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+May-21 21:15:54.484 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-21 21:15:54.485 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SRA_TO_SAMPLESHEET': maxForks=0; fair=false; array=0
+May-21 21:15:54.499 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: CLEAN_NEXTFLOW_LOG, SRA_IDS_TO_RUNINFO, SRA_TO_SAMPLESHEET, SRA_FASTQ_FTP, SRA_RUNINFO_TO_FTP
+May-21 21:15:54.500 [main] DEBUG nextflow.Session - Igniting dataflow network (6)
+May-21 21:15:54.503 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SRA_IDS_TO_RUNINFO
+May-21 21:15:54.504 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SRA_RUNINFO_TO_FTP
+May-21 21:15:54.504 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SRA_FASTQ_FTP
+May-21 21:15:54.504 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SRA_TO_SAMPLESHEET
+May-21 21:15:54.504 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_373add300f9eaf0e: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/modules/sra_fastq_ftp/main.nf
+  Script_a0a4549801cb2e07: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/modules/sra_ids_to_runinfo/main.nf
+  Script_d3ba70a4fae7fbf6: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/modules/sra_to_samplesheet/main.nf
+  Script_dedd04e5c21cb23b: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/modules/sra_runinfo_to_ftp/main.nf
+  Script_eb23b9056660a8d9: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/main.nf
+May-21 21:15:54.504 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+May-21 21:15:54.504 [main] DEBUG nextflow.Session - Session await
+May-21 21:15:54.627 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.629 [Task submitter] INFO  nextflow.Session - [e9/40bda5] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376119)
+May-21 21:15:54.642 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.643 [Task submitter] INFO  nextflow.Session - [a8/86fdf0] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046360)
+May-21 21:15:54.648 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.649 [Task submitter] INFO  nextflow.Session - [b8/1c5b26] Submitted process > SRA_IDS_TO_RUNINFO (SRX24286946)
+May-21 21:15:54.653 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.653 [Task submitter] INFO  nextflow.Session - [17/1f3440] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355104)
+May-21 21:15:54.657 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.658 [Task submitter] INFO  nextflow.Session - [c9/7e96c0] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355099)
+May-21 21:15:54.661 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.661 [Task submitter] INFO  nextflow.Session - [92/d0e0c2] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376116)
+May-21 21:15:54.665 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.665 [Task submitter] INFO  nextflow.Session - [5c/ff965d] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355103)
+May-21 21:15:54.669 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.670 [Task submitter] INFO  nextflow.Session - [dc/7e0a6f] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376114)
+May-21 21:15:54.673 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.673 [Task submitter] INFO  nextflow.Session - [95/4d560e] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355101)
+May-21 21:15:54.675 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.675 [Task submitter] INFO  nextflow.Session - [1b/52dc74] Submitted process > SRA_IDS_TO_RUNINFO (SRX24286947)
+May-21 21:15:54.677 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.678 [Task submitter] INFO  nextflow.Session - [fd/bebacc] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355098)
+May-21 21:15:54.682 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.682 [Task submitter] INFO  nextflow.Session - [50/b992a7] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355102)
+May-21 21:15:54.687 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.687 [Task submitter] INFO  nextflow.Session - [3e/a8f6cf] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355093)
+May-21 21:15:54.691 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.692 [Task submitter] INFO  nextflow.Session - [1a/bb6e19] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376115)
+May-21 21:15:54.695 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.696 [Task submitter] INFO  nextflow.Session - [47/61f703] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046364)
+May-21 21:15:54.699 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.700 [Task submitter] INFO  nextflow.Session - [1d/bb292b] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376120)
+May-21 21:15:54.703 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.704 [Task submitter] INFO  nextflow.Session - [b3/904e99] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355106)
+May-21 21:15:54.705 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.706 [Task submitter] INFO  nextflow.Session - [31/74d8b7] Submitted process > SRA_IDS_TO_RUNINFO (SRX22385608)
+May-21 21:15:54.707 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.707 [Task submitter] INFO  nextflow.Session - [cc/bd39d9] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376113)
+May-21 21:15:54.709 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.709 [Task submitter] INFO  nextflow.Session - [7d/cd13a2] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376117)
+May-21 21:15:54.711 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.711 [Task submitter] INFO  nextflow.Session - [ea/5ea279] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376118)
+May-21 21:15:54.714 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.714 [Task submitter] INFO  nextflow.Session - [fd/bba044] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355094)
+May-21 21:15:54.716 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.716 [Task submitter] INFO  nextflow.Session - [1e/d32ee3] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355105)
+May-21 21:15:54.719 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.720 [Task submitter] INFO  nextflow.Session - [19/bcd7fd] Submitted process > SRA_IDS_TO_RUNINFO (SRX24286945)
+May-21 21:15:54.722 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.723 [Task submitter] INFO  nextflow.Session - [f5/07792f] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376121)
+May-21 21:15:54.725 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.725 [Task submitter] INFO  nextflow.Session - [c7/d73079] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355092)
+May-21 21:15:54.729 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.729 [Task submitter] INFO  nextflow.Session - [33/2f62aa] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046359)
+May-21 21:15:54.731 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.731 [Task submitter] INFO  nextflow.Session - [af/608abd] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355097)
+May-21 21:15:54.733 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.733 [Task submitter] INFO  nextflow.Session - [37/4edb09] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355095)
+May-21 21:15:54.737 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.737 [Task submitter] INFO  nextflow.Session - [5b/645ced] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046358)
+May-21 21:15:54.739 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.739 [Task submitter] INFO  nextflow.Session - [a6/fb3811] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355100)
+May-21 21:15:54.741 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:54.741 [Task submitter] INFO  nextflow.Session - [f1/fc01e2] Submitted process > SRA_IDS_TO_RUNINFO (SRX7355096)
+May-21 21:15:56.761 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 27; name: SRA_IDS_TO_RUNINFO (SRX7376119); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e9/40bda5fc53b908234d42c8b6c1f00f]
+May-21 21:15:56.762 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=96; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+May-21 21:15:56.763 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:56.763 [Task submitter] INFO  nextflow.Session - [2e/ac1ac3] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046361)
+May-21 21:15:57.181 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 24; name: SRA_IDS_TO_RUNINFO (SRX7376116); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/92/d0e0c26de928462671f76bff4e61a2]
+May-21 21:15:57.183 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.183 [Task submitter] INFO  nextflow.Session - [0f/161d41] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046362)
+May-21 21:15:57.237 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 5; name: SRA_IDS_TO_RUNINFO (SRX7355099); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c9/7e96c0ab9af4aa6c4fd9cd2e33aee2]
+May-21 21:15:57.239 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.239 [Task submitter] INFO  nextflow.Session - [a7/9ac65c] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046363)
+May-21 21:15:57.271 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 13; name: SRA_IDS_TO_RUNINFO (SRX7355098); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/fd/bebacc3f66ede025de09ad62249f01]
+May-21 21:15:57.272 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.272 [Task submitter] INFO  nextflow.Session - [e7/7e341c] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046369)
+May-21 21:15:57.480 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: SRA_IDS_TO_RUNINFO (SRX24286947); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1b/52dc741584fbe604bc99f408141e06]
+May-21 21:15:57.482 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.482 [Task submitter] INFO  nextflow.Session - [7c/65fd54] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046367)
+May-21 21:15:57.515 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 18; name: SRA_IDS_TO_RUNINFO (SRX7355093); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/3e/a8f6cfd4d9ec34f2ccb0382871f03b]
+May-21 21:15:57.517 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.517 [Task submitter] INFO  nextflow.Session - [03/3ad191] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046366)
+May-21 21:15:57.677 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 22; name: SRA_IDS_TO_RUNINFO (SRX7376114); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/dc/7e0a6fffe2170a62452416f21bbab6]
+May-21 21:15:57.678 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.678 [Task submitter] INFO  nextflow.Session - [2e/a3264f] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046368)
+May-21 21:15:57.785 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 7; name: SRA_IDS_TO_RUNINFO (SRX7355103); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/5c/ff965d23b7a958537a9954dbcc09cf]
+May-21 21:15:57.787 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.787 [Task submitter] INFO  nextflow.Session - [a0/7dc0ff] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046356)
+May-21 21:15:57.879 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 4; name: SRA_IDS_TO_RUNINFO (SRX22385608); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/31/74d8b75b8eb7825781cc794c59fdad]
+May-21 21:15:57.881 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.881 [Task submitter] INFO  nextflow.Session - [c1/b3f80a] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046371)
+May-21 21:15:57.919 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 32; name: SRA_IDS_TO_RUNINFO (SRX7046360); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a8/86fdf0c2fcd2a1f1e6b9d778373e13]
+May-21 21:15:57.921 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.921 [Task submitter] INFO  nextflow.Session - [fd/05f7df] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046370)
+May-21 21:15:57.959 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 23; name: SRA_IDS_TO_RUNINFO (SRX7376115); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1a/bb6e1916830463fa9b65a1147e1ece]
+May-21 21:15:57.961 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.961 [Task submitter] INFO  nextflow.Session - [30/215213] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046365)
+May-21 21:15:57.986 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 17; name: SRA_IDS_TO_RUNINFO (SRX7355094); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/fd/bba044912c5646b9024cb86d9bb8b8]
+May-21 21:15:57.987 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:57.987 [Task submitter] INFO  nextflow.Session - [7a/cff9d1] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046357)
+May-21 21:15:58.026 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 11; name: SRA_IDS_TO_RUNINFO (SRX7355101); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/95/4d560ea5e2fbe4ce33f20e653e606b]
+May-21 21:15:58.027 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.027 [Task submitter] INFO  nextflow.Session - [e7/b01997] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046355)
+May-21 21:15:58.062 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 12; name: SRA_IDS_TO_RUNINFO (SRX7355102); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/50/b992a76de7d7a35fae6e856bcdce7c]
+May-21 21:15:58.063 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.064 [Task submitter] INFO  nextflow.Session - [41/2be81e] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046353)
+May-21 21:15:58.105 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 6; name: SRA_IDS_TO_RUNINFO (SRX7355106); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/b3/904e99d52ca899f3abb1e77f547525]
+May-21 21:15:58.107 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.107 [Task submitter] INFO  nextflow.Session - [fe/b6df95] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046352)
+May-21 21:15:58.111 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 3; name: SRA_IDS_TO_RUNINFO (SRX24286946); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/b8/1c5b26b4025d8359e40d166afb3ef7]
+May-21 21:15:58.112 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.112 [Task submitter] INFO  nextflow.Session - [f3/8c7c61] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046354)
+May-21 21:15:58.141 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 28; name: SRA_IDS_TO_RUNINFO (SRX7376120); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1d/bb292b5941da99684304a61848a1e1]
+May-21 21:15:58.143 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.143 [Task submitter] INFO  nextflow.Session - [36/18b1f1] Submitted process > SRA_IDS_TO_RUNINFO (SRX7046351)
+May-21 21:15:58.206 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 25; name: SRA_IDS_TO_RUNINFO (SRX7376117); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/7d/cd13a2c43258c5d8e3becafb36b562]
+May-21 21:15:58.208 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.208 [Task submitter] INFO  nextflow.Session - [d6/100f44] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376095)
+May-21 21:15:58.228 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 20; name: SRA_IDS_TO_RUNINFO (SRX7376121); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f5/07792f8133f337481f76d5c15c9edf]
+May-21 21:15:58.229 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.229 [Task submitter] INFO  nextflow.Session - [f1/e62882] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376087)
+May-21 21:15:58.259 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 26; name: SRA_IDS_TO_RUNINFO (SRX7376118); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/ea/5ea279b03ea6b5c16b696795b02eff]
+May-21 21:15:58.261 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.261 [Task submitter] INFO  nextflow.Session - [c6/b7ef17] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376088)
+May-21 21:15:58.314 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 31; name: SRA_IDS_TO_RUNINFO (SRX7046359); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/33/2f62aa08b48cf09c1553b3aa308963]
+May-21 21:15:58.315 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.315 [Task submitter] INFO  nextflow.Session - [26/4bed2a] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376089)
+May-21 21:15:58.352 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 16; name: SRA_IDS_TO_RUNINFO (SRX7355095); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/37/4edb0995313646f5a177e69349850c]
+May-21 21:15:58.353 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.354 [Task submitter] INFO  nextflow.Session - [4f/ef0781] Submitted process > SRA_IDS_TO_RUNINFO (ERX484636)
+May-21 21:15:58.383 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 9; name: SRA_IDS_TO_RUNINFO (SRX7355105); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1e/d32ee3f6051e69af582225646d21fb]
+May-21 21:15:58.384 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.384 [Task submitter] INFO  nextflow.Session - [83/834d91] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376090)
+May-21 21:15:58.403 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 14; name: SRA_IDS_TO_RUNINFO (SRX7355097); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/af/608abd4ec4c4953a9065df63f0a8df]
+May-21 21:15:58.405 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.405 [Task submitter] INFO  nextflow.Session - [d0/9cd763] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376092)
+May-21 21:15:58.441 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 19; name: SRA_IDS_TO_RUNINFO (SRX7355092); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c7/d730793a28678fdd7f8e0fe12ede4d]
+May-21 21:15:58.442 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.442 [Task submitter] INFO  nextflow.Session - [14/810d90] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376091)
+May-21 21:15:58.461 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 2; name: SRA_IDS_TO_RUNINFO (SRX24286945); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/19/bcd7fd39f389a1d4ca1be93122ce2c]
+May-21 21:15:58.463 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.463 [Task submitter] INFO  nextflow.Session - [f5/5890a1] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376093)
+May-21 21:15:58.473 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 30; name: SRA_IDS_TO_RUNINFO (SRX7046358); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/5b/645ced0788ba78766a63ac1d786b7a]
+May-21 21:15:58.475 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.475 [Task submitter] INFO  nextflow.Session - [63/c2a058] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376094)
+May-21 21:15:58.499 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 33; name: SRA_IDS_TO_RUNINFO (SRX7046361); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/2e/ac1ac37917a34061ebec82f2383fa3]
+May-21 21:15:58.501 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:15:58.501 [Task submitter] INFO  nextflow.Session - [3f/c38404] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376098)
+May-21 21:16:00.074 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 34; name: SRA_IDS_TO_RUNINFO (SRX7046362); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/0f/161d41abad1d71c939eb11c93380fd]
+May-21 21:16:00.077 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.077 [Task submitter] INFO  nextflow.Session - [e9/e2b391] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376096)
+May-21 21:16:00.244 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 36; name: SRA_IDS_TO_RUNINFO (SRX7046369); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e7/7e341c1fc930cc095d938272e07b13]
+May-21 21:16:00.246 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.246 [Task submitter] INFO  nextflow.Session - [cd/f87fe2] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376097)
+May-21 21:16:00.312 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 35; name: SRA_IDS_TO_RUNINFO (SRX7046363); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a7/9ac65cd6fdcc0d189a6498e79fc269]
+May-21 21:16:00.314 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.314 [Task submitter] INFO  nextflow.Session - [ba/2aefd2] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376100)
+May-21 21:16:00.415 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 38; name: SRA_IDS_TO_RUNINFO (SRX7046367); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/7c/65fd5488fca733393c89a591e48fa1]
+May-21 21:16:00.419 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.419 [Task submitter] INFO  nextflow.Session - [0e/1efb05] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376099)
+May-21 21:16:00.544 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 37; name: SRA_IDS_TO_RUNINFO (SRX7046366); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/03/3ad19106cd28d2dcf62cdf7b6880a7]
+May-21 21:16:00.546 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.546 [Task submitter] INFO  nextflow.Session - [ed/6ac30a] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376103)
+May-21 21:16:00.549 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 40; name: SRA_IDS_TO_RUNINFO (SRX7046356); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a0/7dc0ffada07523f4656f1a7f765d02]
+May-21 21:16:00.550 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.550 [Task submitter] INFO  nextflow.Session - [62/f51a9c] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376102)
+May-21 21:16:00.589 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 39; name: SRA_IDS_TO_RUNINFO (SRX7046368); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/2e/a3264f0f7a78d873dc655222fbd6c0]
+May-21 21:16:00.590 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.591 [Task submitter] INFO  nextflow.Session - [a3/a089f8] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376101)
+May-21 21:16:00.664 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 55; name: SRA_IDS_TO_RUNINFO (SRX7376091); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/14/810d90bbb9afbc94d882dc239ee41a]
+May-21 21:16:00.666 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.666 [Task submitter] INFO  nextflow.Session - [95/b38dbe] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376104)
+May-21 21:16:00.673 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 41; name: SRA_IDS_TO_RUNINFO (SRX7046370); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/fd/05f7dfb480a27754083298e303f9ee]
+May-21 21:16:00.674 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.675 [Task submitter] INFO  nextflow.Session - [9b/fa4e15] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376086)
+May-21 21:16:00.764 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 42; name: SRA_IDS_TO_RUNINFO (SRX7046371); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c1/b3f80a9692ca9aa0ff86fe9fa20efb]
+May-21 21:16:00.765 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.765 [Task submitter] INFO  nextflow.Session - [25/54617e] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376105)
+May-21 21:16:00.828 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 44; name: SRA_IDS_TO_RUNINFO (SRX7046365); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/30/2152135ae2cc380ea351cb7f92f298]
+May-21 21:16:00.830 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.830 [Task submitter] INFO  nextflow.Session - [19/25b971] Submitted process > SRA_IDS_TO_RUNINFO (SRX7376085)
+May-21 21:16:00.840 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 45; name: SRA_IDS_TO_RUNINFO (SRX7046355); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e7/b019973363ae2885de38f257b7b965]
+May-21 21:16:00.842 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.842 [Task submitter] INFO  nextflow.Session - [61/ad71bc] Submitted process > SRA_IDS_TO_RUNINFO (ERX546749)
+May-21 21:16:00.945 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 43; name: SRA_IDS_TO_RUNINFO (SRX7046357); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/7a/cff9d19c8a431f0b132f734324e064]
+May-21 21:16:00.946 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:00.946 [Task submitter] INFO  nextflow.Session - [0a/ea8e7b] Submitted process > SRA_IDS_TO_RUNINFO (ERX546748)
+May-21 21:16:01.022 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 46; name: SRA_IDS_TO_RUNINFO (SRX7046353); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/41/2be81ec3f60ff21993ba8506f27b3a]
+May-21 21:16:01.023 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.023 [Task submitter] INFO  nextflow.Session - [20/76d363] Submitted process > SRA_IDS_TO_RUNINFO (ERX484639)
+May-21 21:16:01.073 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 47; name: SRA_IDS_TO_RUNINFO (SRX7046352); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/fe/b6df95b8b5688269a818c39ff00443]
+May-21 21:16:01.074 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.074 [Task submitter] INFO  nextflow.Session - [0e/18c75e] Submitted process > SRA_IDS_TO_RUNINFO (ERX546747)
+May-21 21:16:01.094 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 48; name: SRA_IDS_TO_RUNINFO (SRX7046351); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/36/18b1f1444743266240d70183fe632d]
+May-21 21:16:01.095 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.095 [Task submitter] INFO  nextflow.Session - [6b/12130f] Submitted process > SRA_IDS_TO_RUNINFO (ERX484640)
+May-21 21:16:01.104 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 53; name: SRA_IDS_TO_RUNINFO (SRX7376089); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/26/4bed2ac04cc45ac9dc8d1c21e04c48]
+May-21 21:16:01.106 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.106 [Task submitter] INFO  nextflow.Session - [b6/9fdef2] Submitted process > SRA_IDS_TO_RUNINFO (ERX484634)
+May-21 21:16:01.131 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 50; name: SRA_IDS_TO_RUNINFO (SRX7376095); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/d6/100f4412632f6880fbd0758ffffbbf]
+May-21 21:16:01.133 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.133 [Task submitter] INFO  nextflow.Session - [58/bc59f0] Submitted process > SRA_IDS_TO_RUNINFO (ERX484635)
+May-21 21:16:01.149 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 49; name: SRA_IDS_TO_RUNINFO (SRX7046354); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f3/8c7c61685846d23dd30d17d20fed5b]
+May-21 21:16:01.150 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.150 [Task submitter] INFO  nextflow.Session - [39/516dfb] Submitted process > SRA_IDS_TO_RUNINFO (ERX484637)
+May-21 21:16:01.161 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 51; name: SRA_IDS_TO_RUNINFO (SRX7376087); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f1/e62882db33d70738db6a592673a283]
+May-21 21:16:01.163 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.163 [Task submitter] INFO  nextflow.Session - [89/215156] Submitted process > SRA_IDS_TO_RUNINFO (ERX484638)
+May-21 21:16:01.195 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 78; name: SRA_IDS_TO_RUNINFO (ERX484636); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/4f/ef078188c3faa4ce4069baa37c3495]
+May-21 21:16:01.197 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.198 [Task submitter] INFO  nextflow.Session - [8d/de5363] Submitted process > SRA_RUNINFO_TO_FTP (1)
+May-21 21:16:01.211 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 58; name: SRA_IDS_TO_RUNINFO (SRX7376094); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/63/c2a058b7779446fddd03c4d1d4b5a6]
+May-21 21:16:01.212 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.212 [Task submitter] INFO  nextflow.Session - [da/542fcb] Submitted process > SRA_RUNINFO_TO_FTP (2)
+May-21 21:16:01.244 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 54; name: SRA_IDS_TO_RUNINFO (SRX7376090); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/83/834d916591446eebe150e8b93c92a8]
+May-21 21:16:01.246 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.246 [Task submitter] INFO  nextflow.Session - [b1/b3f30b] Submitted process > SRA_RUNINFO_TO_FTP (3)
+May-21 21:16:01.278 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 59; name: SRA_IDS_TO_RUNINFO (SRX7376098); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/3f/c38404e36a6e503503fae0930d823d]
+May-21 21:16:01.280 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.280 [Task submitter] INFO  nextflow.Session - [93/a40bd5] Submitted process > SRA_RUNINFO_TO_FTP (4)
+May-21 21:16:01.300 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 56; name: SRA_IDS_TO_RUNINFO (SRX7376092); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/d0/9cd7638572df38246fe9a790d8881c]
+May-21 21:16:01.302 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.302 [Task submitter] INFO  nextflow.Session - [27/1d1305] Submitted process > SRA_RUNINFO_TO_FTP (5)
+May-21 21:16:01.350 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 57; name: SRA_IDS_TO_RUNINFO (SRX7376093); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f5/5890a17dae37ff4aea63660edf1958]
+May-21 21:16:01.352 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.352 [Task submitter] INFO  nextflow.Session - [1d/91e88f] Submitted process > SRA_RUNINFO_TO_FTP (6)
+May-21 21:16:01.946 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 83; name: SRA_RUNINFO_TO_FTP (3); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/b1/b3f30b31313632ae34ffa3ccc30122]
+May-21 21:16:01.948 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:01.948 [Task submitter] INFO  nextflow.Session - [91/eb7c19] Submitted process > SRA_RUNINFO_TO_FTP (7)
+May-21 21:16:02.582 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 81; name: SRA_RUNINFO_TO_FTP (1); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/8d/de5363b387411a649021e851b5d042]
+May-21 21:16:02.584 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:02.584 [Task submitter] INFO  nextflow.Session - [63/c77aef] Submitted process > SRA_RUNINFO_TO_FTP (8)
+May-21 21:16:02.698 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 84; name: SRA_RUNINFO_TO_FTP (4); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/93/a40bd5d1509f82f275cf6d101a1e25]
+May-21 21:16:02.699 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:02.699 [Task submitter] INFO  nextflow.Session - [a4/2a3103] Submitted process > SRA_RUNINFO_TO_FTP (9)
+May-21 21:16:02.781 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 82; name: SRA_RUNINFO_TO_FTP (2); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/da/542fcb9a7e61ad58f3529c702d6fac]
+May-21 21:16:02.783 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:02.783 [Task submitter] INFO  nextflow.Session - [7d/7cf468] Submitted process > SRA_RUNINFO_TO_FTP (10)
+May-21 21:16:02.868 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 86; name: SRA_RUNINFO_TO_FTP (6); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1d/91e88f516d4145eefebb91c687dbed]
+May-21 21:16:02.871 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:02.871 [Task submitter] INFO  nextflow.Session - [63/13115a] Submitted process > SRA_RUNINFO_TO_FTP (11)
+May-21 21:16:02.874 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 85; name: SRA_RUNINFO_TO_FTP (5); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/27/1d13051e91f442f14adb859171f441]
+May-21 21:16:02.876 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:02.876 [Task submitter] INFO  nextflow.Session - [00/b8ac7a] Submitted process > SRA_RUNINFO_TO_FTP (12)
+May-21 21:16:02.920 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 87; name: SRA_RUNINFO_TO_FTP (7); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/91/eb7c1947fcfcae3b8289e8f15fdabf]
+May-21 21:16:02.921 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:02.922 [Task submitter] INFO  nextflow.Session - [5d/cf3aea] Submitted process > SRA_RUNINFO_TO_FTP (13)
+May-21 21:16:03.007 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 60; name: SRA_IDS_TO_RUNINFO (SRX7376096); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e9/e2b391ba0769e5bd64b71d38ea63de]
+May-21 21:16:03.009 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.009 [Task submitter] INFO  nextflow.Session - [95/04367e] Submitted process > SRA_RUNINFO_TO_FTP (14)
+May-21 21:16:03.078 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 63; name: SRA_IDS_TO_RUNINFO (SRX7376100); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/ba/2aefd21702b2095f5fb6306e5fa308]
+May-21 21:16:03.079 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.079 [Task submitter] INFO  nextflow.Session - [d8/0bfae8] Submitted process > SRA_RUNINFO_TO_FTP (15)
+May-21 21:16:03.140 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 62; name: SRA_IDS_TO_RUNINFO (SRX7376099); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/0e/1efb0519009b8eb6a3c15605bcc561]
+May-21 21:16:03.142 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.142 [Task submitter] INFO  nextflow.Session - [c3/2f00ee] Submitted process > SRA_RUNINFO_TO_FTP (16)
+May-21 21:16:03.241 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 61; name: SRA_IDS_TO_RUNINFO (SRX7376097); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/cd/f87fe2bcf16b10361b7b4960a367f5]
+May-21 21:16:03.242 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.243 [Task submitter] INFO  nextflow.Session - [0e/6ad704] Submitted process > SRA_RUNINFO_TO_FTP (17)
+May-21 21:16:03.274 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 66; name: SRA_IDS_TO_RUNINFO (SRX7376103); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/ed/6ac30a09d33b406fc9036782815dc9]
+May-21 21:16:03.276 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.276 [Task submitter] INFO  nextflow.Session - [e3/681731] Submitted process > SRA_RUNINFO_TO_FTP (18)
+May-21 21:16:03.386 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 65; name: SRA_IDS_TO_RUNINFO (SRX7376102); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/62/f51a9c71fb9a82a9812b5596bb80df]
+May-21 21:16:03.387 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.387 [Task submitter] INFO  nextflow.Session - [6a/28f8bd] Submitted process > SRA_RUNINFO_TO_FTP (19)
+May-21 21:16:03.437 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 88; name: SRA_RUNINFO_TO_FTP (8); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/63/c77aefdf71ba8b95e6e084947c6eab]
+May-21 21:16:03.440 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.440 [Task submitter] INFO  nextflow.Session - [9b/5da17f] Submitted process > SRA_RUNINFO_TO_FTP (20)
+May-21 21:16:03.508 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 8; name: SRA_IDS_TO_RUNINFO (SRX7355104); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/17/1f3440e82c3272e0e9243d37f97e14]
+May-21 21:16:03.509 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.510 [Task submitter] INFO  nextflow.Session - [99/72d354] Submitted process > SRA_RUNINFO_TO_FTP (21)
+May-21 21:16:03.762 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 69; name: SRA_IDS_TO_RUNINFO (SRX7376086); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/9b/fa4e154b0a30d80af55ae836d93973]
+May-21 21:16:03.764 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.764 [Task submitter] INFO  nextflow.Session - [64/64bfa3] Submitted process > SRA_RUNINFO_TO_FTP (22)
+May-21 21:16:03.839 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 68; name: SRA_IDS_TO_RUNINFO (SRX7376105); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/25/54617e5ba449451880284e95fed34f]
+May-21 21:16:03.841 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.841 [Task submitter] INFO  nextflow.Session - [e5/42246f] Submitted process > SRA_RUNINFO_TO_FTP (23)
+May-21 21:16:03.904 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 67; name: SRA_IDS_TO_RUNINFO (SRX7376104); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/95/b38dbed7fd7ac0e1c54d11eccb3e91]
+May-21 21:16:03.906 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.906 [Task submitter] INFO  nextflow.Session - [30/63eddd] Submitted process > SRA_RUNINFO_TO_FTP (24)
+May-21 21:16:03.944 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 71; name: SRA_IDS_TO_RUNINFO (ERX546749); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/61/ad71bc6ae02c87e0b8876db2831a03]
+May-21 21:16:03.946 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.946 [Task submitter] INFO  nextflow.Session - [16/b3b566] Submitted process > SRA_RUNINFO_TO_FTP (25)
+May-21 21:16:03.962 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 15; name: SRA_IDS_TO_RUNINFO (SRX7355096); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f1/fc01e218787bfbf4cf2e13e0b15f85]
+May-21 21:16:03.964 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.964 [Task submitter] INFO  nextflow.Session - [1d/1017b0] Submitted process > SRA_RUNINFO_TO_FTP (26)
+May-21 21:16:03.996 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 70; name: SRA_IDS_TO_RUNINFO (SRX7376085); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/19/25b971c1fd5b6bb58a8ef421e10ee0]
+May-21 21:16:03.997 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:03.997 [Task submitter] INFO  nextflow.Session - [18/54b5be] Submitted process > SRA_RUNINFO_TO_FTP (27)
+May-21 21:16:04.051 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 72; name: SRA_IDS_TO_RUNINFO (ERX546748); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/0a/ea8e7b3829d63d6b506951918005dd]
+May-21 21:16:04.053 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.053 [Task submitter] INFO  nextflow.Session - [1a/b7e760] Submitted process > SRA_RUNINFO_TO_FTP (28)
+May-21 21:16:04.106 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 75; name: SRA_IDS_TO_RUNINFO (ERX484639); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/20/76d36385313f5527013e7dcc4dd1d8]
+May-21 21:16:04.108 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.108 [Task submitter] INFO  nextflow.Session - [dc/c19c3b] Submitted process > SRA_RUNINFO_TO_FTP (29)
+May-21 21:16:04.126 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 73; name: SRA_IDS_TO_RUNINFO (ERX546747); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/0e/18c75e42cf61d4055372764d3addf5]
+May-21 21:16:04.127 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.127 [Task submitter] INFO  nextflow.Session - [74/bfcadc] Submitted process > SRA_RUNINFO_TO_FTP (30)
+May-21 21:16:04.142 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 29; name: SRA_IDS_TO_RUNINFO (SRX7046364); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/47/61f7038685c8298eb4531ed403918e]
+May-21 21:16:04.144 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.144 [Task submitter] INFO  nextflow.Session - [05/8aec0d] Submitted process > SRA_RUNINFO_TO_FTP (31)
+May-21 21:16:04.162 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 80; name: SRA_IDS_TO_RUNINFO (ERX484635); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/58/bc59f08eae036cb51df89a644b254f]
+May-21 21:16:04.164 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.164 [Task submitter] INFO  nextflow.Session - [9f/1121f6] Submitted process > SRA_RUNINFO_TO_FTP (32)
+May-21 21:16:04.183 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 74; name: SRA_IDS_TO_RUNINFO (ERX484640); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/6b/12130f78ae7c09baef6382d1dfb25c]
+May-21 21:16:04.184 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.184 [Task submitter] INFO  nextflow.Session - [62/cbeeb3] Submitted process > SRA_RUNINFO_TO_FTP (33)
+May-21 21:16:04.194 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 76; name: SRA_IDS_TO_RUNINFO (ERX484637); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/39/516dfb6d3d9cf65d5abfe51b91735f]
+May-21 21:16:04.195 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.196 [Task submitter] INFO  nextflow.Session - [dd/8ad5c7] Submitted process > SRA_RUNINFO_TO_FTP (34)
+May-21 21:16:04.227 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 10; name: SRA_IDS_TO_RUNINFO (SRX7355100); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a6/fb381127e63a9a71910a77f60bf142]
+May-21 21:16:04.229 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.229 [Task submitter] INFO  nextflow.Session - [38/02dd5b] Submitted process > SRA_RUNINFO_TO_FTP (35)
+May-21 21:16:04.277 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 79; name: SRA_IDS_TO_RUNINFO (ERX484634); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/b6/9fdef2e56919a7441aaa3b5f99a121]
+May-21 21:16:04.277 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 77; name: SRA_IDS_TO_RUNINFO (ERX484638); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/89/21515656e9ba735ea4758dc9c08fe9]
+May-21 21:16:04.279 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.279 [Task submitter] INFO  nextflow.Session - [a9/90aefe] Submitted process > SRA_RUNINFO_TO_FTP (36)
+May-21 21:16:04.280 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.281 [Task submitter] INFO  nextflow.Session - [7b/a1f9e2] Submitted process > SRA_RUNINFO_TO_FTP (37)
+May-21 21:16:04.345 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 89; name: SRA_RUNINFO_TO_FTP (9); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a4/2a3103cdf8c1408dfee586a5142f63]
+May-21 21:16:04.347 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.347 [Task submitter] INFO  nextflow.Session - [3a/435b3f] Submitted process > SRA_RUNINFO_TO_FTP (38)
+May-21 21:16:04.386 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 90; name: SRA_RUNINFO_TO_FTP (10); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/7d/7cf468fc59e82babe54f4fb45d2f8a]
+May-21 21:16:04.389 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.389 [Task submitter] INFO  nextflow.Session - [e3/4382d3] Submitted process > SRA_RUNINFO_TO_FTP (39)
+May-21 21:16:04.402 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 91; name: SRA_RUNINFO_TO_FTP (11); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/63/13115a7b983bf982eb7a4c7141f3a6]
+May-21 21:16:04.404 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.404 [Task submitter] INFO  nextflow.Session - [c1/c705fe] Submitted process > SRA_RUNINFO_TO_FTP (40)
+May-21 21:16:04.766 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 92; name: SRA_RUNINFO_TO_FTP (12); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/00/b8ac7a58cd54d0ab163b399edee066]
+May-21 21:16:04.768 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.768 [Task submitter] INFO  nextflow.Session - [34/556b93] Submitted process > SRA_RUNINFO_TO_FTP (41)
+May-21 21:16:04.896 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 94; name: SRA_RUNINFO_TO_FTP (14); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/95/04367e4727d844ba79037f0d15d52a]
+May-21 21:16:04.898 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.898 [Task submitter] INFO  nextflow.Session - [46/e9d460] Submitted process > SRA_RUNINFO_TO_FTP (42)
+May-21 21:16:04.992 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 95; name: SRA_RUNINFO_TO_FTP (15); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/d8/0bfae8fe2784880f61b8765f42adb8]
+May-21 21:16:04.994 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:04.994 [Task submitter] INFO  nextflow.Session - [4a/1e5047] Submitted process > SRA_RUNINFO_TO_FTP (43)
+May-21 21:16:05.066 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 93; name: SRA_RUNINFO_TO_FTP (13); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/5d/cf3aea1d80672f00179af8c365f1dd]
+May-21 21:16:05.068 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.068 [Task submitter] INFO  nextflow.Session - [65/0d2cf2] Submitted process > SRA_RUNINFO_TO_FTP (44)
+May-21 21:16:05.164 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 96; name: SRA_RUNINFO_TO_FTP (16); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c3/2f00ee526aad1b995a2fd9b440b35b]
+May-21 21:16:05.165 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.166 [Task submitter] INFO  nextflow.Session - [9e/e44640] Submitted process > SRA_RUNINFO_TO_FTP (45)
+May-21 21:16:05.245 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 97; name: SRA_RUNINFO_TO_FTP (17); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/0e/6ad7041b712fb24b581dfc7a1a47ae]
+May-21 21:16:05.247 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.247 [Task submitter] INFO  nextflow.Session - [d5/6265fd] Submitted process > SRA_RUNINFO_TO_FTP (46)
+May-21 21:16:05.286 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 98; name: SRA_RUNINFO_TO_FTP (18); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e3/681731d82ce6fcd57fa638fa0b98cd]
+May-21 21:16:05.289 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.289 [Task submitter] INFO  nextflow.Session - [09/5f9688] Submitted process > SRA_RUNINFO_TO_FTP (47)
+May-21 21:16:05.360 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 100; name: SRA_RUNINFO_TO_FTP (20); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/9b/5da17fc8331027d8776e09dd6dd9d6]
+May-21 21:16:05.368 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.368 [Task submitter] INFO  nextflow.Session - [c0/955775] Submitted process > SRA_RUNINFO_TO_FTP (48)
+May-21 21:16:05.426 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 102; name: SRA_RUNINFO_TO_FTP (22); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/64/64bfa3cd74d90b1c589e39e8927750]
+May-21 21:16:05.428 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.428 [Task submitter] INFO  nextflow.Session - [e5/791c3c] Submitted process > SRA_RUNINFO_TO_FTP (49)
+May-21 21:16:05.464 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 99; name: SRA_RUNINFO_TO_FTP (19); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/6a/28f8bd997366c42e814c306352e5b1]
+May-21 21:16:05.467 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.467 [Task submitter] INFO  nextflow.Session - [20/c3b45a] Submitted process > SRA_RUNINFO_TO_FTP (50)
+May-21 21:16:05.536 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 101; name: SRA_RUNINFO_TO_FTP (21); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/99/72d35487e7925e8258bc162d4c8a53]
+May-21 21:16:05.540 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.540 [Task submitter] INFO  nextflow.Session - [2e/c53fdd] Submitted process > SRA_RUNINFO_TO_FTP (51)
+May-21 21:16:05.571 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 103; name: SRA_RUNINFO_TO_FTP (23); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e5/42246f7e9422e93eb96aea932b5987]
+May-21 21:16:05.574 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.574 [Task submitter] INFO  nextflow.Session - [5a/500e04] Submitted process > SRA_RUNINFO_TO_FTP (52)
+May-21 21:16:05.894 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 104; name: SRA_RUNINFO_TO_FTP (24); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/30/63eddddfa84d7ff4159e32fb74b925]
+May-21 21:16:05.896 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:05.896 [Task submitter] INFO  nextflow.Session - [6f/a77408] Submitted process > SRA_RUNINFO_TO_FTP (53)
+May-21 21:16:06.066 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 127; name: SRA_RUNINFO_TO_FTP (47); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/09/5f968807858634c95d43987f30d08e]
+May-21 21:16:06.067 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.067 [Task submitter] INFO  nextflow.Session - [89/f10701] Submitted process > SRA_RUNINFO_TO_FTP (54)
+May-21 21:16:06.182 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 105; name: SRA_RUNINFO_TO_FTP (25); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/16/b3b5665185880bbc77a85cc074dc36]
+May-21 21:16:06.183 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.183 [Task submitter] INFO  nextflow.Session - [09/4587b3] Submitted process > SRA_FASTQ_FTP (SRX7355099_SRR10678073)
+May-21 21:16:06.202 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 106; name: SRA_RUNINFO_TO_FTP (26); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1d/1017b060b618838f118346cc189055]
+May-21 21:16:06.203 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.203 [Task submitter] INFO  nextflow.Session - [42/e9b0aa] Submitted process > SRA_TO_SAMPLESHEET (SRX7355099_SRR10678073)
+May-21 21:16:06.210 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 135; name: SRA_TO_SAMPLESHEET (SRX7355099_SRR10678073); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/42/e9b0aaef5c0d443e505d8cdd54e23c]
+May-21 21:16:06.211 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.211 [Task submitter] INFO  nextflow.Session - [d0/3ca791] Submitted process > SRA_TO_SAMPLESHEET (SRX7376119_SRR10699625)
+May-21 21:16:06.217 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 137; name: SRA_TO_SAMPLESHEET (SRX7376119_SRR10699625); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/d0/3ca79154ae1cba8a606b5df1b9ba62]
+May-21 21:16:06.218 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.218 [Task submitter] INFO  nextflow.Session - [39/9b061e] Submitted process > SRA_FASTQ_FTP (SRX7376119_SRR10699625)
+May-21 21:16:06.313 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 108; name: SRA_RUNINFO_TO_FTP (28); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1a/b7e760d6283eb23c409f13898ad689]
+May-21 21:16:06.315 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.315 [Task submitter] INFO  nextflow.Session - [fc/9dee3a] Submitted process > SRA_FASTQ_FTP (SRX7355098_SRR10678072)
+May-21 21:16:06.401 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 107; name: SRA_RUNINFO_TO_FTP (27); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/18/54b5be84d9bf38f3db29368b0a0360]
+May-21 21:16:06.403 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.403 [Task submitter] INFO  nextflow.Session - [47/b31630] Submitted process > SRA_TO_SAMPLESHEET (SRX7355098_SRR10678072)
+May-21 21:16:06.409 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 139; name: SRA_TO_SAMPLESHEET (SRX7355098_SRR10678072); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/47/b31630a10c08b049a3c14d8ebd3998]
+May-21 21:16:06.411 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.411 [Task submitter] INFO  nextflow.Session - [0a/dec13b] Submitted process > SRA_FASTQ_FTP (SRX7376116_SRR10699622)
+May-21 21:16:06.446 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 110; name: SRA_RUNINFO_TO_FTP (30); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/74/bfcadc4aa4a366b6a0b864c6d5d9ad]
+May-21 21:16:06.447 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.447 [Task submitter] INFO  nextflow.Session - [16/679612] Submitted process > SRA_TO_SAMPLESHEET (SRX7376116_SRR10699622)
+May-21 21:16:06.453 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 141; name: SRA_TO_SAMPLESHEET (SRX7376116_SRR10699622); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/16/679612b98bb4486637993457b0bc9d]
+May-21 21:16:06.455 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.455 [Task submitter] INFO  nextflow.Session - [3c/15d654] Submitted process > SRA_FASTQ_FTP (SRX7355093_SRR10678067)
+May-21 21:16:06.521 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 109; name: SRA_RUNINFO_TO_FTP (29); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/dc/c19c3baab6d59ad1ac305069fdd9de]
+May-21 21:16:06.523 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.523 [Task submitter] INFO  nextflow.Session - [2f/3b8cb1] Submitted process > SRA_TO_SAMPLESHEET (SRX7355093_SRR10678067)
+May-21 21:16:06.529 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 143; name: SRA_TO_SAMPLESHEET (SRX7355093_SRR10678067); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/2f/3b8cb1b622cc8fe10dcd9f107cf8b9]
+May-21 21:16:06.530 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.531 [Task submitter] INFO  nextflow.Session - [66/44e92e] Submitted process > SRA_FASTQ_FTP (SRX24286947_SRR28720525)
+May-21 21:16:06.536 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 111; name: SRA_RUNINFO_TO_FTP (31); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/05/8aec0deb1a897a699fa49b1ba319f3]
+May-21 21:16:06.537 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.537 [Task submitter] INFO  nextflow.Session - [9c/35cc0a] Submitted process > SRA_TO_SAMPLESHEET (SRX24286947_SRR28720525)
+May-21 21:16:06.544 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 145; name: SRA_TO_SAMPLESHEET (SRX24286947_SRR28720525); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/9c/35cc0a884ac69aac160f8423392d74]
+May-21 21:16:06.545 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.545 [Task submitter] INFO  nextflow.Session - [94/89961d] Submitted process > SRA_TO_SAMPLESHEET (SRX7376114_SRR10699620)
+May-21 21:16:06.552 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 147; name: SRA_TO_SAMPLESHEET (SRX7376114_SRR10699620); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/94/89961d9ceeba8acff53c553c83c7a8]
+May-21 21:16:06.553 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.553 [Task submitter] INFO  nextflow.Session - [95/e717bb] Submitted process > SRA_FASTQ_FTP (SRX7376114_SRR10699620)
+May-21 21:16:06.584 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 52; name: SRA_IDS_TO_RUNINFO (SRX7376088); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c6/b7ef171b94101e14eecb638cfc8a3a]
+May-21 21:16:06.585 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.585 [Task submitter] INFO  nextflow.Session - [8c/57c805] Submitted process > SRA_RUNINFO_TO_FTP (55)
+May-21 21:16:06.653 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 113; name: SRA_RUNINFO_TO_FTP (33); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/62/cbeeb34ef1e0ea9a1d206f346d83e9]
+May-21 21:16:06.655 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.655 [Task submitter] INFO  nextflow.Session - [cf/c18bc3] Submitted process > SRA_RUNINFO_TO_FTP (56)
+May-21 21:16:06.900 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 112; name: SRA_RUNINFO_TO_FTP (32); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/9f/1121f6d65776dc2ae259338976d5b8]
+May-21 21:16:06.901 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:06.902 [Task submitter] INFO  nextflow.Session - [75/f4eb9b] Submitted process > SRA_RUNINFO_TO_FTP (57)
+May-21 21:16:07.090 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 114; name: SRA_RUNINFO_TO_FTP (34); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/dd/8ad5c7359aff5c87f68392763c1386]
+May-21 21:16:07.091 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.092 [Task submitter] INFO  nextflow.Session - [9d/63057c] Submitted process > SRA_RUNINFO_TO_FTP (58)
+May-21 21:16:07.200 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 115; name: SRA_RUNINFO_TO_FTP (35); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/38/02dd5b80e0b0744664fdaa01852875]
+May-21 21:16:07.202 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.202 [Task submitter] INFO  nextflow.Session - [8a/2359df] Submitted process > SRA_RUNINFO_TO_FTP (59)
+May-21 21:16:07.348 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 116; name: SRA_RUNINFO_TO_FTP (36); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a9/90aefe49c623959b87cac82a4023db]
+May-21 21:16:07.350 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.350 [Task submitter] INFO  nextflow.Session - [d9/915f9f] Submitted process > SRA_RUNINFO_TO_FTP (60)
+May-21 21:16:07.427 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 117; name: SRA_RUNINFO_TO_FTP (37); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/7b/a1f9e2ea5457f5f944d6485d2757ca]
+May-21 21:16:07.428 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.428 [Task submitter] INFO  nextflow.Session - [3b/7a65d5] Submitted process > SRA_TO_SAMPLESHEET (SRX7355103_SRR10678077)
+May-21 21:16:07.435 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 155; name: SRA_TO_SAMPLESHEET (SRX7355103_SRR10678077); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/3b/7a65d5a5702a9236ac4eef5a2f269e]
+May-21 21:16:07.436 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.436 [Task submitter] INFO  nextflow.Session - [62/c65c69] Submitted process > SRA_FASTQ_FTP (SRX7355103_SRR10678077)
+May-21 21:16:07.497 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 119; name: SRA_RUNINFO_TO_FTP (39); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e3/4382d3ad54f2d004d85cf7b2903d41]
+May-21 21:16:07.499 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.499 [Task submitter] INFO  nextflow.Session - [27/6a5e4d] Submitted process > SRA_RUNINFO_TO_FTP (61)
+May-21 21:16:07.587 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 118; name: SRA_RUNINFO_TO_FTP (38); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/3a/435b3f30af3e624de0bc7710a59345]
+May-21 21:16:07.589 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.589 [Task submitter] INFO  nextflow.Session - [6f/890f03] Submitted process > SRA_RUNINFO_TO_FTP (62)
+May-21 21:16:07.592 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 120; name: SRA_RUNINFO_TO_FTP (40); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c1/c705fe44da5f9264a75d317657c909]
+May-21 21:16:07.595 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.595 [Task submitter] INFO  nextflow.Session - [1a/f6a7dd] Submitted process > SRA_RUNINFO_TO_FTP (63)
+May-21 21:16:07.664 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 122; name: SRA_RUNINFO_TO_FTP (42); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/46/e9d4601c7d7ffc2236e97c1a63be4f]
+May-21 21:16:07.666 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.667 [Task submitter] INFO  nextflow.Session - [42/205c8f] Submitted process > SRA_RUNINFO_TO_FTP (64)
+May-21 21:16:07.718 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 123; name: SRA_RUNINFO_TO_FTP (43); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/4a/1e50478c72d7b75a155202c7f9df43]
+May-21 21:16:07.720 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.720 [Task submitter] INFO  nextflow.Session - [b0/eebac8] Submitted process > SRA_RUNINFO_TO_FTP (65)
+May-21 21:16:07.781 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 121; name: SRA_RUNINFO_TO_FTP (41); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/34/556b93b71cec0a08a824f5623cc97a]
+May-21 21:16:07.784 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.784 [Task submitter] INFO  nextflow.Session - [8f/f21ab2] Submitted process > SRA_RUNINFO_TO_FTP (66)
+May-21 21:16:07.933 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 124; name: SRA_RUNINFO_TO_FTP (44); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/65/0d2cf28bc4fc28488fb0398d09c71e]
+May-21 21:16:07.935 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:07.935 [Task submitter] INFO  nextflow.Session - [8f/7f4abc] Submitted process > SRA_RUNINFO_TO_FTP (67)
+May-21 21:16:08.073 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 125; name: SRA_RUNINFO_TO_FTP (45); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/9e/e44640c5773523ef3aa3fd0fbe188f]
+May-21 21:16:08.074 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:08.074 [Task submitter] INFO  nextflow.Session - [c5/178f82] Submitted process > SRA_RUNINFO_TO_FTP (68)
+May-21 21:16:08.157 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 126; name: SRA_RUNINFO_TO_FTP (46); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/d5/6265fd4e0ee699597a828e98dfadd9]
+May-21 21:16:08.159 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:08.159 [Task submitter] INFO  nextflow.Session - [f1/2a10e6] Submitted process > SRA_RUNINFO_TO_FTP (69)
+May-21 21:16:09.199 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 129; name: SRA_RUNINFO_TO_FTP (49); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e5/791c3c296b34cd1514aa7b1d65890a]
+May-21 21:16:09.200 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:09.200 [Task submitter] INFO  nextflow.Session - [02/6fbbba] Submitted process > SRA_RUNINFO_TO_FTP (70)
+May-21 21:16:09.726 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 128; name: SRA_RUNINFO_TO_FTP (48); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c0/955775c4dd4ce0816fe8fab7aabb64]
+May-21 21:16:09.728 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:09.728 [Task submitter] INFO  nextflow.Session - [f0/1b08da] Submitted process > SRA_RUNINFO_TO_FTP (71)
+May-21 21:16:10.662 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 131; name: SRA_RUNINFO_TO_FTP (51); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/2e/c53fdd131a25ce50db90bd38acf65b]
+May-21 21:16:10.663 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:10.663 [Task submitter] INFO  nextflow.Session - [ff/7ac791] Submitted process > SRA_RUNINFO_TO_FTP (72)
+May-21 21:16:10.681 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 130; name: SRA_RUNINFO_TO_FTP (50); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/20/c3b45a50ba2621e5eb1abf692c02a9]
+May-21 21:16:10.683 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:10.683 [Task submitter] INFO  nextflow.Session - [9f/8c0fa4] Submitted process > SRA_RUNINFO_TO_FTP (73)
+May-21 21:16:11.232 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 64; name: SRA_IDS_TO_RUNINFO (SRX7376101); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a3/a089f8ce7aed6f84c3eb34669b9ae7]
+May-21 21:16:11.233 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:11.233 [Task submitter] INFO  nextflow.Session - [21/4929ce] Submitted process > SRA_RUNINFO_TO_FTP (74)
+May-21 21:16:11.288 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 21; name: SRA_IDS_TO_RUNINFO (SRX7376113); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/cc/bd39d9f20c343aaa662cec62270560]
+May-21 21:16:11.289 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:11.289 [Task submitter] INFO  nextflow.Session - [63/7a1b10] Submitted process > SRA_RUNINFO_TO_FTP (75)
+May-21 21:16:11.910 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 161; name: SRA_RUNINFO_TO_FTP (65); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/b0/eebac8fa4bec29f834a3e41d7df688]
+May-21 21:16:11.912 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:11.912 [Task submitter] INFO  nextflow.Session - [6a/24e7b1] Submitted process > SRA_RUNINFO_TO_FTP (77)
+May-21 21:16:12.098 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 133; name: SRA_RUNINFO_TO_FTP (53); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/6f/a774080e850db7cf6bdce2533f75fb]
+May-21 21:16:12.100 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.100 [Task submitter] INFO  nextflow.Session - [7f/3e60e7] Submitted process > SRA_RUNINFO_TO_FTP (76)
+May-21 21:16:12.113 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 158; name: SRA_RUNINFO_TO_FTP (62); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/6f/890f033d9d50c85b1f84563e8f5651]
+May-21 21:16:12.115 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.115 [Task submitter] INFO  nextflow.Session - [98/4d5bb7] Submitted process > SRA_FASTQ_FTP (SRX22385608_SRR26685713)
+May-21 21:16:12.183 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 152; name: SRA_RUNINFO_TO_FTP (58); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/9d/63057c19849e755d7c6c862d9a8e30]
+May-21 21:16:12.184 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.184 [Task submitter] INFO  nextflow.Session - [72/f04813] Submitted process > SRA_TO_SAMPLESHEET (SRX22385608_SRR26685713)
+May-21 21:16:12.188 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 162; name: SRA_RUNINFO_TO_FTP (66); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/8f/f21ab22345cb5132249dc925bbf699]
+May-21 21:16:12.190 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.190 [Task submitter] INFO  nextflow.Session - [bc/aa1979] Submitted process > SRA_FASTQ_FTP (SRX7046360_SRR10336284)
+May-21 21:16:12.190 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 174; name: SRA_TO_SAMPLESHEET (SRX22385608_SRR26685713); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/72/f048134ba4c4caf7320b651ac0f055]
+May-21 21:16:12.191 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.191 [Task submitter] INFO  nextflow.Session - [8f/1cef66] Submitted process > SRA_TO_SAMPLESHEET (SRX7046365_SRR10336289)
+May-21 21:16:12.197 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 235; name: SRA_TO_SAMPLESHEET (SRX7046365_SRR10336289); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/8f/1cef667f68bfef1b0f87f2c62298fd]
+May-21 21:16:12.198 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.198 [Task submitter] INFO  nextflow.Session - [4d/c22a9f] Submitted process > SRA_TO_SAMPLESHEET (SRX7046360_SRR10336284)
+May-21 21:16:12.204 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 176; name: SRA_TO_SAMPLESHEET (SRX7046360_SRR10336284); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/4d/c22a9fbd6a9c11b394b049a0d2ef7d]
+May-21 21:16:12.205 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.205 [Task submitter] INFO  nextflow.Session - [ff/a21a6b] Submitted process > SRA_TO_SAMPLESHEET (SRX7376115_SRR10699621)
+May-21 21:16:12.211 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 178; name: SRA_TO_SAMPLESHEET (SRX7376115_SRR10699621); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/ff/a21a6b3d4aa0d57e72102eb8d15b54]
+May-21 21:16:12.212 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.212 [Task submitter] INFO  nextflow.Session - [2a/cdcf67] Submitted process > SRA_FASTQ_FTP (SRX7376115_SRR10699621)
+May-21 21:16:12.279 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 157; name: SRA_RUNINFO_TO_FTP (61); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/27/6a5e4de74fafa81f4a57aa6dcb51f7]
+May-21 21:16:12.280 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.281 [Task submitter] INFO  nextflow.Session - [60/66a888] Submitted process > SRA_TO_SAMPLESHEET (SRX7355094_SRR10678068)
+May-21 21:16:12.287 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 180; name: SRA_TO_SAMPLESHEET (SRX7355094_SRR10678068); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/60/66a88884dbb23457736090e6605c0b]
+May-21 21:16:12.288 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.288 [Task submitter] INFO  nextflow.Session - [66/73cc18] Submitted process > SRA_FASTQ_FTP (SRX7355094_SRR10678068)
+May-21 21:16:12.408 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 150; name: SRA_RUNINFO_TO_FTP (56); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/cf/c18bc3afa1f2935cc9bdd72384f84d]
+May-21 21:16:12.409 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.409 [Task submitter] INFO  nextflow.Session - [3e/c039e0] Submitted process > SRA_TO_SAMPLESHEET (SRX7355102_SRR10678076)
+May-21 21:16:12.415 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 182; name: SRA_TO_SAMPLESHEET (SRX7355102_SRR10678076); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/3e/c039e031056166183a797eb3c42b5b]
+May-21 21:16:12.416 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.416 [Task submitter] INFO  nextflow.Session - [2f/a0c30c] Submitted process > SRA_FASTQ_FTP (SRX7355102_SRR10678076)
+May-21 21:16:12.451 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 134; name: SRA_RUNINFO_TO_FTP (54); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/89/f10701e2b8f0a82e8503cd27835e6b]
+May-21 21:16:12.452 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.452 [Task submitter] INFO  nextflow.Session - [06/a518bb] Submitted process > SRA_TO_SAMPLESHEET (SRX7355106_SRR10678080)
+May-21 21:16:12.458 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 184; name: SRA_TO_SAMPLESHEET (SRX7355106_SRR10678080); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/06/a518bb47185db79eb945f813ed1cbd]
+May-21 21:16:12.460 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.460 [Task submitter] INFO  nextflow.Session - [01/69de86] Submitted process > SRA_FASTQ_FTP (SRX7355106_SRR10678080)
+May-21 21:16:12.489 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 132; name: SRA_RUNINFO_TO_FTP (52); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/5a/500e04eed8215f92b6d491485e79d0]
+May-21 21:16:12.490 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.490 [Task submitter] INFO  nextflow.Session - [d6/2a9fb7] Submitted process > SRA_TO_SAMPLESHEET (SRX7355101_SRR10678075)
+May-21 21:16:12.496 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 186; name: SRA_TO_SAMPLESHEET (SRX7355101_SRR10678075); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/d6/2a9fb749190f88117836156459352a]
+May-21 21:16:12.497 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.497 [Task submitter] INFO  nextflow.Session - [a6/976b5e] Submitted process > SRA_FASTQ_FTP (SRX7355101_SRR10678075)
+May-21 21:16:12.540 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 149; name: SRA_RUNINFO_TO_FTP (55); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/8c/57c80511e8dbda6b7a95e89ddae0b0]
+May-21 21:16:12.542 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.542 [Task submitter] INFO  nextflow.Session - [e6/146b17] Submitted process > SRA_TO_SAMPLESHEET (SRX24286946_SRR28720526)
+May-21 21:16:12.548 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 188; name: SRA_TO_SAMPLESHEET (SRX24286946_SRR28720526); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e6/146b17f3ea41d024fe247207af0968]
+May-21 21:16:12.549 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.549 [Task submitter] INFO  nextflow.Session - [89/46643d] Submitted process > SRA_FASTQ_FTP (SRX24286946_SRR28720526)
+May-21 21:16:12.580 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 169; name: SRA_RUNINFO_TO_FTP (73); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/9f/8c0fa4651d2b52080b6b6d11d02e97]
+May-21 21:16:12.581 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.581 [Task submitter] INFO  nextflow.Session - [98/e9dfdc] Submitted process > SRA_TO_SAMPLESHEET (SRX7376120_SRR10699626)
+May-21 21:16:12.587 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 190; name: SRA_TO_SAMPLESHEET (SRX7376120_SRR10699626); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/98/e9dfdc5c91596cc2fdee5bd92f7ba5]
+May-21 21:16:12.589 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.590 [Task submitter] INFO  nextflow.Session - [f0/ae8421] Submitted process > SRA_FASTQ_FTP (SRX7376120_SRR10699626)
+May-21 21:16:12.619 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 151; name: SRA_RUNINFO_TO_FTP (57); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/75/f4eb9b3192a30a640163384647d96b]
+May-21 21:16:12.620 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.620 [Task submitter] INFO  nextflow.Session - [69/33a77f] Submitted process > SRA_TO_SAMPLESHEET (SRX7376117_SRR10699623)
+May-21 21:16:12.626 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 192; name: SRA_TO_SAMPLESHEET (SRX7376117_SRR10699623); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/69/33a77f0d02b7eb418bba3b0e9983a7]
+May-21 21:16:12.628 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.628 [Task submitter] INFO  nextflow.Session - [d3/d8d1ae] Submitted process > SRA_FASTQ_FTP (SRX7376117_SRR10699623)
+May-21 21:16:12.653 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 160; name: SRA_RUNINFO_TO_FTP (64); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/42/205c8f8f3a3e9a7a6df371937cabf1]
+May-21 21:16:12.655 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.655 [Task submitter] INFO  nextflow.Session - [03/6027b0] Submitted process > SRA_TO_SAMPLESHEET (SRX7376118_SRR10699624)
+May-21 21:16:12.661 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 194; name: SRA_TO_SAMPLESHEET (SRX7376118_SRR10699624); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/03/6027b08ad35080df83713215d4014d]
+May-21 21:16:12.663 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.663 [Task submitter] INFO  nextflow.Session - [6a/3c3bbf] Submitted process > SRA_FASTQ_FTP (SRX7376118_SRR10699624)
+May-21 21:16:12.697 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 166; name: SRA_RUNINFO_TO_FTP (70); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/02/6fbbbad008d8a19ddb79be3d25205e]
+May-21 21:16:12.698 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.698 [Task submitter] INFO  nextflow.Session - [1b/ad2594] Submitted process > SRA_TO_SAMPLESHEET (SRX7355095_SRR10678069)
+May-21 21:16:12.705 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 196; name: SRA_TO_SAMPLESHEET (SRX7355095_SRR10678069); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1b/ad2594834afbb7b8f9ba577ee54a4c]
+May-21 21:16:12.707 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.707 [Task submitter] INFO  nextflow.Session - [33/6fe86b] Submitted process > SRA_FASTQ_FTP (SRX7355095_SRR10678069)
+May-21 21:16:12.738 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 154; name: SRA_RUNINFO_TO_FTP (60); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/d9/915f9f7772bfbee746cf054e4f4615]
+May-21 21:16:12.739 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.739 [Task submitter] INFO  nextflow.Session - [04/67d512] Submitted process > SRA_FASTQ_FTP (SRX7376121_SRR10699627)
+May-21 21:16:12.780 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 163; name: SRA_RUNINFO_TO_FTP (67); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/8f/7f4abc9ea17869c4ba27c0f1b4bdd1]
+May-21 21:16:12.781 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.781 [Task submitter] INFO  nextflow.Session - [3c/bdb87e] Submitted process > SRA_TO_SAMPLESHEET (SRX7376121_SRR10699627)
+May-21 21:16:12.788 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 198; name: SRA_TO_SAMPLESHEET (SRX7376121_SRR10699627); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/3c/bdb87e2986fc21689c76a76cb0015b]
+May-21 21:16:12.790 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.790 [Task submitter] INFO  nextflow.Session - [84/a31a20] Submitted process > SRA_FASTQ_FTP (SRX7046359_SRR10336283)
+May-21 21:16:12.809 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 153; name: SRA_RUNINFO_TO_FTP (59); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/8a/2359dfd31fa63d9a6d7e592bcd18c2]
+May-21 21:16:12.811 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.811 [Task submitter] INFO  nextflow.Session - [b2/1714b8] Submitted process > SRA_TO_SAMPLESHEET (SRX7046359_SRR10336283)
+May-21 21:16:12.817 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 200; name: SRA_TO_SAMPLESHEET (SRX7046359_SRR10336283); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/b2/1714b8f5fe5b1a116bec4368f0a068]
+May-21 21:16:12.818 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.818 [Task submitter] INFO  nextflow.Session - [9c/9bfcaa] Submitted process > SRA_TO_SAMPLESHEET (SRX7355105_SRR10678079)
+May-21 21:16:12.823 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 202; name: SRA_TO_SAMPLESHEET (SRX7355105_SRR10678079); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/9c/9bfcaaf815d2fc420ac6fee13bef20]
+May-21 21:16:12.825 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.825 [Task submitter] INFO  nextflow.Session - [4c/0e10ce] Submitted process > SRA_FASTQ_FTP (SRX7355105_SRR10678079)
+May-21 21:16:12.849 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 165; name: SRA_RUNINFO_TO_FTP (69); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f1/2a10e610df6abca7e0732d1f458cac]
+May-21 21:16:12.851 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.851 [Task submitter] INFO  nextflow.Session - [94/ee1e87] Submitted process > SRA_FASTQ_FTP (SRX7355097_SRR10678071)
+May-21 21:16:12.881 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 164; name: SRA_RUNINFO_TO_FTP (68); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c5/178f82caf988d3506475e4a7b40c63]
+May-21 21:16:12.882 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.882 [Task submitter] INFO  nextflow.Session - [4c/43afd3] Submitted process > SRA_TO_SAMPLESHEET (SRX7355097_SRR10678071)
+May-21 21:16:12.889 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 204; name: SRA_TO_SAMPLESHEET (SRX7355097_SRR10678071); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/4c/43afd3d93cedefb47a2a02570ef137]
+May-21 21:16:12.890 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.890 [Task submitter] INFO  nextflow.Session - [d9/858cd1] Submitted process > SRA_TO_SAMPLESHEET (SRX7046354_SRR10336278)
+May-21 21:16:12.896 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 206; name: SRA_TO_SAMPLESHEET (SRX7046354_SRR10336278); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/d9/858cd1b8315aa1817a52e899ab1702]
+May-21 21:16:12.897 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.897 [Task submitter] INFO  nextflow.Session - [a5/d2da5a] Submitted process > SRA_FASTQ_FTP (SRX7046354_SRR10336278)
+May-21 21:16:12.927 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 159; name: SRA_RUNINFO_TO_FTP (63); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/1a/f6a7ddd58352098d3588485b3e5408]
+May-21 21:16:12.928 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.928 [Task submitter] INFO  nextflow.Session - [25/491a44] Submitted process > SRA_TO_SAMPLESHEET (SRX7355092_SRR10678066)
+May-21 21:16:12.935 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 208; name: SRA_TO_SAMPLESHEET (SRX7355092_SRR10678066); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/25/491a445be86eab835ed0b5d5bbd9d4]
+May-21 21:16:12.937 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.937 [Task submitter] INFO  nextflow.Session - [94/226c4a] Submitted process > SRA_FASTQ_FTP (SRX7355092_SRR10678066)
+May-21 21:16:12.957 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 167; name: SRA_RUNINFO_TO_FTP (71); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f0/1b08da7cf26048ad9e44a87c40e1c5]
+May-21 21:16:12.959 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:12.959 [Task submitter] INFO  nextflow.Session - [39/5aa0d1] Submitted process > SRA_FASTQ_FTP (SRX24286945_SRR28720527)
+May-21 21:16:13.007 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 168; name: SRA_RUNINFO_TO_FTP (72); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/ff/7ac7911175de392ba27031f0724b3d]
+May-21 21:16:13.008 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.008 [Task submitter] INFO  nextflow.Session - [7c/7a33f1] Submitted process > SRA_TO_SAMPLESHEET (SRX24286945_SRR28720527)
+May-21 21:16:13.014 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 210; name: SRA_TO_SAMPLESHEET (SRX24286945_SRR28720527); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/7c/7a33f1d1b8dbfbbdfc680d2eb055c4]
+May-21 21:16:13.016 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.016 [Task submitter] INFO  nextflow.Session - [14/62845c] Submitted process > SRA_TO_SAMPLESHEET (SRX7046361_SRR10336285)
+May-21 21:16:13.023 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 212; name: SRA_TO_SAMPLESHEET (SRX7046361_SRR10336285); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/14/62845ce23fad9104caf31642792c1a]
+May-21 21:16:13.024 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.024 [Task submitter] INFO  nextflow.Session - [0c/b4ece9] Submitted process > SRA_FASTQ_FTP (SRX7046361_SRR10336285)
+May-21 21:16:13.367 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 171; name: SRA_RUNINFO_TO_FTP (75); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/63/7a1b10d1a9ec7f4919970001b41e5d]
+May-21 21:16:13.369 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.369 [Task submitter] INFO  nextflow.Session - [ca/1d48ac] Submitted process > SRA_FASTQ_FTP (SRX7046358_SRR10336282)
+May-21 21:16:13.455 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 172; name: SRA_RUNINFO_TO_FTP (76); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/7f/3e60e77c324873a61bba6870169c9f]
+May-21 21:16:13.456 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.457 [Task submitter] INFO  nextflow.Session - [ed/77045f] Submitted process > SRA_TO_SAMPLESHEET (SRX7046358_SRR10336282)
+May-21 21:16:13.463 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 214; name: SRA_TO_SAMPLESHEET (SRX7046358_SRR10336282); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/ed/77045fd0d06dafcacdd114f1398548]
+May-21 21:16:13.464 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.464 [Task submitter] INFO  nextflow.Session - [7d/c2f30b] Submitted process > SRA_FASTQ_FTP (SRX7046369_SRR10336293)
+May-21 21:16:13.503 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 170; name: SRA_RUNINFO_TO_FTP (74); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/21/4929ce9ebc8ccb7b3795c7a51eb5c3]
+May-21 21:16:13.504 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.504 [Task submitter] INFO  nextflow.Session - [cc/a8da5e] Submitted process > SRA_TO_SAMPLESHEET (SRX7046369_SRR10336293)
+May-21 21:16:13.510 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 216; name: SRA_TO_SAMPLESHEET (SRX7046369_SRR10336293); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/cc/a8da5efd8412a2e771be0254606fb7]
+May-21 21:16:13.511 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.511 [Task submitter] INFO  nextflow.Session - [c5/b2c5e5] Submitted process > SRA_TO_SAMPLESHEET (SRX7046362_SRR10336286)
+May-21 21:16:13.518 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 218; name: SRA_TO_SAMPLESHEET (SRX7046362_SRR10336286); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/c5/b2c5e567f359e6e2a9a147bec69b8f]
+May-21 21:16:13.519 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.519 [Task submitter] INFO  nextflow.Session - [f9/538c80] Submitted process > SRA_FASTQ_FTP (SRX7046362_SRR10336286)
+May-21 21:16:13.537 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 173; name: SRA_RUNINFO_TO_FTP (77); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/6a/24e7b1fa0be31d1bf16cf69551355a]
+May-21 21:16:13.539 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.539 [Task submitter] INFO  nextflow.Session - [a7/894dcb] Submitted process > SRA_TO_SAMPLESHEET (SRX7046363_SRR10336287)
+May-21 21:16:13.547 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 220; name: SRA_TO_SAMPLESHEET (SRX7046363_SRR10336287); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a7/894dcbdaba55c24e9d1834189c543e]
+May-21 21:16:13.549 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:13.549 [Task submitter] INFO  nextflow.Session - [f3/10144e] Submitted process > SRA_FASTQ_FTP (SRX7046363_SRR10336287)
+May-21 21:16:14.940 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 187; name: SRA_FASTQ_FTP (SRX7355101_SRR10678075); status: COMPLETED; exit: 4; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a6/976b5e64d9d2e172bdb8ba7e5e932a]
+May-21 21:16:14.942 [TaskFinalizer-1] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=SRA_FASTQ_FTP (SRX7355101_SRR10678075); work-dir=/home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/a6/976b5e64d9d2e172bdb8ba7e5e932a
+  error [nextflow.exception.ProcessFailedException]: Process `SRA_FASTQ_FTP (SRX7355101_SRR10678075)` terminated with an error exit status (4)
+May-21 21:16:14.942 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:14.942 [Task submitter] INFO  nextflow.Session - [e0/338820] Submitted process > SRA_RUNINFO_TO_FTP (78)
+May-21 21:16:14.945 [TaskFinalizer-1] INFO  nextflow.processor.TaskProcessor - [a6/976b5e] NOTE: Process `SRA_FASTQ_FTP (SRX7355101_SRR10678075)` terminated with an error exit status (4) -- Execution is retried (1)
+May-21 21:16:15.166 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 185; name: SRA_FASTQ_FTP (SRX7355106_SRR10678080); status: COMPLETED; exit: 4; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/01/69de8691e4d00cd826fcab020b5d78]
+May-21 21:16:15.167 [TaskFinalizer-2] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=SRA_FASTQ_FTP (SRX7355106_SRR10678080); work-dir=/home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/01/69de8691e4d00cd826fcab020b5d78
+  error [nextflow.exception.ProcessFailedException]: Process `SRA_FASTQ_FTP (SRX7355106_SRR10678080)` terminated with an error exit status (4)
+May-21 21:16:15.168 [TaskFinalizer-2] INFO  nextflow.processor.TaskProcessor - [01/69de86] NOTE: Process `SRA_FASTQ_FTP (SRX7355106_SRR10678080)` terminated with an error exit status (4) -- Execution is retried (1)
+May-21 21:16:15.168 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:15.168 [Task submitter] INFO  nextflow.Session - [ac/f9b1b5] Submitted process > SRA_FASTQ_FTP (SRX7046366_SRR10336290)
+May-21 21:16:15.277 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 191; name: SRA_FASTQ_FTP (SRX7376120_SRR10699626); status: COMPLETED; exit: 4; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f0/ae8421ec19594391bdb67ca4b1d3c4]
+May-21 21:16:15.278 [TaskFinalizer-3] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=SRA_FASTQ_FTP (SRX7376120_SRR10699626); work-dir=/home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/f0/ae8421ec19594391bdb67ca4b1d3c4
+  error [nextflow.exception.ProcessFailedException]: Process `SRA_FASTQ_FTP (SRX7376120_SRR10699626)` terminated with an error exit status (4)
+May-21 21:16:15.278 [TaskFinalizer-3] INFO  nextflow.processor.TaskProcessor - [f0/ae8421] NOTE: Process `SRA_FASTQ_FTP (SRX7376120_SRR10699626)` terminated with an error exit status (4) -- Execution is retried (1)
+May-21 21:16:15.278 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:15.279 [Task submitter] INFO  nextflow.Session - [ab/3813d6] Submitted process > SRA_TO_SAMPLESHEET (SRX7046366_SRR10336290)
+May-21 21:16:15.285 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 223; name: SRA_TO_SAMPLESHEET (SRX7046366_SRR10336290); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/ab/3813d6012dd9670ec797c00c32a338]
+May-21 21:16:15.286 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:15.286 [Task submitter] INFO  nextflow.Session - [81/17629b] Submitted process > SRA_TO_SAMPLESHEET (SRX7046367_SRR10336291)
+May-21 21:16:15.292 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 225; name: SRA_TO_SAMPLESHEET (SRX7046367_SRR10336291); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/81/17629b18d2bf23a045f9a67815b5e6]
+May-21 21:16:15.293 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:15.293 [Task submitter] INFO  nextflow.Session - [1a/8b5f3f] Submitted process > SRA_FASTQ_FTP (SRX7046367_SRR10336291)
+May-21 21:16:15.558 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 222; name: SRA_RUNINFO_TO_FTP (78); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/e0/3388200987d1a04b0ae746c9638f10]
+May-21 21:16:15.560 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:15.560 [Task submitter] INFO  nextflow.Session - [49/4c3dda] Submitted process > SRA_TO_SAMPLESHEET (SRX7046356_SRR10336280)
+May-21 21:16:15.566 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 227; name: SRA_TO_SAMPLESHEET (SRX7046356_SRR10336280); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/49/4c3ddaa34ccb98a464d3c6365ec86d]
+May-21 21:16:15.568 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-21 21:16:15.568 [Task submitter] INFO  nextflow.Session - [6e/6949b8] Submitted process > SRA_FASTQ_FTP (SRX7046356_SRR10336280)
+May-21 21:17:21.639 [SIGINT handler] DEBUG nextflow.Session - Session aborted -- Cause: SIGINT
+May-21 21:17:21.650 [SIGINT handler] DEBUG nextflow.Session - The following nodes are still active:
+[process] SRA_FASTQ_FTP
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: -
+  port 1: (cntrl) -     ; channel: $
+
+[process] SRA_TO_SAMPLESHEET
+  status=ACTIVE
+  port 0: (queue) OPEN  ; channel: meta
+  port 1: (value) bound ; channel: pipeline
+  port 2: (value) bound ; channel: strandedness
+  port 3: (value) bound ; channel: mapping_fields
+  port 4: (cntrl) -     ; channel: $
+
+May-21 21:17:21.652 [main] DEBUG nextflow.Session - Session await > all processes finished
+May-21 21:17:21.652 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+May-21 21:17:21.652 [main] DEBUG nextflow.Session - Session await > all barriers passed
+May-21 21:17:21.653 [Actor Thread 25] DEBUG nextflow.file.SortFileCollector - FileCollector temp dir not removed: null
+May-21 21:17:21.655 [main] WARN  n.processor.TaskPollingMonitor - Killing running tasks (32)
+May-21 21:17:21.674 [Actor Thread 10] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 36; slices: 1; internal sort time: 0.019 s; external sort time: 0.001 s; total time: 0.02 s
+May-21 21:17:21.674 [Actor Thread 10] DEBUG nextflow.file.FileCollector - >> temp file exists? false
+May-21 21:17:21.675 [Actor Thread 10] DEBUG nextflow.file.FileCollector - Missed collect-file cache -- cause: java.nio.file.NoSuchFileException: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/collect-file/63d279c55d446b801cff1d9b17f848a9
+May-21 21:17:21.693 [Actor Thread 10] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /home/gaoyuan/PhD/iMM_2/MAPPED/2_download_fastq/work/collect-file/63d279c55d446b801cff1d9b17f848a9
+May-21 21:17:21.697 [Actor Thread 10] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /tmp/nxf-10149912382076300019
+May-21 21:17:21.715 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=194; failedCount=3; ignoredCount=0; cachedCount=0; pendingCount=90; submittedCount=0; runningCount=0; retriesCount=3; abortedCount=32; succeedDuration=8m 39s; failedDuration=7.7s; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=32; peakCpus=32; peakMemory=100 MB; ]
+May-21 21:17:21.736 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+May-21 21:17:21.739 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
