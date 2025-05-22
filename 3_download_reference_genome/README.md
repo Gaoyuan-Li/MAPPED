@@ -1,39 +1,41 @@
-# Download RNAseq metadata (Nextflow pipeline)
+# Step 3: Download Reference Genome
 
-This folder now contains a Nextflow pipeline to download and clean all RNA-seq metadata for an organism from NCBI SRA, using only the scripts in this folder and two Biocontainers images: `quay.io/biocontainers/entrez-direct:22.4--he881be0_0` (for `fetch_metadata`) and `felixlohmeier/pandas:1.3.3` (for `format_metadata`).
+This Nextflow workflow downloads the reference genome and annotation files for a specified organism from NCBI using the `ncbi-datasets` command-line tool, then publishes the results to the desired output directory.
 
-## Requirements
-- [Nextflow](https://www.nextflow.io/)
-- Docker or Singularity/Apptainer (to use the Biocontainers image)
+## Prerequisites
+
+- Nextflow
+- Docker
+- Internet connection for accessing NCBI datasets
+
+## Configuration
+
+The pipeline uses DSL2 and is configured to run inside the `staphb/ncbi-datasets:18.0.2` Docker container by default (see `nextflow.config`).
+
+## Parameters
+
+- `--organism <String>` (required)
+  - The scientific name or taxon ID of the organism to download (e.g., `Escherichia coli`).
+- `--outdir <Path>` (required)
+  - Path to the directory where output files will be published. The workflow will create a subdirectory named `seqFiles` under this path.
 
 ## Usage
 
 ```bash
-nextflow run main.nf --organism 'Bacillus subtilis' --workdir ../../test_results
+nextflow run main.nf \
+  --organism 'Escherichia coli' \
+  --outdir ../test_results
 ```
 
-- `--organism`: Name of the organism (in quotes if it contains spaces)
-- `--workdir`: Path to the working/output folder (will be created if it does not exist)
-- `--library-layout`: One of `paired`, `single`, or `both` (default), filters metadata to runs with the specified library layout
+## Outputs
 
-The output file will be named `{organism_name}_metadata.tsv` (spaces replaced with underscores) and placed in the specified folder.
+Upon successful completion, the following files will be available under `<outdir>/seqFiles/ref_genome/`:
 
-## Pipeline steps
-1. **fetch_metadata**: Uses `esearch` and `efetch` to download SRA run info for the organism.
-2. **format_metadata**: Cleans and aggregates the metadata using the provided Python script (`clean_metadata_file.py`).
-3. **clean_metadata_tmp**: Prunes the `tmp` directory and old work subdirectories, retaining only the two most recent runs and removing rotated logs.
+- `*.fna` &nbsp;&nbsp;– FASTA file(s) containing the reference genome sequence.
+- `*.gff` &nbsp;&nbsp;– GFF3 file(s) containing genome annotations.
 
-## Example
+All files are copied in world-readable mode to ensure they can be accessed by downstream steps.
 
-```bash
-nextflow run main.nf --organism 'Escherichia coli' --workdir ../../test_results
-# Output: ../../test_results/Escherichia_coli_metadata.tsv
-```
+## Cleaning Up
 
-## Notes
-- Only the code in this folder is used.
-- The output is a cleaned metadata file suitable for downstream analysis.
-- The pipeline uses two containers:
-  - `quay.io/biocontainers/entrez-direct:22.4--he881be0_0` for metadata fetching.
-  - `felixlohmeier/pandas:1.3.3` for metadata formatting.
-- A temporary `tmp` directory and older work subdirectories/rotated logs are pruned by `clean_metadata_tmp`.
+An `onComplete` handler automatically removes any rotated Nextflow log files (`.nextflow.log.<n>`). To clean up temporary files created during the download process, simply delete any remaining `tmp/` directories or `.zip` archives if present.

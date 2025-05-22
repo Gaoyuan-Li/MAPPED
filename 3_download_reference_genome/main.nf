@@ -1,83 +1,43 @@
 #!/usr/bin/env nextflow
 
-def runStartTime = System.currentTimeMillis()
-
-params.organism = null
-params.workdir = null
-
-process fetch_metadata {
-
-    publishDir 'tmp', mode: 'copy'
-
-    container 'quay.io/biocontainers/entrez-direct:22.4--he881be0_0'
-
-    input:
-        val organism
-    output:
-
-        path 'tmp_metadata.tsv'
-
-    script:
-
-        def query = '"' + organism + '"[Organism] AND "rna seq"[Strategy] AND "transcriptomic"[Source]'
-        """
-        esearch -db sra -query '${query}' | efetch -db sra -format runinfo > tmp_metadata.tsv
-        """
-}
-
-process format_metadata {
-
-    publishDir "${params.workdir}/metadata", mode: 'copy'   // ⬅ copy results into metadata subfolder of workdir
-
-    container 'felixlohmeier/pandas:1.3.3'
-
-    input:
-        path raw_tsv
-        path clean_script
-        val  organism
-        val  library_layout
-
-    output:
-        path "*_metadata.tsv"                 // ⬅ any metadata file
-        path "sample_id.csv"                  // ⬅ sample IDs for downstream use
-
-    script:
-        def safe_name = organism.replaceAll(/\s+/, '_')
-        def outfile   = "${safe_name}_metadata.tsv"
-
-        """
-        python3 ${clean_script} -i ${raw_tsv} -o ${outfile} -l ${library_layout}
-        """
-}
-
-// Add a dedicated cleanup process to prune tmp and old work dirs
-process clean_metadata_tmp {
-    cache false
-    input:
-        path metadata_tsv
-    script:
-    """
-    rm -rf ${projectDir}/tmp
-    # remove old Nextflow log rotations, keep only .nextflow.log
-    rm -f ${projectDir}/.nextflow.log.[0-9]* || true
-    """
-}
+// Workflow to download a reference genome from NCBI and save to outdir
 
 workflow {
-    if ( !params.organism || !params.workdir ) {
-        error "You must provide both --organism and --workdir parameters."
+    if (!params.organism) {
+        error "Missing required parameter --organism"
     }
 
-    raw_metadata = fetch_metadata( params.organism )
+    DOWNLOAD_REFERENCE(params.organism)
+}
 
-    clean_script = file( 'bin/clean_metadata_file.py' )
+process DOWNLOAD_REFERENCE {
+    publishDir "${params.outdir}/seqFiles", mode: 'copy', overwrite: true
 
-    ( cleaned_metadata, sample_ids ) = format_metadata(
-        raw_metadata,
-        clean_script,
-        params.organism,
-        params.library_layout
-    )
+    input:
+    val organism
 
-    clean_metadata_tmp(cleaned_metadata)
+    output:
+    path 'ref_genome/*.fna'
+    path 'ref_genome/*.gff'
+
+    script:
+    """
+    datasets download genome taxon '${organism}' --reference --include genome,gff3 --filename ref.zip
+    unzip ref.zip -d tmp
+    # find largest subdirectory in data
+    largest=\$(find tmp/ncbi_dataset/data -mindepth 1 -maxdepth 1 -type d -exec du -s {} + | sort -nr | head -n1 | awk '{print \$2}')
+    mkdir -p ref_genome
+    cp "\$largest"/*.fna ref_genome/
+    cp "\$largest"/*.gff ref_genome/
+    # ensure output files are world-readable for publishDir
+    chmod a+r ref_genome/*.fna ref_genome/*.gff
+    # cleanup
+    rm -rf tmp ref.zip
+    """
+}
+
+// Add an onComplete event handler to always delete rotated Nextflow log files
+workflow.onComplete {
+    def logPattern = ~/\.nextflow\.log\.\d+/  
+    new File('.').listFiles().findAll { it.name ==~ logPattern }.each { it.delete() }
 }
