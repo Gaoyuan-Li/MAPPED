@@ -1,0 +1,426 @@
+May-22 01:10:02.188 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf --outdir /home/gaoyuan/PhD/iMM_2/MAPPED/test_results -resume
+May-22 01:10:02.227 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.2
+May-22 01:10:02.236 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/gaoyuan/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.0,nf-k8s@1.0.0,nf-tower@1.11.2,nf-wave@1.12.1
+May-22 01:10:02.249 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-22 01:10:02.249 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-22 01:10:02.250 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+May-22 01:10:02.255 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-22 01:10:02.262 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/nextflow.config
+May-22 01:10:02.263 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/nextflow.config
+May-22 01:10:02.274 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/gaoyuan/.nextflow/secrets/store.json
+May-22 01:10:02.276 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@2234078] - activable => nextflow.secret.LocalSecretsProvider@2234078
+May-22 01:10:02.281 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+May-22 01:10:02.487 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 by global default
+May-22 01:10:02.494 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [pedantic_lalande] DSL2 - revision: 2c2ff3bc56
+May-22 01:10:02.494 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-22 01:10:02.494 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+May-22 01:10:02.517 [main] DEBUG nextflow.Session - Session UUID: f7722dd7-f126-406a-8752-66272c14df0b
+May-22 01:10:02.517 [main] DEBUG nextflow.Session - Run name: pedantic_lalande
+May-22 01:10:02.517 [main] DEBUG nextflow.Session - Executor pool size: 32
+May-22 01:10:02.520 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+May-22 01:10:02.523 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=96; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+May-22 01:10:02.531 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.04.2 build 5947
+  Created: 13-05-2025 21:58 UTC (14:58 PDT)
+  System: Linux 6.11.0-25-generic
+  Runtime: Groovy 4.0.26 on OpenJDK 64-Bit Server VM 22.0.1-internal-adhoc.conda.src
+  Encoding: UTF-8 (UTF-8)
+  Process: 2036938@Entero-UCSD [127.0.1.1]
+  CPUs: 32 - Mem: 31 GB (27.8 GB) - Swap: 8 GB (3.7 GB)
+May-22 01:10:02.544 [main] DEBUG nextflow.Session - Work-dir: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work [ext2/ext3]
+May-22 01:10:02.545 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/bin
+May-22 01:10:02.549 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-22 01:10:02.554 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+May-22 01:10:02.556 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+May-22 01:10:02.567 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+May-22 01:10:02.571 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 33; maxThreads: 1000
+May-22 01:10:02.624 [main] DEBUG nextflow.Session - Session start
+May-22 01:10:02.895 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+May-22 01:10:02.970 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-22 01:10:02.970 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-22 01:10:02.973 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+May-22 01:10:02.976 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=32; memory=31 GB; capacity=32; pollInterval=100ms; dumpInterval=5m
+May-22 01:10:02.977 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+May-22 01:10:02.988 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'EXTRACT_CDS': maxForks=0; fair=false; array=0
+May-22 01:10:03.003 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:SALMON_INDEX` matches process SALMON_INDEX
+May-22 01:10:03.004 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-22 01:10:03.004 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-22 01:10:03.005 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SALMON_INDEX': maxForks=0; fair=false; array=0
+May-22 01:10:03.016 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:FASTQC_RAW` matches process FASTQC_RAW
+May-22 01:10:03.016 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-22 01:10:03.017 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-22 01:10:03.017 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'FASTQC_RAW': maxForks=0; fair=false; array=0
+May-22 01:10:03.022 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:TRIMGALORE` matches process TRIMGALORE
+May-22 01:10:03.023 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-22 01:10:03.024 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-22 01:10:03.024 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'TRIMGALORE': maxForks=0; fair=false; array=0
+May-22 01:10:03.027 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:SALMON_QUANT` matches process SALMON_QUANT
+May-22 01:10:03.028 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-22 01:10:03.028 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-22 01:10:03.028 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SALMON_QUANT': maxForks=0; fair=false; array=0
+May-22 01:10:03.035 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-22 01:10:03.035 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-22 01:10:03.035 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'MERGE_COUNTS': maxForks=0; fair=false; array=0
+May-22 01:10:03.041 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-22 01:10:03.041 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-22 01:10:03.042 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'MULTIQC': maxForks=0; fair=false; array=0
+May-22 01:10:03.043 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: FASTQC_RAW, MERGE_COUNTS, SALMON_INDEX, TRIMGALORE, EXTRACT_CDS, MULTIQC, SALMON_QUANT
+May-22 01:10:03.045 [main] DEBUG nextflow.Session - Igniting dataflow network (8)
+May-22 01:10:03.048 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > EXTRACT_CDS
+May-22 01:10:03.048 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SALMON_INDEX
+May-22 01:10:03.048 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > FASTQC_RAW
+May-22 01:10:03.048 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > TRIMGALORE
+May-22 01:10:03.048 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SALMON_QUANT
+May-22 01:10:03.049 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > MERGE_COUNTS
+May-22 01:10:03.049 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > MULTIQC
+May-22 01:10:03.049 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_48b2c1bbb5f12fa6: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/main.nf
+May-22 01:10:03.049 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+May-22 01:10:03.049 [main] DEBUG nextflow.Session - Session await
+May-22 01:10:03.196 [Actor Thread 60] INFO  nextflow.processor.TaskProcessor - [0a/ad4018] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.196 [Actor Thread 64] INFO  nextflow.processor.TaskProcessor - [11/93765c] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [8d/ef127f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 52] INFO  nextflow.processor.TaskProcessor - [69/a8614d] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 44] INFO  nextflow.processor.TaskProcessor - [33/9fcb9f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [e2/1e0d17] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [39/a96805] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.196 [Actor Thread 68] INFO  nextflow.processor.TaskProcessor - [96/e0a97f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.196 [Actor Thread 66] INFO  nextflow.processor.TaskProcessor - [83/b264b5] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.196 [Actor Thread 65] INFO  nextflow.processor.TaskProcessor - [11/12bd90] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 32] INFO  nextflow.processor.TaskProcessor - [a8/0b814e] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [59/93ff9c] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.196 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [b2/5a8585] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [9e/c92c5b] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.196 [Actor Thread 36] INFO  nextflow.processor.TaskProcessor - [31/605244] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.196 [Actor Thread 72] INFO  nextflow.processor.TaskProcessor - [95/40a0eb] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 45] INFO  nextflow.processor.TaskProcessor - [97/6fb03d] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [a3/568d0e] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 50] INFO  nextflow.processor.TaskProcessor - [aa/88adf2] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 12] INFO  nextflow.processor.TaskProcessor - [42/072a50] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 7] INFO  nextflow.processor.TaskProcessor - [a7/27e723] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 27] INFO  nextflow.processor.TaskProcessor - [c2/8e8480] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 14] INFO  nextflow.processor.TaskProcessor - [d2/11c31d] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [bb/86e8c5] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 19] INFO  nextflow.processor.TaskProcessor - [71/5cb883] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [75/6dc917] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 46] INFO  nextflow.processor.TaskProcessor - [be/805145] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 29] INFO  nextflow.processor.TaskProcessor - [52/e203f2] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 20] INFO  nextflow.processor.TaskProcessor - [f9/96f61f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [df/2779e9] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 25] INFO  nextflow.processor.TaskProcessor - [9f/e80868] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.197 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [cd/fa4aa8] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.203 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:03.209 [Actor Thread 34] INFO  nextflow.processor.TaskProcessor - [af/a94f33] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [dd/1cf50b] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [58/68859f] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 33] INFO  nextflow.processor.TaskProcessor - [d2/1136d1] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [ac/01c7c1] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [8a/b90c90] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [79/13ca42] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 10] INFO  nextflow.processor.TaskProcessor - [de/f2a3ec] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [6f/be82da] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 58] INFO  nextflow.processor.TaskProcessor - [18/95a118] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 70] INFO  nextflow.processor.TaskProcessor - [20/80b15e] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 67] INFO  nextflow.processor.TaskProcessor - [60/499e86] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 59] INFO  nextflow.processor.TaskProcessor - [dd/0d3970] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [62/6cf905] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 49] INFO  nextflow.processor.TaskProcessor - [ef/40df26] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [5b/28a748] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 56] INFO  nextflow.processor.TaskProcessor - [15/06409f] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 53] INFO  nextflow.processor.TaskProcessor - [8e/88b4fb] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 26] INFO  nextflow.processor.TaskProcessor - [8c/a19480] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 57] INFO  nextflow.processor.TaskProcessor - [ae/d25123] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 39] INFO  nextflow.processor.TaskProcessor - [e1/9fb0ad] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 42] INFO  nextflow.processor.TaskProcessor - [06/14cbfa] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 41] INFO  nextflow.processor.TaskProcessor - [e8/f1caad] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 51] INFO  nextflow.processor.TaskProcessor - [a1/2d0a28] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 30] INFO  nextflow.processor.TaskProcessor - [4f/598166] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 55] INFO  nextflow.processor.TaskProcessor - [bf/12046e] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [d1/e24246] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.209 [Actor Thread 35] INFO  nextflow.processor.TaskProcessor - [62/aac8ae] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.210 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [4f/9fa6f8] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.210 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [28/64a3fb] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.210 [Actor Thread 16] INFO  nextflow.processor.TaskProcessor - [a1/c48ba5] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.211 [Task submitter] INFO  nextflow.Session - [91/f8932d] Submitted process > EXTRACT_CDS (extract_cds)
+May-22 01:10:03.211 [Actor Thread 61] INFO  nextflow.processor.TaskProcessor - [d0/2442a9] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.223 [Actor Thread 40] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=96; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+May-22 01:10:03.229 [Actor Thread 26] INFO  nextflow.processor.TaskProcessor - [f2/7b6f02] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.229 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [3a/83b17c] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.229 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [44/e5c4e8] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.230 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [40/4b3f91] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.230 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [4b/667f04] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.230 [Actor Thread 58] INFO  nextflow.processor.TaskProcessor - [fb/03434d] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.229 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [6c/337feb] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.230 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [2b/db8e0d] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.230 [Actor Thread 68] INFO  nextflow.processor.TaskProcessor - [d7/85d2ad] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.231 [Actor Thread 55] INFO  nextflow.processor.TaskProcessor - [9e/5cdcac] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.231 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [43/7fbc55] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.232 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [ce/5aa23a] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.232 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [d5/16bcf9] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.233 [Actor Thread 57] INFO  nextflow.processor.TaskProcessor - [c5/58b098] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.233 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [0f/da75a6] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.234 [Actor Thread 52] INFO  nextflow.processor.TaskProcessor - [22/f77c8f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.232 [Actor Thread 49] INFO  nextflow.processor.TaskProcessor - [65/a6d546] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.235 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [78/ed6e26] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.232 [Actor Thread 35] INFO  nextflow.processor.TaskProcessor - [45/6ca185] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.234 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [12/605a75] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.237 [Actor Thread 33] INFO  nextflow.processor.TaskProcessor - [90/9e789b] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.237 [Actor Thread 46] INFO  nextflow.processor.TaskProcessor - [15/829666] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.237 [Actor Thread 39] INFO  nextflow.processor.TaskProcessor - [dd/62ed05] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.237 [Actor Thread 12] INFO  nextflow.processor.TaskProcessor - [4d/c1502a] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.237 [Actor Thread 29] INFO  nextflow.processor.TaskProcessor - [40/744746] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.238 [Actor Thread 67] INFO  nextflow.processor.TaskProcessor - [2f/1f41c2] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.238 [Actor Thread 57] INFO  nextflow.processor.TaskProcessor - [74/ee34c7] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.238 [Actor Thread 32] INFO  nextflow.processor.TaskProcessor - [8b/19f71a] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.238 [Actor Thread 66] INFO  nextflow.processor.TaskProcessor - [e3/fea83e] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.238 [Actor Thread 60] INFO  nextflow.processor.TaskProcessor - [eb/63a1b0] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.238 [Actor Thread 61] INFO  nextflow.processor.TaskProcessor - [6e/06186f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.238 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [4a/db7599] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.238 [Actor Thread 73] INFO  nextflow.processor.TaskProcessor - [9d/0e7ebe] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.239 [Actor Thread 47] INFO  nextflow.processor.TaskProcessor - [28/f2c61e] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.239 [Actor Thread 20] INFO  nextflow.processor.TaskProcessor - [c4/889d1c] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.239 [Actor Thread 51] INFO  nextflow.processor.TaskProcessor - [4b/22ea04] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.239 [Actor Thread 68] INFO  nextflow.processor.TaskProcessor - [0b/960334] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.239 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [4e/cde567] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.239 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [3f/043d76] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.239 [Actor Thread 24] INFO  nextflow.processor.TaskProcessor - [d2/6a9b1d] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.240 [Actor Thread 37] INFO  nextflow.processor.TaskProcessor - [5e/f996ee] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.240 [Actor Thread 55] INFO  nextflow.processor.TaskProcessor - [2d/027950] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.240 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [62/9bcfeb] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.240 [Actor Thread 50] INFO  nextflow.processor.TaskProcessor - [b1/a39ee7] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.240 [Actor Thread 30] INFO  nextflow.processor.TaskProcessor - [73/599497] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.240 [Actor Thread 19] INFO  nextflow.processor.TaskProcessor - [38/bc9452] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.241 [Actor Thread 42] INFO  nextflow.processor.TaskProcessor - [a8/ab4148] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.241 [Actor Thread 31] INFO  nextflow.processor.TaskProcessor - [94/fb99d4] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.241 [Actor Thread 34] INFO  nextflow.processor.TaskProcessor - [1d/298626] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.241 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [a9/ec2653] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.242 [Actor Thread 36] INFO  nextflow.processor.TaskProcessor - [9f/c94be3] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.243 [Actor Thread 40] INFO  nextflow.processor.TaskProcessor - [04/e810bb] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.243 [Actor Thread 16] INFO  nextflow.processor.TaskProcessor - [16/ce1cce] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.244 [Actor Thread 26] INFO  nextflow.processor.TaskProcessor - [77/67a857] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.245 [Actor Thread 71] INFO  nextflow.processor.TaskProcessor - [3b/f1b485] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.245 [Actor Thread 49] INFO  nextflow.processor.TaskProcessor - [bf/2d0e41] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.245 [Actor Thread 2] INFO  nextflow.processor.TaskProcessor - [32/f141c3] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.246 [Actor Thread 28] INFO  nextflow.processor.TaskProcessor - [e5/71cf5a] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.246 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [28/e5313d] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.246 [Actor Thread 15] INFO  nextflow.processor.TaskProcessor - [a7/2b554f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.250 [Actor Thread 21] INFO  nextflow.processor.TaskProcessor - [8a/3e4ae8] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.252 [Actor Thread 38] INFO  nextflow.processor.TaskProcessor - [0f/abdb17] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.254 [Actor Thread 72] INFO  nextflow.processor.TaskProcessor - [12/a62c1e] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.254 [Actor Thread 13] INFO  nextflow.processor.TaskProcessor - [c1/a9dca4] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.254 [Actor Thread 39] INFO  nextflow.processor.TaskProcessor - [2c/708bf1] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.254 [Actor Thread 61] INFO  nextflow.processor.TaskProcessor - [86/9d60fb] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.254 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [95/3dce3b] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.254 [Actor Thread 12] INFO  nextflow.processor.TaskProcessor - [3e/134cf9] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.254 [Actor Thread 59] INFO  nextflow.processor.TaskProcessor - [64/b729f5] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.254 [Actor Thread 25] INFO  nextflow.processor.TaskProcessor - [8f/9e4f9f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.254 [Actor Thread 53] INFO  nextflow.processor.TaskProcessor - [4d/8a4eda] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.254 [Actor Thread 33] INFO  nextflow.processor.TaskProcessor - [6a/365147] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.254 [Actor Thread 64] INFO  nextflow.processor.TaskProcessor - [1f/cc7147] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.254 [Actor Thread 17] INFO  nextflow.processor.TaskProcessor - [28/d83e38] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.254 [Actor Thread 60] INFO  nextflow.processor.TaskProcessor - [b7/de0d8b] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.254 [Actor Thread 14] INFO  nextflow.processor.TaskProcessor - [a2/1b4ec4] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.254 [Actor Thread 52] INFO  nextflow.processor.TaskProcessor - [a4/e73157] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.254 [Actor Thread 23] INFO  nextflow.processor.TaskProcessor - [fe/3fdb48] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.255 [Actor Thread 27] INFO  nextflow.processor.TaskProcessor - [bb/4be84b] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.255 [Actor Thread 41] INFO  nextflow.processor.TaskProcessor - [27/14a3b3] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.255 [Actor Thread 18] INFO  nextflow.processor.TaskProcessor - [2b/93e5e9] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.255 [Actor Thread 43] INFO  nextflow.processor.TaskProcessor - [b5/cdbdbb] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.255 [Actor Thread 6] INFO  nextflow.processor.TaskProcessor - [52/1d30c6] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.256 [Actor Thread 48] INFO  nextflow.processor.TaskProcessor - [d0/503f05] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.256 [Actor Thread 7] INFO  nextflow.processor.TaskProcessor - [89/216d6f] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.256 [Actor Thread 9] INFO  nextflow.processor.TaskProcessor - [86/8ee53e] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.256 [Actor Thread 45] INFO  nextflow.processor.TaskProcessor - [11/db9698] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.256 [Actor Thread 65] INFO  nextflow.processor.TaskProcessor - [32/2b3dd8] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.256 [Actor Thread 19] INFO  nextflow.processor.TaskProcessor - [3f/74898e] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.256 [Actor Thread 57] INFO  nextflow.processor.TaskProcessor - [06/e6dfbd] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.256 [Actor Thread 8] INFO  nextflow.processor.TaskProcessor - [0c/5e68b5] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.256 [Actor Thread 22] INFO  nextflow.processor.TaskProcessor - [1d/c56923] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.257 [Actor Thread 66] INFO  nextflow.processor.TaskProcessor - [04/697879] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.257 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [e6/3d0b02] Cached process > FASTQC_RAW ($sample)
+May-22 01:10:03.257 [Actor Thread 29] INFO  nextflow.processor.TaskProcessor - [0f/184c16] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.257 [Actor Thread 56] INFO  nextflow.processor.TaskProcessor - [e6/1cec3a] Cached process > TRIMGALORE ($sample)
+May-22 01:10:03.618 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: EXTRACT_CDS (extract_cds); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work/91/f8932db06d5161ce7414e41bd8c4af]
+May-22 01:10:03.618 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=96; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+May-22 01:10:03.625 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:03.626 [Task submitter] INFO  nextflow.Session - [5e/e254b6] Submitted process > SALMON_INDEX (salmon_index)
+May-22 01:10:04.645 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 162; name: SALMON_INDEX (salmon_index); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work/5e/e254b6ca2fcbacaa92bf4aeb41926b]
+May-22 01:10:04.654 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.654 [Task submitter] INFO  nextflow.Session - [29/7a5cf8] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.656 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.657 [Task submitter] INFO  nextflow.Session - [fb/81e3d2] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.659 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.659 [Task submitter] INFO  nextflow.Session - [e9/20dbdf] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.665 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.666 [Task submitter] INFO  nextflow.Session - [93/c49aea] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.669 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.669 [Task submitter] INFO  nextflow.Session - [cb/baa32f] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.672 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.672 [Task submitter] INFO  nextflow.Session - [0e/74d6f3] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.677 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.677 [Task submitter] INFO  nextflow.Session - [a9/edfa67] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.681 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.681 [Task submitter] INFO  nextflow.Session - [ae/2f232b] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.683 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.684 [Task submitter] INFO  nextflow.Session - [88/22bae9] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.686 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.687 [Task submitter] INFO  nextflow.Session - [3c/90eaca] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.690 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.691 [Task submitter] INFO  nextflow.Session - [5f/57ad37] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.694 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.695 [Task submitter] INFO  nextflow.Session - [14/c25b86] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.697 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.697 [Task submitter] INFO  nextflow.Session - [e0/34e8f6] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.700 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.701 [Task submitter] INFO  nextflow.Session - [35/c07acf] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.704 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.705 [Task submitter] INFO  nextflow.Session - [1f/35944d] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.707 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.707 [Task submitter] INFO  nextflow.Session - [0e/0e38b9] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.711 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.712 [Task submitter] INFO  nextflow.Session - [3e/a52ba7] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.715 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.715 [Task submitter] INFO  nextflow.Session - [94/fbec99] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.717 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.717 [Task submitter] INFO  nextflow.Session - [80/505170] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.723 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.723 [Task submitter] INFO  nextflow.Session - [fb/fd4bca] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.727 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.728 [Task submitter] INFO  nextflow.Session - [50/b9f8ba] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.732 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.732 [Task submitter] INFO  nextflow.Session - [3f/cd6e2b] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.737 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.737 [Task submitter] INFO  nextflow.Session - [7f/983db5] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.742 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.742 [Task submitter] INFO  nextflow.Session - [ce/aa191d] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.746 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.747 [Task submitter] INFO  nextflow.Session - [fe/2397a1] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.750 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.751 [Task submitter] INFO  nextflow.Session - [95/5713fa] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.755 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.756 [Task submitter] INFO  nextflow.Session - [00/587670] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.760 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.761 [Task submitter] INFO  nextflow.Session - [53/1ef281] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.764 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.764 [Task submitter] INFO  nextflow.Session - [a8/f6c7fe] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.768 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.768 [Task submitter] INFO  nextflow.Session - [1c/0826ea] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.773 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.774 [Task submitter] INFO  nextflow.Session - [b9/21aa24] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:04.778 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:04.778 [Task submitter] INFO  nextflow.Session - [62/ee4da1] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:12.742 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 184; name: SALMON_QUANT ($sample); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work/0e/0e38b9d485a834930c6c69cde10e44]
+May-22 01:10:12.765 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:12.766 [Task submitter] INFO  nextflow.Session - [d4/0ebbbf] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:14.359 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 190; name: SALMON_QUANT ($sample); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work/1c/0826eadc43f60892b39063929b3d9e]
+May-22 01:10:14.363 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:14.363 [Task submitter] INFO  nextflow.Session - [7a/8ad64c] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:23.223 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 187; name: SALMON_QUANT ($sample); status: COMPLETED; exit: 0; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work/b9/21aa243cda53a4bec23b6b0a64a5d0]
+May-22 01:10:23.238 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:23.238 [Task submitter] INFO  nextflow.Session - [d2/2d7ea5] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:26.695 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 173; name: SALMON_QUANT ($sample); status: COMPLETED; exit: 137; error: -; workDir: /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work/e9/20dbdf17702c73d03c6b667c4dcec0]
+May-22 01:10:26.700 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-22 01:10:26.703 [Task submitter] INFO  nextflow.Session - [fc/93f63a] Submitted process > SALMON_QUANT ($sample)
+May-22 01:10:26.709 [TaskFinalizer-6] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=SALMON_QUANT ($sample); work-dir=/home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work/e9/20dbdf17702c73d03c6b667c4dcec0
+  error [nextflow.exception.ProcessFailedException]: Process `SALMON_QUANT ($sample)` terminated with an error exit status (137)
+May-22 01:10:26.729 [TaskFinalizer-6] ERROR nextflow.processor.TaskProcessor - Error executing process > 'SALMON_QUANT ($sample)'
+
+Caused by:
+  Process `SALMON_QUANT ($sample)` terminated with an error exit status (137)
+
+
+Command executed:
+
+  salmon quant       -i salmon_index -l A       -1 SRX24286945_SRR28720527_val_1.fq.gz -2 SRX24286945_SRR28720527_val_2.fq.gz       -o SRX24286945_SRR28720527_quant       --validateMappings
+
+Command exit status:
+  137
+
+Command output:
+  (empty)
+
+Command error:
+  | Loading contig table | Time = 233.92 us
+  -----------------------------------------
+  size = 3606
+  -----------------------------------------
+  | Loading contig offsets | Time = 24.669 us
+  -----------------------------------------
+  -----------------------------------------
+  | Loading reference lengths | Time = 5.725 us
+  -----------------------------------------
+  -----------------------------------------
+  | Loading mphf table | Time = 667.97 us
+  -----------------------------------------
+  size = 3137335
+  Number of ones: 3605
+  Number of ones per inventory item: 512
+  Inventory entries filled: 8
+  -----------------------------------------
+  | Loading contig boundaries | Time = 2.263 ms
+  -----------------------------------------
+  size = 3137335
+  -----------------------------------------
+  | Loading sequence | Time = 277.41 us
+  -----------------------------------------
+  size = 3029185
+  -----------------------------------------
+  | Loading positions | Time = 2.9583 ms
+  -----------------------------------------
+  size = 3134150
+  -----------------------------------------
+  | Loading reference sequence | Time = 411.35 us
+  -----------------------------------------
+  -----------------------------------------
+  | Loading reference accumulative lengths | Time = 14.886 us
+  -----------------------------------------
+  [2025-05-22 08:10:05.630] [jointLog] [info] done
+  [2025-05-22 08:10:05.662] [jointLog] [info] Index contained 3247 targets
+  [2025-05-22 08:10:05.662] [jointLog] [info] Number of decoys : 0
+  
+  
+  
+  
+  [2025-05-22 08:10:07.862] [jointLog] [info] Automatically detected most likely library type as ISR
+  
+  [A
+  
+  [32mprocessed[31m 500000 [32mfragments[0m
+  hits: 124715, hits per frag:  1.74363[A
+  
+  [32mprocessed[31m 1000039 [32mfragments[0m
+  hits: 251836, hits per frag:  0.273204.command.sh: line 2:     7 Killed                  salmon quant -i salmon_index -l A -1 SRX24286945_SRR28720527_val_1.fq.gz -2 SRX24286945_SRR28720527_val_2.fq.gz -o SRX24286945_SRR28720527_quant --validateMappings
+
+Work dir:
+  /home/gaoyuan/PhD/iMM_2/MAPPED/4_generate_count_matrix/work/e9/20dbdf17702c73d03c6b667c4dcec0
+
+Container:
+  quay.io/biocontainers/salmon:1.10.3--h45fbf2d_4
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+May-22 01:10:26.740 [TaskFinalizer-6] DEBUG nextflow.Session - Session aborted -- Cause: Process `SALMON_QUANT ($sample)` terminated with an error exit status (137)
+May-22 01:10:26.758 [TaskFinalizer-6] DEBUG nextflow.Session - The following nodes are still active:
+[process] MERGE_COUNTS
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: quant_dirs
+  port 1: (cntrl) -     ; channel: $
+
+[process] MULTIQC
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: qc_files
+  port 1: (cntrl) -     ; channel: $
+
+May-22 01:10:26.768 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+May-22 01:10:26.771 [main] DEBUG nextflow.Session - Session await > all processes finished
+May-22 01:10:26.771 [main] DEBUG nextflow.Session - Session await > all barriers passed
+May-22 01:10:26.774 [Actor Thread 60] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=MULTIQC; work-dir=null
+  error [java.lang.InterruptedException]: java.lang.InterruptedException
+May-22 01:10:26.775 [Actor Thread 13] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=MERGE_COUNTS; work-dir=null
+  error [java.lang.InterruptedException]: java.lang.InterruptedException
+May-22 01:10:26.787 [main] WARN  n.processor.TaskPollingMonitor - Killing running tasks (32)
+May-22 01:10:27.203 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=5; failedCount=1; ignoredCount=0; cachedCount=160; pendingCount=46; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=32; succeedDuration=37.1s; failedDuration=22s; cachedDuration=14h 31m 35s;loadCpus=0; loadMemory=0; peakRunning=33; peakCpus=33; peakMemory=0; ]
+May-22 01:10:27.251 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+May-22 01:10:27.276 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
