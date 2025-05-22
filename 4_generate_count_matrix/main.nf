@@ -5,6 +5,11 @@ params.outdir    = null
 
 if ( ! params.outdir )    error "Please provide --outdir"
 
+// Resource configuration: threads per task and max parallel runs
+params.cpu = params.cpu ?: 20
+def threads_per_task = 4
+def max_parallel = (params.cpu / threads_per_task) as Integer
+
 // Auto-detect reference genome and GFF in seqFiles/ref_genome under outdir
 def refDir = new File("${params.outdir}/seqFiles/ref_genome")
 if ( ! refDir.exists() ) error "Reference genome directory not found: ${refDir}"
@@ -62,6 +67,8 @@ process FASTQC_RAW {
     tag '$sample'
     container 'quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0'
     publishDir "${params.outdir}/fastqc", mode: 'copy'
+    cpus threads_per_task
+    maxForks max_parallel
 
     input:
       tuple val(sample), path(fq1), path(fq2)
@@ -82,6 +89,8 @@ process TRIMGALORE {
     tag '$sample'
     container 'quay.io/biocontainers/trim-galore:0.6.9--hdfd78af_0'
     publishDir "${params.outdir}/trimmed", mode: 'copy'
+    cpus threads_per_task
+    maxForks max_parallel
 
     input:
       tuple val(sample), path(fq1), path(fq2)
@@ -104,6 +113,8 @@ process SALMON_QUANT {
     tag '$sample'
     container 'quay.io/biocontainers/salmon:1.10.3--h45fbf2d_4'
     publishDir "${params.outdir}/salmon", mode: 'copy'
+    cpus threads_per_task
+    maxForks max_parallel
 
     input:
       tuple val(sample), path(fq1), path(fq2)

@@ -3,13 +3,15 @@ set -euo pipefail
 
 function usage() {
   cat <<EOF
-Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --clean-mode CLEAN_MODE
+Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --clean-mode CLEAN_MODE --cpu CPU --memory MEMORY
 
 Options:
   --organism        Organism name (e.g., "Acinetobacter baylyi")
   --outdir          Output directory for pipeline results
   --library_layout  Library layout (e.g., paired or single)
   --clean-mode      Clean up intermediate files and caches after pipeline completion.
+  --cpu             Number of CPUs to allocate per process
+  --memory          Maximum memory per process (e.g., "4 GB")
   -h, --help        Show this help message and exit
 EOF
 }
@@ -19,6 +21,8 @@ ORGANISM=""
 OUTDIR=""
 LIB_LAYOUT=""
 CLEAN_MODE="false"
+CPU=""
+MEMORY=""
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -38,6 +42,14 @@ while [[ $# -gt 0 ]]; do
     --clean-mode)
       CLEAN_MODE="true"
       shift
+      ;;
+    --cpu)
+      CPU="$2"
+      shift 2
+      ;;
+    --memory)
+      MEMORY="$2"
+      shift 2
       ;;
     -h|--help)
       usage
@@ -79,13 +91,13 @@ popd > /dev/null
 # Step 3: Download reference genome
 echo "=== Step 3: Download reference genome ==="
 pushd 3_download_reference_genome > /dev/null
-nextflow run main.nf --organism "$ORGANISM" --outdir "$OUTDIR" -resume
+nextflow run main.nf --organism "$ORGANISM" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} ${MEMORY:+--memory $MEMORY} -resume
 popd > /dev/null
 
 # Step 4: Generate count/tpm matrix
 echo "=== Step 4: Generate count/tpm matrix ==="
 pushd 4_generate_count_matrix > /dev/null
-nextflow run main.nf --outdir "$OUTDIR" -resume
+nextflow run main.nf --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
 popd > /dev/null
 
 echo "\nAll steps completed successfully!"
