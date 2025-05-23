@@ -79,7 +79,8 @@ popd > /dev/null
 # Step 2: Download FASTQ
 echo "=== Step 2: Download FASTQ ==="
 pushd 2_download_fastq > /dev/null
-nextflow run main.nf --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
+# nextflow run main.nf --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
+nextflow run main.nf --outdir "$OUTDIR" -resume
 popd > /dev/null
 
 # Step 3: Download reference genome

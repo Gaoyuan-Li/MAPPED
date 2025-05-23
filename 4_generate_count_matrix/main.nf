@@ -143,8 +143,8 @@ process MERGE_COUNTS {
       path quant_dirs
 
     output:
-      path 'tpm.csv'
-      path 'counts.csv'
+      path 'tpm.tsv'
+      path 'counts.tsv'
 
     script:
     """
@@ -166,8 +166,8 @@ process MERGE_COUNTS {
         printf '\t%s' "\${sample}"
       done
       printf '\n'
-    } > tpm.csv
-    cat tmp_tpm.tsv >> tpm.csv
+    } > tpm.tsv
+    cat tmp_tpm.tsv >> tpm.tsv
 
     # Generate counts matrix
     for d in *_quant; do
@@ -183,8 +183,8 @@ process MERGE_COUNTS {
         printf '\t%s' "\${sample}"
       done
       printf '\n'
-    } > counts.csv
-    cat tmp_counts.tsv >> counts.csv
+    } > counts.tsv
+    cat tmp_counts.tsv >> counts.tsv
     """
 }
 
