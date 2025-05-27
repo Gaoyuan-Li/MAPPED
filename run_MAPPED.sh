@@ -3,11 +3,12 @@ set -euo pipefail
 
 function usage() {
   cat <<EOF
-Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --clean-mode CLEAN_MODE --cpu CPU
+Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --workdir WORKDIR --clean-mode CLEAN_MODE --cpu CPU
 
 Options:
   --organism        Organism name (e.g., "Acinetobacter baylyi")
   --outdir          Output directory for pipeline results
+  --workdir         Work directory for Nextflow 'work' files
   --library_layout  Library layout (e.g., paired or single)
   --clean-mode      Clean up intermediate files and caches after pipeline completion.
   --cpu             Number of CPUs to allocate per process
@@ -21,6 +22,7 @@ OUTDIR=""
 LIB_LAYOUT=""
 CLEAN_MODE="false"
 CPU=""
+WORKDIR=""
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -35,6 +37,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --library_layout)
       LIB_LAYOUT="$2"
+      shift 2
+      ;;
+    --workdir)
+      WORKDIR="$2"
       shift 2
       ;;
     --clean-mode)
@@ -58,7 +64,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Check required arguments
-if [[ -z "$ORGANISM" || -z "$OUTDIR" || -z "$LIB_LAYOUT" ]]; then
+if [[ -z "$ORGANISM" || -z "$OUTDIR" || -z "$LIB_LAYOUT" || -z "$WORKDIR" ]]; then
   echo "Error: Missing required arguments."
   usage
   exit 1
@@ -70,29 +76,34 @@ if [[ "$OUTDIR" != /* ]]; then
 fi
 mkdir -p "$OUTDIR"
 
+# Convert WORKDIR to an absolute path and ensure it exists
+if [[ "$WORKDIR" != /* ]]; then
+  WORKDIR="$(pwd)/$WORKDIR"
+fi
+mkdir -p "$WORKDIR"
+
 # Step 1: Download metadata
 echo "=== Step 1: Download metadata ==="
 pushd 1_download_metadata_efetch > /dev/null
-nextflow run main.nf --organism "$ORGANISM" --outdir "$OUTDIR" --library_layout "$LIB_LAYOUT" -resume
+nextflow run main.nf -work-dir "$WORKDIR" --organism "$ORGANISM" --outdir "$OUTDIR" --library_layout "$LIB_LAYOUT" -resume
 popd > /dev/null
 
 # Step 2: Download FASTQ
 echo "=== Step 2: Download FASTQ ==="
 pushd 2_download_fastq > /dev/null
-# nextflow run main.nf --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
-nextflow run main.nf --outdir "$OUTDIR" -resume
+nextflow run main.nf -work-dir "$WORKDIR" --outdir "$OUTDIR" -resume
 popd > /dev/null
 
 # Step 3: Download reference genome
 echo "=== Step 3: Download reference genome ==="
 pushd 3_download_reference_genome > /dev/null
-nextflow run main.nf --organism "$ORGANISM" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
+nextflow run main.nf -work-dir "$WORKDIR" --organism "$ORGANISM" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
 popd > /dev/null
 
 # Step 4: Generate count/tpm matrix
 echo "=== Step 4: Generate count/tpm matrix ==="
 pushd 4_generate_count_matrix > /dev/null
-nextflow run main.nf --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
+nextflow run main.nf -work-dir "$WORKDIR" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
 popd > /dev/null
 
 echo "\nAll steps completed successfully!"
@@ -105,4 +116,6 @@ if [[ "$CLEAN_MODE" == "true" ]]; then
   for sub in 1_download_metadata_efetch 2_download_fastq 3_download_reference_genome 4_generate_count_matrix; do
     rm -rf "$sub/work" "$sub/.nextflow" "$sub/.nextflow.log"
   done
+  # Clean the global Nextflow work directory
+  rm -rf "$WORKDIR"
 fi 

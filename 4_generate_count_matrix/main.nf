@@ -63,7 +63,7 @@ process SALMON_INDEX {
 //
 // Process: FastQC on raw reads
 //
-process FASTQC_RAW {
+process FASTQC {
     tag '$sample'
     container 'quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0'
     publishDir "${params.outdir}/fastqc", mode: 'copy'
@@ -199,11 +199,68 @@ process MULTIQC {
       path qc_files
 
     output:
-      path 'multiqc_report.html'
+      path 'multiqc_report.html', emit: html
+      path 'multiqc_data.json', emit: json
 
     script:
     """
-    multiqc . -o .
+    multiqc . -o . --json multiqc_data.json
+    """
+}
+
+//
+// Process: parse MultiQC JSON to extract samples passing key metrics
+process PARSE_QC {
+    tag 'parse_multiqc'
+    container 'python:3.9-slim'
+
+    input:
+      path multiqc_json
+
+    output:
+      path 'passed_samples.txt', emit: passlist
+
+    script:
+    """
+    python3 - << 'EOF'
+    import json
+    from pathlib import Path
+    data = json.load(open('multiqc_data.json'))
+    # Navigate to FastQC module results
+    fastqc = data.get('modules', {}).get('fastqc', {})
+    results = fastqc.get('plot_data', fastqc.get('results', fastqc.get('stats', {})))
+    passed = []
+    for sample, metrics in results.items():
+        ok = True
+        for m in ['per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content']:
+            if metrics.get(m, {}).get('status') != 'pass':
+                ok = False
+                break
+        if ok:
+            passed.append(sample)
+    open('passed_samples.txt', 'w').write('\n'.join(passed))
+    EOF
+    """
+}
+
+// Process: filter sample sheet CSV based on passed samples
+process FILTER_SAMPLESHEET {
+    tag 'filter_samplesheet'
+    container 'alpine:latest'
+    publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true
+
+    input:
+      path samplesheet
+      path passedlist
+
+    output:
+      path 'samplesheet.csv'
+
+    script:
+    """
+    cp ${samplesheet} tmp.csv
+    head -n1 tmp.csv > samplesheet.csv
+    grep -F -f ${passedlist} tmp.csv >> samplesheet.csv
     """
 }
 
@@ -248,22 +305,29 @@ workflow {
     cds_fa_ch       = EXTRACT_CDS( file(params.ref_genome), file(params.ref_gff) )
     salmon_index_ch = SALMON_INDEX(cds_fa_ch)
 
-    // QC raw
-    qc1_ch = FASTQC_RAW(samples_ch)
-
     // trim
     trimmed_ch = TRIMGALORE(samples_ch)
 
-    // quant
-    quant_ch  = SALMON_QUANT(trimmed_ch, salmon_index_ch)
+    // QC trimmed reads
+    qc_ch = FASTQC(trimmed_ch)
 
-    // merge + report
+    // MultiQC on trimmed QC results
+    multiqc = MULTIQC( qc_ch.collect() )
+    multiqc_json_ch = multiqc.json
+    // Parse MultiQC JSON for passed samples
+    passed_ch = PARSE_QC( multiqc_json_ch )
+
+    // Filter original sample sheet based on passed samples
+    FILTER_SAMPLESHEET( file("${params.outdir}/samplesheet/samplesheet.csv"), passed_ch )
+
+    // Filter trimmed reads and perform Salmon quantification only on passed samples
+    pass_tuple_ch      = passed_ch.map { id -> tuple(id, id) }
+    matched_trim_ch    = trimmed_ch.join(pass_tuple_ch)
+    filtered_trimmed_ch = matched_trim_ch.map { key, trim_val, _ -> trim_val }
+    quant_ch           = SALMON_QUANT(filtered_trimmed_ch, salmon_index_ch)
+
+    // merge count matrices
     count_matrix_ch = MERGE_COUNTS( quant_ch.collect() )
-    
-    // Collect all QC files for MultiQC
-    multiqc_files = qc1_ch.mix(count_matrix_ch).collect()
-    MULTIQC( multiqc_files )
-
 }
 
 // Add an onComplete event handler to always delete rotated Nextflow log files
