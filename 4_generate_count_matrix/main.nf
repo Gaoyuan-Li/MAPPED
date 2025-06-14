@@ -141,7 +141,7 @@ process SALMON_QUANT {
 //
 process MERGE_COUNTS {
     publishDir "${params.outdir}/expression_matrices", mode: 'copy'
-    container 'python:3.9-slim'
+    container 'felixlohmeier/pandas:1.3.3'
 
     input:
       path quant_dirs
