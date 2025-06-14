@@ -527,8 +527,8 @@ process FILTER_SAMPLESHEET {
 
     script:
     """
-    # Copy original samplesheet
-    cp ${samplesheet} tmp.csv
+    # Copy original samplesheet and remove empty lines
+    grep -v '^[[:space:]]*\$' ${samplesheet} > tmp.csv
     
     # Check if passed samples file is empty
     if [ ! -s ${passedlist} ]; then
@@ -557,8 +557,8 @@ process FILTER_SAMPLESHEET {
     fi
     
     # Report results
-    original_count=\$(tail -n +2 tmp.csv | wc -l)
-    filtered_count=\$(tail -n +2 samplesheet.csv | wc -l)
+    original_count=\$(tail -n +2 tmp.csv | grep -c '^')
+    filtered_count=\$(tail -n +2 samplesheet.csv | grep -c '^')
     echo "Original samples: \$original_count"
     echo "Filtered samples: \$filtered_count"
     echo "Samples removed: \$((\$original_count - \$filtered_count))"

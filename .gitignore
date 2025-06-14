@@ -1,6 +1,8 @@
 .nextflow/
 .nextflow.log
 4_generate_count_matrix/.nextflow.log.*
+2_download_fastq/.nextflow.log.*
+1_download_metadata/.nextflow.log.*
 **/work/
 test_results/seqFiles/fastq/*.fastq.gz
 test_results/seqFiles/fastq/*.fastq.gz.md5
