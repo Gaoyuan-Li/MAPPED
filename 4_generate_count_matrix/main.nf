@@ -26,7 +26,7 @@ params.ref_gff = "${refDir}/${gffFiles[0]}"
 //
 process EXTRACT_CDS {
     tag 'extract_cds'
-    container 'quay.io/biocontainers/gffread:0.12.7--h077b44d_6'
+    container 'quay.io/biocontainers/gffread:0.9.12--0'
 
     input:
       path genome
