@@ -576,27 +576,36 @@ workflow {
     }
 
     // Filter original sample sheet based on passed samples
-    FILTER_SAMPLESHEET( file("${params.outdir}/samplesheet/samplesheet.csv"), passed_ch )
+    filtered_samplesheet_ch = FILTER_SAMPLESHEET( file("${params.outdir}/samplesheet/samplesheet.csv"), passed_ch )
 
-    // Filter trimmed reads and perform Salmon quantification only on passed samples
-    // Convert passed samples to a channel and filter trimmed reads
-    passed_samples_ch = passed_ch
+    // Extract passed sample IDs into a set for filtering
+    passed_samples_set_ch = passed_ch
         .splitText()
         .map { it.trim() }
-        .filter { it }  // Remove empty lines
-    
-    // Filter trimmed channel to only include samples that passed QC
+        .filter { it }
+        .collect()
+        .map { it.toSet() }
+
+    // Filter trimmed reads to only include QC-passed samples
+    // This ensures SALMON_QUANT waits for FILTER_SAMPLESHEET to complete
     filtered_trimmed_ch = trimmed_ch
-        .filter { sample_tuple ->
+        .combine(passed_samples_set_ch)
+        .filter { sample_tuple, passed_set ->
             def sample_id = sample_tuple[0]
-            // For now, run all samples - we'll filter in post-processing
-            return true
+            passed_set.contains(sample_id)
+        }
+        .map { sample_tuple, passed_set -> 
+            tuple(sample_tuple[0], sample_tuple[1], sample_tuple[2])
         }
     
+    // Run Salmon quantification only on QC-passed samples
     quant_ch = SALMON_QUANT(filtered_trimmed_ch, salmon_index_ch)
 
-    // merge count matrices
-    count_matrix_ch = MERGE_COUNTS( quant_ch.collect(), passed_ch )
+    // merge count matrices - wait for both quantification and samplesheet filtering
+    count_matrix_ch = MERGE_COUNTS( 
+        quant_ch.collect(), 
+        passed_ch.combine(filtered_samplesheet_ch).map { passed_file, filtered_sheet -> passed_file }
+    )
 }
 
 // Add an onComplete event handler to always delete rotated Nextflow log files
