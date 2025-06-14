@@ -251,6 +251,7 @@ process PARSE_QC {
     output:
       path 'passed_samples.txt', emit: passlist
       path 'qc_summary.csv', emit: qc_summary
+      path 'qc_summary.txt', emit: qc_summary_txt
 
     script:
     """
@@ -260,7 +261,6 @@ from pathlib import Path
 
 try:
     data = json.load(open('multiqc_data.json'))
-    print("Successfully loaded MultiQC JSON data")
     
     # Find the FastQC raw data with direct pass/fail/warn status
     fastqc_data = None
@@ -268,13 +268,8 @@ try:
     if ('report_saved_raw_data' in data and 
         'multiqc_fastqc' in data['report_saved_raw_data']):
         fastqc_data = data['report_saved_raw_data']['multiqc_fastqc']
-        print("Found FastQC raw data in report_saved_raw_data/multiqc_fastqc")
     
     if not fastqc_data:
-        print("Warning: Could not find FastQC raw data in MultiQC JSON")
-        print("Available keys:", list(data.keys()))
-        if 'report_saved_raw_data' in data:
-            print("Available raw data keys:", list(data['report_saved_raw_data'].keys()))
         # Create empty files for both outputs
         open('passed_samples.txt', 'w').write('')
         # Create empty CSV with headers
@@ -282,10 +277,15 @@ try:
         with open('qc_summary.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['sample', 'per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content', 'overall_status'])
-        print("Created empty output files (no FastQC raw data found)")
+        # Create summary text file
+        with open('qc_summary.txt', 'w') as f:
+            f.write("QC Summary Report\\n")
+            f.write("=================\\n")
+            f.write("Total samples processed: 0\\n")
+            f.write("Samples passed: 0\\n")
+            f.write("Samples failed: 0\\n")
+            f.write("\\nError: No FastQC raw data found in MultiQC JSON\\n")
         exit(0)
-    
-    print(f"Found FastQC data for {len(fastqc_data)} samples")
     
     # Target metrics we want to extract
     target_metrics = ['per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content']
@@ -296,7 +296,6 @@ try:
     qc_results = []
     
     for sample_name, sample_data in fastqc_data.items():
-        print(f"Processing sample: {sample_name}")
         ok = True
         failed_metrics = []
         sample_qc = {'sample': sample_name}
@@ -305,8 +304,6 @@ try:
         for metric in target_metrics:
             status = sample_data.get(metric, 'unknown')
             sample_qc[metric] = status
-            
-            print(f"  {metric}: {status}")
             
             # If status is not 'pass', mark sample as failed
             if status != 'pass':
@@ -319,27 +316,14 @@ try:
         
         if ok:
             passed.append(sample_name)
-            print(f"  -> PASSED")
         else:
             failed_samples.append((sample_name, failed_metrics))
-            print(f"  -> FAILED ({', '.join(failed_metrics)})")
-    
-    print(f"Total samples processed: {len(fastqc_data)}")
-    print(f"Samples passed: {len(passed)}")
-    print(f"Samples failed: {len(failed_samples)}")
-    
-    if failed_samples:
-        print("Failed samples:")
-        for sample, metrics in failed_samples:
-            print(f"  {sample}: {', '.join(metrics)}")
     
     # Write passed samples to file
     with open('passed_samples.txt', 'w') as f:
         f.write('\\n'.join(passed))
         if passed:
             f.write('\\n')  # Add final newline
-    
-    print(f"Written {len(passed)} passed samples to passed_samples.txt")
     
     # Write QC summary CSV
     import csv
@@ -351,16 +335,22 @@ try:
         if qc_results:
             for row in qc_results:
                 writer.writerow(row)
-            print(f"Written QC summary CSV with {len(qc_results)} samples")
-        else:
-            print("Created empty QC summary CSV (no samples found)")
     
-    print("QC summary CSV created successfully")
+    # Write QC summary text file
+    with open('qc_summary.txt', 'w') as f:
+        f.write("QC Summary Report\\n")
+        f.write("=================\\n")
+        f.write(f"Total samples processed: {len(fastqc_data)}\\n")
+        f.write(f"Samples passed: {len(passed)}\\n")
+        f.write(f"Samples failed: {len(failed_samples)}\\n")
+        
+        if failed_samples:
+            f.write("\\nFailed samples:\\n")
+            for sample, metrics in failed_samples:
+                f.write(f"  {sample}: {', '.join(metrics)}\\n")
     
 except Exception as e:
-    print(f"Error processing MultiQC data: {e}")
     import traceback
-    traceback.print_exc()
     # Create empty files to avoid pipeline failure
     open('passed_samples.txt', 'w').write('')
     # Create empty CSV with headers
@@ -368,7 +358,15 @@ except Exception as e:
     with open('qc_summary.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['sample', 'per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content', 'overall_status'])
-    print("Created empty output files due to error")
+    # Create error summary text file
+    with open('qc_summary.txt', 'w') as f:
+        f.write("QC Summary Report\\n")
+        f.write("=================\\n")
+        f.write("Total samples processed: 0\\n")
+        f.write("Samples passed: 0\\n")
+        f.write("Samples failed: 0\\n")
+        f.write(f"\\nError processing MultiQC data: {e}\\n")
+        f.write(f"Traceback: {traceback.format_exc()}\\n")
 EOF
     """
 }
@@ -477,12 +475,19 @@ workflow {
     parse_qc_result = PARSE_QC( multiqc_json_ch )
     passed_ch = parse_qc_result.passlist
     qc_summary_ch = parse_qc_result.qc_summary
+    qc_summary_txt_ch = parse_qc_result.qc_summary_txt
 
-    // Copy QC summary to multiqc folder
+    // Copy QC summary files to multiqc folder
     qc_summary_ch.subscribe { qc_file ->
         def target_dir = file("${params.outdir}/multiqc")
         target_dir.mkdirs()
         qc_file.copyTo(target_dir.resolve("qc_summary.csv"))
+    }
+    
+    qc_summary_txt_ch.subscribe { qc_file ->
+        def target_dir = file("${params.outdir}/multiqc")
+        target_dir.mkdirs()
+        qc_file.copyTo(target_dir.resolve("qc_summary.txt"))
     }
 
     // Filter original sample sheet based on passed samples
