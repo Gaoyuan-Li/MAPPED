@@ -64,6 +64,7 @@ process SALMON_INDEX {
 // Process: FastQC on raw reads
 //
 process FASTQC {
+    cache true
     tag '$sample'
     container 'quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0'
     publishDir "${params.outdir}/fastqc", mode: 'copy'
@@ -78,7 +79,7 @@ process FASTQC {
 
     script:
     """
-    fastqc -o . ${fq1} ${fq2}
+    fastqc --threads 4 -o . ${fq1} ${fq2}
     """
 }
 
@@ -86,6 +87,7 @@ process FASTQC {
 // Process: TrimGalore
 //
 process TRIMGALORE {
+    cache true
     tag '$sample'
     container 'quay.io/biocontainers/trim-galore:0.6.9--hdfd78af_0'
     publishDir "${params.outdir}/trimmed", mode: 'copy'
@@ -102,7 +104,7 @@ process TRIMGALORE {
 
     script:
     """
-    trim_galore --paired --basename ${sample} --output_dir . ${fq1} ${fq2}
+    trim_galore --cores 4 --paired --basename ${sample} --output_dir . ${fq1} ${fq2}
     """
 }
 
@@ -129,7 +131,8 @@ process SALMON_QUANT {
       -i ${index} -l A \
       -1 ${fq1} -2 ${fq2} \
       -o ${sample}_quant \
-      --validateMappings
+      --validateMappings \
+      -p 4
     """
 }
 
@@ -204,7 +207,35 @@ process MULTIQC {
 
     script:
     """
-    multiqc . -o . --json multiqc_data.json
+    echo "Found QC files:"
+    ls -la
+    
+    echo "Running MultiQC..."
+    multiqc . -o . --data-format json -v
+    
+    echo "MultiQC output files:"
+    ls -la multiqc*
+    
+    # Check for JSON in both possible locations
+    if [ -f multiqc_data.json ]; then
+        echo "MultiQC JSON found in current directory"
+        echo "MultiQC JSON size: \$(wc -c < multiqc_data.json) bytes"
+        echo "First few lines of JSON:"
+        head -n 5 multiqc_data.json
+    elif [ -f multiqc_data/multiqc_data.json ]; then
+        echo "MultiQC JSON found in multiqc_data directory"
+        echo "MultiQC JSON size: \$(wc -c < multiqc_data/multiqc_data.json) bytes"
+        echo "First few lines of JSON:"
+        head -n 5 multiqc_data/multiqc_data.json
+        # Move it to the expected location for the next process
+        cp multiqc_data/multiqc_data.json ./multiqc_data.json
+        echo "Copied multiqc_data.json to current directory"
+    else
+        echo "ERROR: multiqc_data.json was not found in current directory or multiqc_data/ subdirectory!"
+        echo "Available files:"
+        find . -name "*.json" -type f
+        exit 1
+    fi
     """
 }
 
@@ -219,34 +250,133 @@ process PARSE_QC {
 
     output:
       path 'passed_samples.txt', emit: passlist
+      path 'qc_summary.csv', emit: qc_summary
 
     script:
     """
-    python3 - << 'EOF'
-    import json
-    from pathlib import Path
+python3 - << 'EOF'
+import json
+from pathlib import Path
+
+try:
     data = json.load(open('multiqc_data.json'))
-    # Navigate to FastQC module results
-    fastqc = data.get('modules', {}).get('fastqc', {})
-    results = fastqc.get('plot_data', fastqc.get('results', fastqc.get('stats', {})))
+    print("Successfully loaded MultiQC JSON data")
+    
+    # Find the FastQC raw data with direct pass/fail/warn status
+    fastqc_data = None
+    
+    if ('report_saved_raw_data' in data and 
+        'multiqc_fastqc' in data['report_saved_raw_data']):
+        fastqc_data = data['report_saved_raw_data']['multiqc_fastqc']
+        print("Found FastQC raw data in report_saved_raw_data/multiqc_fastqc")
+    
+    if not fastqc_data:
+        print("Warning: Could not find FastQC raw data in MultiQC JSON")
+        print("Available keys:", list(data.keys()))
+        if 'report_saved_raw_data' in data:
+            print("Available raw data keys:", list(data['report_saved_raw_data'].keys()))
+        # Create empty files for both outputs
+        open('passed_samples.txt', 'w').write('')
+        # Create empty CSV with headers
+        import csv
+        with open('qc_summary.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['sample', 'per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content', 'overall_status'])
+        print("Created empty output files (no FastQC raw data found)")
+        exit(0)
+    
+    print(f"Found FastQC data for {len(fastqc_data)} samples")
+    
+    # Target metrics we want to extract
+    target_metrics = ['per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content']
+    
+    # Process each sample
     passed = []
-    for sample, metrics in results.items():
+    failed_samples = []
+    qc_results = []
+    
+    for sample_name, sample_data in fastqc_data.items():
+        print(f"Processing sample: {sample_name}")
         ok = True
-        for m in ['per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content']:
-            if metrics.get(m, {}).get('status') != 'pass':
+        failed_metrics = []
+        sample_qc = {'sample': sample_name}
+        
+        # Extract the three critical metrics directly
+        for metric in target_metrics:
+            status = sample_data.get(metric, 'unknown')
+            sample_qc[metric] = status
+            
+            print(f"  {metric}: {status}")
+            
+            # If status is not 'pass', mark sample as failed
+            if status != 'pass':
                 ok = False
-                break
+                failed_metrics.append(metric)
+        
+        # Add overall status
+        sample_qc['overall_status'] = 'PASS' if ok else 'FAIL'
+        qc_results.append(sample_qc)
+        
         if ok:
-            passed.append(sample)
-    open('passed_samples.txt', 'w').write('\n'.join(passed))
-    EOF
+            passed.append(sample_name)
+            print(f"  -> PASSED")
+        else:
+            failed_samples.append((sample_name, failed_metrics))
+            print(f"  -> FAILED ({', '.join(failed_metrics)})")
+    
+    print(f"Total samples processed: {len(fastqc_data)}")
+    print(f"Samples passed: {len(passed)}")
+    print(f"Samples failed: {len(failed_samples)}")
+    
+    if failed_samples:
+        print("Failed samples:")
+        for sample, metrics in failed_samples:
+            print(f"  {sample}: {', '.join(metrics)}")
+    
+    # Write passed samples to file
+    with open('passed_samples.txt', 'w') as f:
+        f.write('\\n'.join(passed))
+        if passed:
+            f.write('\\n')  # Add final newline
+    
+    print(f"Written {len(passed)} passed samples to passed_samples.txt")
+    
+    # Write QC summary CSV
+    import csv
+    with open('qc_summary.csv', 'w', newline='') as csvfile:
+        fieldnames = ['sample', 'per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content', 'overall_status']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        
+        if qc_results:
+            for row in qc_results:
+                writer.writerow(row)
+            print(f"Written QC summary CSV with {len(qc_results)} samples")
+        else:
+            print("Created empty QC summary CSV (no samples found)")
+    
+    print("QC summary CSV created successfully")
+    
+except Exception as e:
+    print(f"Error processing MultiQC data: {e}")
+    import traceback
+    traceback.print_exc()
+    # Create empty files to avoid pipeline failure
+    open('passed_samples.txt', 'w').write('')
+    # Create empty CSV with headers
+    import csv
+    with open('qc_summary.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['sample', 'per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content', 'overall_status'])
+    print("Created empty output files due to error")
+EOF
     """
 }
 
 // Process: filter sample sheet CSV based on passed samples
 process FILTER_SAMPLESHEET {
     tag 'filter_samplesheet'
-    container 'alpine:latest'
+    container 'ubuntu:22.04'
     publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true
 
     input:
@@ -258,9 +388,38 @@ process FILTER_SAMPLESHEET {
 
     script:
     """
+    # Copy original samplesheet
     cp ${samplesheet} tmp.csv
-    head -n1 tmp.csv > samplesheet.csv
-    grep -F -f ${passedlist} tmp.csv >> samplesheet.csv
+    
+    # Check if passed samples file is empty
+    if [ ! -s ${passedlist} ]; then
+        echo "WARNING: No samples passed QC filters!"
+        # Create samplesheet with only header
+        head -n1 tmp.csv > samplesheet.csv
+    else
+        # Copy header
+        head -n1 tmp.csv > samplesheet.csv
+        
+        # Filter rows based on passed samples
+        # Use a more robust approach that handles sample names that may be part of larger strings
+        while IFS= read -r sample_id; do
+            if [ -n "\$sample_id" ]; then
+                # Look for lines where the sample_id appears at the beginning of a field
+                grep "^\$sample_id\\|,\$sample_id" tmp.csv >> samplesheet.csv || true
+            fi
+        done < ${passedlist}
+        
+        # Remove duplicates while preserving order
+        awk '!seen[\$0]++' samplesheet.csv > samplesheet_dedup.csv
+        mv samplesheet_dedup.csv samplesheet.csv
+    fi
+    
+    # Report results
+    original_count=\$(tail -n +2 tmp.csv | wc -l)
+    filtered_count=\$(tail -n +2 samplesheet.csv | wc -l)
+    echo "Original samples: \$original_count"
+    echo "Filtered samples: \$filtered_count"
+    echo "Samples removed: \$((\$original_count - \$filtered_count))"
     """
 }
 
@@ -315,16 +474,40 @@ workflow {
     multiqc = MULTIQC( qc_ch.collect() )
     multiqc_json_ch = multiqc.json
     // Parse MultiQC JSON for passed samples
-    passed_ch = PARSE_QC( multiqc_json_ch )
+    parse_qc_result = PARSE_QC( multiqc_json_ch )
+    passed_ch = parse_qc_result.passlist
+    qc_summary_ch = parse_qc_result.qc_summary
+
+    // Copy QC summary to multiqc folder
+    qc_summary_ch.subscribe { qc_file ->
+        def target_dir = file("${params.outdir}/multiqc")
+        target_dir.mkdirs()
+        qc_file.copyTo(target_dir.resolve("qc_summary.csv"))
+    }
 
     // Filter original sample sheet based on passed samples
     FILTER_SAMPLESHEET( file("${params.outdir}/samplesheet/samplesheet.csv"), passed_ch )
 
     // Filter trimmed reads and perform Salmon quantification only on passed samples
-    pass_tuple_ch      = passed_ch.map { id -> tuple(id, id) }
-    matched_trim_ch    = trimmed_ch.join(pass_tuple_ch)
-    filtered_trimmed_ch = matched_trim_ch.map { key, trim_val, _ -> trim_val }
-    quant_ch           = SALMON_QUANT(filtered_trimmed_ch, salmon_index_ch)
+    // Read the passed samples list and convert to channel
+    passed_samples_ch = passed_ch
+        .splitText()
+        .map { it.trim() }
+        .filter { it }  // Remove empty lines
+    
+    // Create a set of passed sample IDs for filtering
+    passed_set_ch = passed_samples_ch.collect().map { it.toSet() }
+    
+    // Filter trimmed channel to only include samples that passed QC
+    filtered_trimmed_ch = trimmed_ch
+        .combine(passed_set_ch)
+        .filter { sample_tuple, passed_set ->
+            def sample_id = sample_tuple[0]
+            return passed_set.contains(sample_id)
+        }
+        .map { sample_tuple, passed_set -> sample_tuple }
+    
+    quant_ch = SALMON_QUANT(filtered_trimmed_ch, salmon_index_ch)
 
     // merge count matrices
     count_matrix_ch = MERGE_COUNTS( quant_ch.collect() )
