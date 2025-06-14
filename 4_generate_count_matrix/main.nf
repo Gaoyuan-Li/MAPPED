@@ -112,6 +112,7 @@ process TRIMGALORE {
 // Process: Salmon quantification
 //
 process SALMON_QUANT {
+    cache true
     tag '$sample'
     container 'quay.io/biocontainers/salmon:1.10.3--h45fbf2d_4'
     publishDir "${params.outdir}/salmon", mode: 'copy'
@@ -137,7 +138,7 @@ process SALMON_QUANT {
 }
 
 //
-// Process: merge count matrices by SRX ID
+// Process: merge count matrices by experiment ID
 //
 process MERGE_COUNTS {
     publishDir "${params.outdir}/expression_matrices", mode: 'copy'
@@ -149,6 +150,7 @@ process MERGE_COUNTS {
 
     output:
       path 'tpm.tsv'
+      path 'log_tpm.tsv'
       path 'counts.tsv'
 
     script:
@@ -156,37 +158,42 @@ process MERGE_COUNTS {
     python3 - << 'EOF'
 import os
 import pandas as pd
+import numpy as np
 from collections import defaultdict
 
-# Read passed samples
-passed_samples = set()
+# Read passed sample IDs
+passed_sample_ids = set()
 if os.path.exists('${passed_samples_file}'):
     with open('${passed_samples_file}', 'r') as f:
         for line in f:
             line = line.strip()
             if line:
-                passed_samples.add(line)
+                passed_sample_ids.add(line)
 
-print(f"Found {len(passed_samples)} passed samples")
+print(f"Found {len(passed_sample_ids)} passed sample IDs")
 
 # Find all quant directories
 quant_dirs = [d for d in os.listdir('.') if d.endswith('_quant')]
 print(f"Found {len(quant_dirs)} quantification directories")
 
-# Group by SRX ID and collect data
-srx_data = defaultdict(list)
+# Group by experiment ID and collect data
+experiment_data = defaultdict(list)
 gene_ids = None
 
 for quant_dir in quant_dirs:
     sample_name = quant_dir.replace('_quant', '')
     
-    # Only process passed samples
-    if sample_name not in passed_samples:
-        print(f"Skipping {sample_name} (not in passed samples)")
-        continue
+    # Extract experiment ID (everything before the first underscore)
+    # This handles SRX_SRR, DRX_DRR, and ERX_ERR patterns
+    experiment_id = sample_name.split('_')[0]
     
-    # Extract SRX ID (everything before the first underscore)
-    srx_id = sample_name.split('_')[0]
+    # Get base sample name (remove _val_1/_val_2 suffixes)
+    base_sample_name = sample_name.replace('_val_1', '').replace('_val_2', '')
+    
+    # Only process samples from passed experiments
+    if base_sample_name not in passed_sample_ids:
+        print(f"Skipping {sample_name} (base sample {base_sample_name} not in passed samples)")
+        continue
     
     # Read quantification file
     quant_file = os.path.join(quant_dir, 'quant.sf')
@@ -200,28 +207,29 @@ for quant_dir in quant_dirs:
     if gene_ids is None:
         gene_ids = df['Name'].tolist()
     
-    # Store counts and TPM data for this SRX
-    srx_data[srx_id].append({
+    # Store counts and TPM data for this experiment
+    experiment_data[experiment_id].append({
         'sample': sample_name,
+        'base_sample': base_sample_name,
         'counts': df['NumReads'].tolist(),
         'tpm': df['TPM'].tolist(),
         'length': df['Length'].tolist()
     })
 
-print(f"Grouped into {len(srx_data)} SRX samples")
+print(f"Grouped into {len(experiment_data)} experiments")
 
-# Merge data by SRX
+# Merge data by experiment
 final_counts = {}
 final_tpm = {}
 
-for srx_id, runs in srx_data.items():
+for experiment_id, runs in experiment_data.items():
     if len(runs) == 1:
-        # Single run - use data directly
-        final_counts[srx_id] = runs[0]['counts']
-        final_tpm[srx_id] = runs[0]['tpm']
+        # Single run - use data directly, use experiment ID as column header
+        final_counts[experiment_id] = runs[0]['counts']
+        final_tpm[experiment_id] = runs[0]['tpm']
     else:
         # Multiple runs - sum counts and recalculate TPM
-        print(f"Merging {len(runs)} runs for {srx_id}")
+        print(f"Merging {len(runs)} runs for experiment {experiment_id}")
         
         # Sum counts across runs
         summed_counts = [0] * len(gene_ids)
@@ -238,38 +246,51 @@ for srx_id, runs in srx_data.items():
         scaling_factor = sum(rpk) / 1e6 if sum(rpk) > 0 else 1
         recalculated_tpm = [rpk[i] / scaling_factor if scaling_factor > 0 else 0 for i in range(len(gene_ids))]
         
-        final_counts[srx_id] = summed_counts
-        final_tpm[srx_id] = recalculated_tpm
+        # Use experiment ID as column header
+        final_counts[experiment_id] = summed_counts
+        final_tpm[experiment_id] = recalculated_tpm
 
 # Create output matrices
 if gene_ids and final_counts:
-    # Sort SRX IDs for consistent output
-    sorted_srx = sorted(final_counts.keys())
+    # Sort experiment IDs for consistent output
+    sorted_experiments = sorted(final_counts.keys())
     
     # Write counts matrix
     with open('counts.tsv', 'w') as f:
-        f.write('GeneID\\t' + '\\t'.join(sorted_srx) + '\\n')
+        f.write('GeneID\\t' + '\\t'.join(sorted_experiments) + '\\n')
         for i, gene_id in enumerate(gene_ids):
             f.write(gene_id)
-            for srx_id in sorted_srx:
-                f.write(f'\\t{final_counts[srx_id][i]}')
+            for exp_id in sorted_experiments:
+                f.write(f'\\t{final_counts[exp_id][i]}')
             f.write('\\n')
     
     # Write TPM matrix  
     with open('tpm.tsv', 'w') as f:
-        f.write('GeneID\\t' + '\\t'.join(sorted_srx) + '\\n')
+        f.write('GeneID\\t' + '\\t'.join(sorted_experiments) + '\\n')
         for i, gene_id in enumerate(gene_ids):
             f.write(gene_id)
-            for srx_id in sorted_srx:
-                f.write(f'\\t{final_tpm[srx_id][i]:.6f}')
+            for exp_id in sorted_experiments:
+                f.write(f'\\t{final_tpm[exp_id][i]:.6f}')
             f.write('\\n')
     
-    print(f"Generated matrices with {len(gene_ids)} genes and {len(sorted_srx)} samples")
+    # Write log TPM matrix (log2(TPM + 1))
+    with open('log_tpm.tsv', 'w') as f:
+        f.write('GeneID\\t' + '\\t'.join(sorted_experiments) + '\\n')
+        for i, gene_id in enumerate(gene_ids):
+            f.write(gene_id)
+            for exp_id in sorted_experiments:
+                log_tpm = np.log2(final_tpm[exp_id][i] + 1)
+                f.write(f'\\t{log_tpm:.6f}')
+            f.write('\\n')
+    
+    print(f"Generated matrices with {len(gene_ids)} genes and {len(sorted_experiments)} experiments")
 else:
     print("No data to process - creating empty files")
     with open('counts.tsv', 'w') as f:
         f.write('GeneID\\n')
     with open('tpm.tsv', 'w') as f:
+        f.write('GeneID\\n')
+    with open('log_tpm.tsv', 'w') as f:
         f.write('GeneID\\n')
 
 EOF
@@ -375,12 +396,19 @@ try:
     # Target metrics we want to extract
     target_metrics = ['per_base_sequence_quality', 'per_sequence_quality_scores', 'per_base_n_content']
     
-    # Process each sample
-    passed = []
-    failed_samples = []
+    # Process each sample and group by experiment ID (SRX, DRX, or ERX)
+    experiment_status = {}  # Track status for each experiment
+    experiment_samples = {}  # Track which samples belong to each experiment
     qc_results = []
     
     for sample_name, sample_data in fastqc_data.items():
+        # Extract experiment ID (everything before the first underscore)
+        # This handles SRX_SRR, DRX_DRR, and ERX_ERR patterns
+        experiment_id = sample_name.split('_')[0]
+        
+        # Remove _val_1/_val_2 suffix to get base sample name
+        base_sample_name = sample_name.replace('_val_1', '').replace('_val_2', '')
+        
         ok = True
         failed_metrics = []
         sample_qc = {'sample': sample_name}
@@ -399,16 +427,41 @@ try:
         sample_qc['overall_status'] = 'PASS' if ok else 'FAIL'
         qc_results.append(sample_qc)
         
-        if ok:
-            passed.append(sample_name)
-        else:
-            failed_samples.append((sample_name, failed_metrics))
+        # Track experiment status - if any sample for an experiment fails, the whole experiment fails
+        if experiment_id not in experiment_status:
+            experiment_status[experiment_id] = True
+            experiment_samples[experiment_id] = set()
+        
+        experiment_samples[experiment_id].add(base_sample_name)
+        
+        if not ok:
+            experiment_status[experiment_id] = False
     
-    # Write passed samples to file
+    # Generate passed sample list (full sample IDs, not just experiment IDs)
+    passed_samples = set()
+    failed_samples = []
+    
+    for experiment_id, status in experiment_status.items():
+        if status:
+            # Add all base sample names for this experiment
+            passed_samples.update(experiment_samples[experiment_id])
+        else:
+            # Find which samples failed for this experiment
+            for sample_name, sample_data in fastqc_data.items():
+                if sample_name.split('_')[0] == experiment_id:
+                    base_sample_name = sample_name.replace('_val_1', '').replace('_val_2', '')
+                    failed_metrics = []
+                    for metric in target_metrics:
+                        status = sample_data.get(metric, 'unknown')
+                        if status != 'pass':
+                            failed_metrics.append(metric)
+                    if failed_metrics:  # Only include samples that actually failed
+                        failed_samples.append((sample_name, failed_metrics))
+    
+    # Write passed sample IDs to file (full sample IDs like SRX_SRR or DRX_DRR)
     with open('passed_samples.txt', 'w') as f:
-        f.write('\\n'.join(passed))
-        if passed:
-            f.write('\\n')  # Add final newline
+        for sample_id in sorted(passed_samples):
+            f.write(sample_id + '\\n')
     
     # Write QC summary CSV
     import csv
@@ -425,12 +478,15 @@ try:
     with open('qc_summary.txt', 'w') as f:
         f.write("QC Summary Report\\n")
         f.write("=================\\n")
-        f.write(f"Total samples processed: {len(fastqc_data)}\\n")
-        f.write(f"Samples passed: {len(passed)}\\n")
-        f.write(f"Samples failed: {len(failed_samples)}\\n")
+        f.write(f"Total individual samples processed: {len(fastqc_data)}\\n")
+        f.write(f"Total experiments processed: {len(experiment_status)}\\n")
+        f.write(f"Experiments passed: {sum(1 for status in experiment_status.values() if status)}\\n")
+        f.write(f"Experiments failed: {sum(1 for status in experiment_status.values() if not status)}\\n")
+        f.write(f"Individual samples failed: {len(failed_samples)}\\n")
+        f.write(f"Unique sample IDs passed: {len(passed_samples)}\\n")
         
         if failed_samples:
-            f.write("\\nFailed samples:\\n")
+            f.write("\\nFailed individual samples:\\n")
             for sample, metrics in failed_samples:
                 f.write(f"  {sample}: {', '.join(metrics)}\\n")
     
@@ -483,12 +539,15 @@ process FILTER_SAMPLESHEET {
         # Copy header
         head -n1 tmp.csv > samplesheet.csv
         
-        # Filter rows based on passed samples
-        # Use a more robust approach that handles sample names that may be part of larger strings
+        # Filter rows based on passed sample IDs
+        # The id column (4th column) contains the full sample ID (SRX_SRR, DRX_DRR, or ERX_ERR format)
         while IFS= read -r sample_id; do
             if [ -n "\$sample_id" ]; then
-                # Look for lines where the sample_id appears at the beginning of a field
-                grep "^\$sample_id\\|,\$sample_id" tmp.csv >> samplesheet.csv || true
+                # Look for lines where the id column (4th field) matches the sample ID exactly
+                # Use awk to properly parse CSV and check the id column
+                awk -F',' -v sample="\$sample_id" '
+                    NR > 1 && \$4 == "\"" sample "\"" { print }
+                ' tmp.csv >> samplesheet.csv || true
             fi
         done < ${passedlist}
         
@@ -510,10 +569,10 @@ process FILTER_SAMPLESHEET {
 // Main workflow
 //
 workflow {
-    // load samples
+    // load samples from the original download samplesheet
     samples_ch = Channel
-        .fromPath( file("${params.outdir}/samplesheet/samplesheet.csv") )
-        .ifEmpty { error "Sample sheet not found at: ${params.outdir}/samplesheet/samplesheet.csv" }
+        .fromPath( file("${params.outdir}/samplesheet/samplesheet_download.csv") )
+        .ifEmpty { error "Sample sheet not found at: ${params.outdir}/samplesheet/samplesheet_download.csv" }
         .splitCsv(header: true, sep: ',')
         // remove surrounding quotes and normalize keys
         .map { row ->
@@ -525,19 +584,19 @@ workflow {
         }
         // keep only rows that have all required fields
         .filter { row ->
-            row.sample && row.fastq_1 && row.fastq_2 && row.run_accession
+            row.id && row.fastq_1 && row.fastq_2 && row.run_accession
         }
         .ifEmpty {
             error """
     No valid samples found after filtering.
     Make sure your CSV has columns exactly named:
-    sample, fastq_1, fastq_2, run_accession.
+    id, fastq_1, fastq_2, run_accession.
     """
         }
-        // build the tuple for each sample
+        // build the tuple for each sample using the id column which has SRX_SRR, DRX_DRR, or ERX_ERR format
         .map { row ->
             tuple(
-                "${row.sample}_${row.run_accession}",
+                row.id,
                 file("${params.outdir}/${row.fastq_1}"),
                 file("${params.outdir}/${row.fastq_2}")
             )
@@ -576,35 +635,36 @@ workflow {
     }
 
     // Filter original sample sheet based on passed samples
-    filtered_samplesheet_ch = FILTER_SAMPLESHEET( file("${params.outdir}/samplesheet/samplesheet.csv"), passed_ch )
+    filtered_samplesheet_ch = FILTER_SAMPLESHEET( file("${params.outdir}/samplesheet/samplesheet_download.csv"), passed_ch )
 
-    // Extract passed sample IDs into a set for filtering
-    passed_samples_set_ch = passed_ch
+    // Create a channel of passed sample IDs
+    passed_samples_ch = passed_ch
         .splitText()
         .map { it.trim() }
         .filter { it }
-        .collect()
-        .map { it.toSet() }
+        .map { sample_id -> tuple(sample_id, sample_id) }
 
-    // Filter trimmed reads to only include QC-passed samples
-    // This ensures SALMON_QUANT waits for FILTER_SAMPLESHEET to complete
-    filtered_trimmed_ch = trimmed_ch
-        .combine(passed_samples_set_ch)
-        .filter { sample_tuple, passed_set ->
+    // Transform trimmed channel to include sample ID as key
+    trimmed_with_sample_ch = trimmed_ch
+        .map { sample_tuple ->
             def sample_id = sample_tuple[0]
-            passed_set.contains(sample_id)
+            // Remove _val_1/_val_2 suffixes to get base sample name
+            def base_sample_id = sample_id.replace('_val_1', '').replace('_val_2', '')
+            tuple(base_sample_id, sample_tuple)
         }
-        .map { sample_tuple, passed_set -> 
-            tuple(sample_tuple[0], sample_tuple[1], sample_tuple[2])
-        }
-    
+
+    // Join to filter only QC-passed samples
+    filtered_trimmed_ch = trimmed_with_sample_ch
+        .join(passed_samples_ch)
+        .map { base_sample_id, sample_tuple, passed_sample -> sample_tuple }
+
     // Run Salmon quantification only on QC-passed samples
     quant_ch = SALMON_QUANT(filtered_trimmed_ch, salmon_index_ch)
 
     // merge count matrices - wait for both quantification and samplesheet filtering
     count_matrix_ch = MERGE_COUNTS( 
         quant_ch.collect(), 
-        passed_ch.combine(filtered_samplesheet_ch).map { passed_file, filtered_sheet -> passed_file }
+        passed_ch
     )
 }
 
