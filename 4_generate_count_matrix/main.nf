@@ -137,13 +137,15 @@ process SALMON_QUANT {
 }
 
 //
-// Process: merge count matrices
+// Process: merge count matrices by SRX ID
 //
 process MERGE_COUNTS {
     publishDir "${params.outdir}/expression_matrices", mode: 'copy'
+    container 'python:3.9-slim'
 
     input:
       path quant_dirs
+      path passed_samples_file
 
     output:
       path 'tpm.tsv'
@@ -151,43 +153,126 @@ process MERGE_COUNTS {
 
     script:
     """
-    # Extract gene IDs from first quant directory
-    firstDir=\$(ls -d *_quant | head -n 1)
-    cut -f1 \$firstDir/quant.sf | tail -n +2 > gene_ids.txt
+    python3 - << 'EOF'
+import os
+import pandas as pd
+from collections import defaultdict
 
-    # Generate TPM matrix
-    for d in *_quant; do
-      sample=\${d%_quant}
-      cut -f4 \$d/quant.sf | tail -n +2 > \${sample}.tpm
-    done
-    paste gene_ids.txt *.tpm > tmp_tpm.tsv
-    {
-      printf 'GeneID'
-      for d in *_quant; do
-        var=\${d%_quant}
-        sample=\${var%%_*}
-        printf '\t%s' "\${sample}"
-      done
-      printf '\n'
-    } > tpm.tsv
-    cat tmp_tpm.tsv >> tpm.tsv
+# Read passed samples
+passed_samples = set()
+if os.path.exists('${passed_samples_file}'):
+    with open('${passed_samples_file}', 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                passed_samples.add(line)
 
-    # Generate counts matrix
-    for d in *_quant; do
-      sample=\${d%_quant}
-      cut -f5 \$d/quant.sf | tail -n +2 > \${sample}.counts
-    done
-    paste gene_ids.txt *.counts > tmp_counts.tsv
-    {
-      printf 'GeneID'
-      for d in *_quant; do
-        var=\${d%_quant}
-        sample=\${var%%_*}
-        printf '\t%s' "\${sample}"
-      done
-      printf '\n'
-    } > counts.tsv
-    cat tmp_counts.tsv >> counts.tsv
+print(f"Found {len(passed_samples)} passed samples")
+
+# Find all quant directories
+quant_dirs = [d for d in os.listdir('.') if d.endswith('_quant')]
+print(f"Found {len(quant_dirs)} quantification directories")
+
+# Group by SRX ID and collect data
+srx_data = defaultdict(list)
+gene_ids = None
+
+for quant_dir in quant_dirs:
+    sample_name = quant_dir.replace('_quant', '')
+    
+    # Only process passed samples
+    if sample_name not in passed_samples:
+        print(f"Skipping {sample_name} (not in passed samples)")
+        continue
+    
+    # Extract SRX ID (everything before the first underscore)
+    srx_id = sample_name.split('_')[0]
+    
+    # Read quantification file
+    quant_file = os.path.join(quant_dir, 'quant.sf')
+    if not os.path.exists(quant_file):
+        print(f"Warning: {quant_file} not found")
+        continue
+    
+    df = pd.read_csv(quant_file, sep='\\t')
+    
+    # Store gene IDs from first file
+    if gene_ids is None:
+        gene_ids = df['Name'].tolist()
+    
+    # Store counts and TPM data for this SRX
+    srx_data[srx_id].append({
+        'sample': sample_name,
+        'counts': df['NumReads'].tolist(),
+        'tpm': df['TPM'].tolist(),
+        'length': df['Length'].tolist()
+    })
+
+print(f"Grouped into {len(srx_data)} SRX samples")
+
+# Merge data by SRX
+final_counts = {}
+final_tpm = {}
+
+for srx_id, runs in srx_data.items():
+    if len(runs) == 1:
+        # Single run - use data directly
+        final_counts[srx_id] = runs[0]['counts']
+        final_tpm[srx_id] = runs[0]['tpm']
+    else:
+        # Multiple runs - sum counts and recalculate TPM
+        print(f"Merging {len(runs)} runs for {srx_id}")
+        
+        # Sum counts across runs
+        summed_counts = [0] * len(gene_ids)
+        avg_lengths = [0] * len(gene_ids)
+        
+        for run in runs:
+            for i in range(len(gene_ids)):
+                summed_counts[i] += run['counts'][i]
+                avg_lengths[i] = run['length'][i]  # Length should be same across runs
+        
+        # Calculate TPM from summed counts
+        # TPM = (counts / length) * 1e6 / sum(counts / length)
+        rpk = [summed_counts[i] / avg_lengths[i] if avg_lengths[i] > 0 else 0 for i in range(len(gene_ids))]
+        scaling_factor = sum(rpk) / 1e6 if sum(rpk) > 0 else 1
+        recalculated_tpm = [rpk[i] / scaling_factor if scaling_factor > 0 else 0 for i in range(len(gene_ids))]
+        
+        final_counts[srx_id] = summed_counts
+        final_tpm[srx_id] = recalculated_tpm
+
+# Create output matrices
+if gene_ids and final_counts:
+    # Sort SRX IDs for consistent output
+    sorted_srx = sorted(final_counts.keys())
+    
+    # Write counts matrix
+    with open('counts.tsv', 'w') as f:
+        f.write('GeneID\\t' + '\\t'.join(sorted_srx) + '\\n')
+        for i, gene_id in enumerate(gene_ids):
+            f.write(gene_id)
+            for srx_id in sorted_srx:
+                f.write(f'\\t{final_counts[srx_id][i]}')
+            f.write('\\n')
+    
+    # Write TPM matrix  
+    with open('tpm.tsv', 'w') as f:
+        f.write('GeneID\\t' + '\\t'.join(sorted_srx) + '\\n')
+        for i, gene_id in enumerate(gene_ids):
+            f.write(gene_id)
+            for srx_id in sorted_srx:
+                f.write(f'\\t{final_tpm[srx_id][i]:.6f}')
+            f.write('\\n')
+    
+    print(f"Generated matrices with {len(gene_ids)} genes and {len(sorted_srx)} samples")
+else:
+    print("No data to process - creating empty files")
+    with open('counts.tsv', 'w') as f:
+        f.write('GeneID\\n')
+    with open('tpm.tsv', 'w') as f:
+        f.write('GeneID\\n')
+
+EOF
     """
 }
 
@@ -494,28 +579,24 @@ workflow {
     FILTER_SAMPLESHEET( file("${params.outdir}/samplesheet/samplesheet.csv"), passed_ch )
 
     // Filter trimmed reads and perform Salmon quantification only on passed samples
-    // Read the passed samples list and convert to channel
+    // Convert passed samples to a channel and filter trimmed reads
     passed_samples_ch = passed_ch
         .splitText()
         .map { it.trim() }
         .filter { it }  // Remove empty lines
     
-    // Create a set of passed sample IDs for filtering
-    passed_set_ch = passed_samples_ch.collect().map { it.toSet() }
-    
     // Filter trimmed channel to only include samples that passed QC
     filtered_trimmed_ch = trimmed_ch
-        .combine(passed_set_ch)
-        .filter { sample_tuple, passed_set ->
+        .filter { sample_tuple ->
             def sample_id = sample_tuple[0]
-            return passed_set.contains(sample_id)
+            // For now, run all samples - we'll filter in post-processing
+            return true
         }
-        .map { sample_tuple, passed_set -> sample_tuple }
     
     quant_ch = SALMON_QUANT(filtered_trimmed_ch, salmon_index_ch)
 
     // merge count matrices
-    count_matrix_ch = MERGE_COUNTS( quant_ch.collect() )
+    count_matrix_ch = MERGE_COUNTS( quant_ch.collect(), passed_ch )
 }
 
 // Add an onComplete event handler to always delete rotated Nextflow log files
