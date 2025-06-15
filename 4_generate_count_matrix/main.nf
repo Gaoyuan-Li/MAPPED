@@ -546,7 +546,7 @@ process FILTER_SAMPLESHEET {
                 # Look for lines where the id column (4th field) matches the sample ID exactly
                 # Use awk to properly parse CSV and check the id column
                 awk -F',' -v sample="\$sample_id" '
-                    NR > 1 && \$4 == "\"" sample "\"" { print }
+                    NR > 1 && \$4 == "\\"" sample "\\"" { print }
                 ' tmp.csv >> samplesheet.csv || true
             fi
         done < ${passedlist}
