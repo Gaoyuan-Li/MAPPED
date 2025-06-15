@@ -512,6 +512,7 @@ EOF
     """
 }
 
+//
 // Process: filter sample sheet CSV based on passed samples
 process FILTER_SAMPLESHEET {
     tag 'filter_samplesheet'
@@ -562,6 +563,103 @@ process FILTER_SAMPLESHEET {
     echo "Original samples: \$original_count"
     echo "Filtered samples: \$filtered_count"
     echo "Samples removed: \$((\$original_count - \$filtered_count))"
+    """
+}
+
+//
+// Process: filter out samples with >50% zero values from expression matrices and samplesheet
+//
+process FILTER_LOW_EXPRESSION_SAMPLES {
+    tag 'filter_low_expression'
+    container 'felixlohmeier/pandas:1.3.3'
+    publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "*.tsv"
+    publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true, pattern: "*.csv"
+
+    input:
+      path tpm_matrix
+      path log_tpm_matrix  
+      path counts_matrix
+      path samplesheet
+
+    output:
+      path 'tpm.tsv', emit: tpm
+      path 'log_tpm.tsv', emit: log_tpm
+      path 'counts.tsv', emit: counts
+      path 'samplesheet.csv', emit: samplesheet
+
+    script:
+    """
+    python3 - << 'EOF'
+import pandas as pd
+import numpy as np
+
+print("Reading expression matrices...")
+# Read the three expression matrices
+tpm_df = pd.read_csv('${tpm_matrix}', sep='\\t', index_col=0)
+log_tpm_df = pd.read_csv('${log_tpm_matrix}', sep='\\t', index_col=0)
+counts_df = pd.read_csv('${counts_matrix}', sep='\\t', index_col=0)
+
+print(f"Original matrices shape: {tpm_df.shape}")
+print(f"Sample columns: {list(tpm_df.columns)}")
+
+# Identify samples with >50% zero values
+samples_to_remove = []
+total_genes = len(tpm_df)
+
+for sample in tpm_df.columns:
+    # Count zeros in the counts matrix (most appropriate for this analysis)
+    zero_count = (counts_df[sample] == 0).sum()
+    zero_percentage = zero_count / total_genes
+    
+    print(f"Sample {sample}: {zero_count}/{total_genes} zeros ({zero_percentage:.2%})")
+    
+    if zero_percentage > 0.5:
+        samples_to_remove.append(sample)
+        print(f"  -> Will be removed (>50% zeros)")
+
+print(f"\\nSamples to remove ({len(samples_to_remove)}): {samples_to_remove}")
+
+# Filter matrices by removing low-expression samples
+if samples_to_remove:
+    samples_to_keep = [col for col in tpm_df.columns if col not in samples_to_remove]
+    
+    tpm_filtered = tpm_df[samples_to_keep]
+    log_tpm_filtered = log_tpm_df[samples_to_keep]
+    counts_filtered = counts_df[samples_to_keep]
+    
+    print(f"Filtered matrices shape: {tpm_filtered.shape}")
+else:
+    print("No samples need to be removed")
+    tpm_filtered = tpm_df
+    log_tpm_filtered = log_tpm_df  
+    counts_filtered = counts_df
+
+# Save filtered matrices (overwrite originals)
+tpm_filtered.to_csv('tpm.tsv', sep='\\t')
+log_tpm_filtered.to_csv('log_tpm.tsv', sep='\\t')
+counts_filtered.to_csv('counts.tsv', sep='\\t')
+
+print("Reading and filtering samplesheet...")
+# Read and filter samplesheet
+samplesheet_df = pd.read_csv('${samplesheet}')
+print(f"Original samplesheet shape: {samplesheet_df.shape}")
+
+if samples_to_remove:
+    # Filter samplesheet by removing rows where 'id' column matches samples to remove
+    # The sample ID in the matrix corresponds to the 'id' column in samplesheet
+    samplesheet_filtered = samplesheet_df[~samplesheet_df['id'].isin(samples_to_remove)]
+    print(f"Filtered samplesheet shape: {samplesheet_filtered.shape}")
+    print(f"Removed {len(samplesheet_df) - len(samplesheet_filtered)} rows from samplesheet")
+else:
+    samplesheet_filtered = samplesheet_df
+
+# Save filtered samplesheet (overwrite original)
+samplesheet_filtered.to_csv('samplesheet.csv', index=False)
+
+print("\\nFiltering completed successfully!")
+print(f"Final matrices have {len(tpm_filtered.columns)} samples and {len(tpm_filtered)} genes")
+
+EOF
     """
 }
 
@@ -665,6 +763,14 @@ workflow {
     count_matrix_ch = MERGE_COUNTS( 
         quant_ch.collect(), 
         passed_ch
+    )
+
+    // Filter out samples with >50% zero values from expression matrices and samplesheet
+    filtered_results = FILTER_LOW_EXPRESSION_SAMPLES(
+        count_matrix_ch[0],  // tpm.tsv
+        count_matrix_ch[1],  // log_tpm.tsv  
+        count_matrix_ch[2],  // counts.tsv
+        filtered_samplesheet_ch
     )
 }
 
