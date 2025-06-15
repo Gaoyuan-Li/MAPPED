@@ -110,12 +110,27 @@ echo "All steps completed successfully!"
 
 if [[ "$CLEAN_MODE" == "true" ]]; then
   echo "=== Clean mode enabled: cleaning intermediate files ==="
+  
+  # Preserve ref_genome folder by moving it to a temporary location
+  if [[ -d "$OUTDIR/seqFiles/ref_genome" ]]; then
+    echo "Preserving ref_genome folder..."
+    mv "$OUTDIR/seqFiles/ref_genome" "$OUTDIR/ref_genome_temp"
+  fi
+  
   # Delete everything in OUTDIR except expression_matrices and samplesheet
-  find "$OUTDIR" -mindepth 1 -maxdepth 1 ! -name expression_matrices ! -name samplesheet -exec rm -rf {} +
+  find "$OUTDIR" -mindepth 1 -maxdepth 1 ! -name expression_matrices ! -name samplesheet ! -name ref_genome_temp -exec rm -rf {} +
+  
+  # Move ref_genome back to the same level as expression_matrices and samplesheet
+  if [[ -d "$OUTDIR/ref_genome_temp" ]]; then
+    echo "Moving ref_genome to final location..."
+    mv "$OUTDIR/ref_genome_temp" "$OUTDIR/ref_genome"
+  fi
+  
   # Delete work, .nextflow, and .nextflow.log in module directories
   for sub in 1_download_metadata_efetch 2_download_fastq 3_download_reference_genome 4_generate_count_matrix; do
     rm -rf "$sub/work" "$sub/.nextflow" "$sub/.nextflow.log"
   done
+  
   # Clean the global Nextflow work directory
   rm -rf "$WORKDIR"
 fi 
