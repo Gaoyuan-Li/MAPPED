@@ -106,7 +106,7 @@ pushd 4_generate_count_matrix > /dev/null
 nextflow run main.nf -work-dir "$WORKDIR" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
 popd > /dev/null
 
-echo "\nAll steps completed successfully!"
+echo "All steps completed successfully!"
 
 if [[ "$CLEAN_MODE" == "true" ]]; then
   echo "=== Clean mode enabled: cleaning intermediate files ==="
