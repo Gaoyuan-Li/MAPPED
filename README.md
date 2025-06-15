@@ -37,5 +37,7 @@ ${outdir}/
 ├── expression_matrices   # TPM and counts matrices
 └── multiqc               # MultiQC report
 ```
-- `--library_layout`: Sequencing layout type; use `paired` for paired-end samples only or `single` for single-end samples only, `both` for no filtration.
+
+- `--library_layout`: Sequencing layout type; use `paired` for paired-end samples only or `single` for single-end samples only, `both` for no filtration. (Note that only `paired` is supported for now)
+- `--workdir`: Path to the work directory for the nextflow pipeline.
 
