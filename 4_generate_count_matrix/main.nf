@@ -133,6 +133,7 @@ process SALMON_QUANT {
       -1 ${fq1} -2 ${fq2} \
       -o ${sample}_quant \
       --validateMappings \
+      --minAssignedFrags 8 \
       -p 4
     """
 }
