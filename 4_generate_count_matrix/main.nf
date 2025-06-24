@@ -118,13 +118,14 @@ process SALMON_QUANT {
     publishDir "${params.outdir}/salmon", mode: 'copy'
     cpus threads_per_task
     maxForks max_parallel
+    errorStrategy 'ignore'
 
     input:
       tuple val(sample), path(fq1), path(fq2)
       path index
 
     output:
-      path "${sample}_quant"
+      path "${sample}_quant", optional: true
 
     script:
     """
@@ -135,6 +136,9 @@ process SALMON_QUANT {
       --validateMappings \
       --minAssignedFrags 8 \
       -p 4
+    
+    # Create a flag file to indicate successful completion
+    touch ${sample}_quant/salmon_success.flag
     """
 }
 
@@ -174,8 +178,22 @@ if os.path.exists('${passed_samples_file}'):
 print(f"Found {len(passed_sample_ids)} passed sample IDs")
 
 # Find all quant directories
-quant_dirs = [d for d in os.listdir('.') if d.endswith('_quant')]
-print(f"Found {len(quant_dirs)} quantification directories")
+all_quant_dirs = [d for d in os.listdir('.') if d.endswith('_quant')]
+# Filter to only include directories with successful salmon runs (those with salmon_success.flag)
+quant_dirs = []
+failed_samples = []
+for d in all_quant_dirs:
+    flag_file = os.path.join(d, 'salmon_success.flag')
+    quant_file = os.path.join(d, 'quant.sf')
+    if os.path.exists(flag_file) and os.path.exists(quant_file):
+        quant_dirs.append(d)
+    else:
+        failed_samples.append(d.replace('_quant', ''))
+
+print(f"Found {len(all_quant_dirs)} total quantification directories")
+print(f"Found {len(quant_dirs)} successful quantification directories")
+if failed_samples:
+    print(f"Skipped {len(failed_samples)} failed samples: {', '.join(failed_samples)}")
 
 # Group by experiment ID and collect data
 experiment_data = defaultdict(list)
