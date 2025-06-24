@@ -701,35 +701,44 @@ process NORMALIZE_LOG_TPM {
     python3 - << 'EOF'
 import pandas as pd
 
-def convert_tsv_to_csv(tsv_path, csv_path):
+def convert_tsv_to_csv(tsv_path: str, csv_path: str):
+    # Convert a TSV file to a CSV file after subtracting the row-wise mean of all
+    # numeric columns (excluding the first, GeneID) from every numeric value in
+    # that row. Rows that become entirely zero are removed. The function prints
+    # the initial and final row counts (header excluded) on one line.
+
+    # Parameters
+    # ----------
+    # tsv_path : str
+    #     Path to the input TSV file.
+    # csv_path : str
+    #     Path to save the output CSV file.
+
     # Read the TSV
-    df = pd.read_csv(tsv_path, sep='\\t')
-    input_rows = len(df)
-    
+    df = pd.read_csv(tsv_path, sep='\t')
+    input_rows = len(df)                      # header not included
+
     # Separate the GeneID column
     gene_col = df.iloc[:, 0]
-    
+
     # Numeric data (everything except the first column)
     numeric_data = df.iloc[:, 1:]
-    
-    # Subtract column 1 from all numeric columns
-    reference_col = numeric_data.iloc[:, 0]
-    adjusted_numeric = numeric_data.sub(reference_col, axis=0)
-    
+
+    # Subtract the row mean from each numeric value
+    row_mean = numeric_data.mean(axis=1)
+    adjusted_numeric = numeric_data.sub(row_mean, axis=0)
+
     # Remove rows where all adjusted numeric values are zero
     keep_mask = ~adjusted_numeric.eq(0).all(axis=1)
     adjusted_numeric = adjusted_numeric[keep_mask]
     gene_col = gene_col[keep_mask]
-    
+
     # Reattach the GeneID column
     df_final = pd.concat([gene_col, adjusted_numeric], axis=1)
     final_rows = len(df_final)
-    
+
     # Save to CSV
     df_final.to_csv(csv_path, index=False)
-    
-    # Print input and final row counts on one line
-    print(f"{input_rows} {final_rows}")
 
 # Process the log TPM file
 convert_tsv_to_csv('${log_tpm_tsv}', 'log_tpm_norm.csv')
