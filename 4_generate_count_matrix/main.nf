@@ -715,7 +715,7 @@ def convert_tsv_to_csv(tsv_path: str, csv_path: str):
     #     Path to save the output CSV file.
 
     # Read the TSV
-    df = pd.read_csv(tsv_path, sep='\t')
+    df = pd.read_csv(tsv_path, sep='\\t')
     input_rows = len(df)                      # header not included
 
     # Separate the GeneID column
