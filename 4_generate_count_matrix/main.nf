@@ -134,7 +134,7 @@ process SALMON_QUANT {
       -1 ${fq1} -2 ${fq2} \
       -o ${sample}_quant \
       --validateMappings \
-      --minAssignedFrags 8 \
+      --minAssignedFrags 10 \
       -p 4
     
     # Create a flag file to indicate successful completion
