@@ -17,7 +17,7 @@ MAPPED is a nextflow-based workflow orchestrates four modules for processing pub
 To run the entire MAPPED pipeline with a single command, use the provided `run_MAPPED.sh` script:
 
 ```bash
-./run_MAPPED.sh --cpu 20 --organism "Acinetobacter baylyi" --outdir /path/to/output --library_layout paired
+./run_MAPPED.sh --organism 'Pseudomonas putida' --outdir /path/to/outdir --workdir /path/to/workdir --library_layout paired --cpu 40 --clean-mode
 ```
 
 **Parameters:**
