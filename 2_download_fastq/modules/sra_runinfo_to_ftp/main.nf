@@ -1,12 +1,13 @@
 process SRA_RUNINFO_TO_FTP {
 
     container 'quay.io/biocontainers/biopython:1.79'
+    errorStrategy 'ignore'
 
     input:
     path runinfo
 
     output:
-    path "*.tsv"       , emit: tsv
+    path "*.tsv"       , emit: tsv, optional: true
     path "versions.yml", emit: versions
 
     script:

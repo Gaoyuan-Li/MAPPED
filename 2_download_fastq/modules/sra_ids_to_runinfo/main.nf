@@ -1,6 +1,7 @@
 process SRA_IDS_TO_RUNINFO {
     tag "$id"
     label 'error_retry'
+    errorStrategy 'ignore'
 
     container 'quay.io/biocontainers/biopython:1.79'
 
@@ -9,7 +10,7 @@ process SRA_IDS_TO_RUNINFO {
     val fields
 
     output:
-    path "*.tsv"       , emit: tsv
+    path "*.tsv"       , emit: tsv, optional: true
     path "versions.yml", emit: versions
 
     script:

@@ -1,6 +1,6 @@
 process SRA_FASTQ_FTP {
     maxRetries 5
-    errorStrategy 'retry'
+    errorStrategy { task.attempt < 5 ? 'retry' : 'ignore' }
     tag "$meta.id"
     label 'process_low'
     label 'error_retry'
@@ -12,8 +12,8 @@ process SRA_FASTQ_FTP {
     tuple val(meta), val(fastq)
 
     output:
-    tuple val(meta), path("*fastq.gz"), emit: fastq
-    tuple val(meta), path("*md5")     , emit: md5
+    tuple val(meta), path("*fastq.gz"), emit: fastq, optional: true
+    tuple val(meta), path("*md5")     , emit: md5, optional: true
     path "versions.yml"               , emit: versions
 
     script:

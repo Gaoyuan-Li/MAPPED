@@ -1,5 +1,6 @@
 process SRA_TO_SAMPLESHEET {
     tag "$meta.id"
+    errorStrategy 'ignore'
 
     executor 'local'
     memory 100.MB
@@ -11,7 +12,7 @@ process SRA_TO_SAMPLESHEET {
     val mapping_fields
 
     output:
-    tuple val(meta), path("*samplesheet.csv"), emit: samplesheet
+    tuple val(meta), path("*samplesheet.csv"), emit: samplesheet, optional: true
 
     script:
     // Build only the samplesheet with local fastq paths

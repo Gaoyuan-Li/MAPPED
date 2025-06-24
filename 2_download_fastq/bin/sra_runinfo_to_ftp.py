@@ -114,6 +114,7 @@ def parse_sra_runinfo(file_in):
                 else:
                     runinfo[db_id].append(sample)
 
+    logger.info(f"Parsed {len(runinfo)} samples from {file_in}")
     return runinfo, header + extensions
 
 
@@ -121,6 +122,7 @@ def sra_runinfo_to_ftp(files_in, file_out):
     samplesheet = {}
     header = []
     for file_in in files_in:
+        logger.info(f"Processing file: {file_in}")
         runinfo, sample_header = parse_sra_runinfo(file_in)
         header.append(sample_header)
         for db_id, rows in runinfo.items():
@@ -130,20 +132,28 @@ def sra_runinfo_to_ftp(files_in, file_out):
                 logger.warning(f"Duplicate sample identifier found!\nID: '{db_id}'")
 
     # Create a combined header from all input files.
-    combined_header = header[0] + list(set().union(chain.from_iterable(header)).difference(header[0]))
-    combined_header.insert(0, "id")
+    if header:
+        combined_header = header[0] + list(set().union(chain.from_iterable(header)).difference(header[0]))
+        combined_header.insert(0, "id")
+    else:
+        # Default header if no samples were processed
+        combined_header = ["id", "run_accession", "experiment_accession", "library_layout", 
+                          "fastq_ftp", "fastq_md5", "fastq_1", "fastq_2", "md5_1", "md5_2", "single_end"]
 
     # Write samplesheet with paths to FastQ files and md5 sums.
-    if samplesheet:
-        with file_out.open("w", newline="") as fout:
-            writer = csv.DictWriter(fout, fieldnames=combined_header, delimiter="\t")
-            writer.writeheader()
+    # Always create output file, even if empty
+    with file_out.open("w", newline="") as fout:
+        writer = csv.DictWriter(fout, fieldnames=combined_header, delimiter="\t")
+        writer.writeheader()
+        if samplesheet:
             for db_id in sorted(samplesheet):
                 for idx, row in enumerate(samplesheet[db_id], start=1):
                     row["id"] = f"{db_id}"
                     if "run_accession" in row:
                         row["id"] = f"{db_id}_{row['run_accession']}"
                     writer.writerow(row)
+        else:
+            logger.warning(f"No valid samples found. Creating empty output file: {file_out}")
 
 
 def main(args=None):

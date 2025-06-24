@@ -49,13 +49,14 @@ workflow {
     // MODULE: Parse SRA run information, create file containing FTP links and read into workflow as [ meta, [reads] ]
     //
     SRA_RUNINFO_TO_FTP (
-        SRA_IDS_TO_RUNINFO.out.tsv
+        SRA_IDS_TO_RUNINFO.out.tsv.filter { it != null && it.exists() }
     )
     ch_versions = ch_versions.mix(SRA_RUNINFO_TO_FTP.out.versions.first())
 
     SRA_RUNINFO_TO_FTP
         .out
         .tsv
+        .filter { it != null && it.exists() }
         .splitCsv(header:true, sep:'\t')
         .map {
             meta ->
@@ -113,6 +114,7 @@ workflow {
     SRA_TO_SAMPLESHEET
         .out
         .samplesheet
+        .filter { it != null && it[1] != null && it[1].exists() }
         .map { it[1] }
         .collectFile(name:'tmp_samplesheet.csv', newLine: true, keepHeader: true, sort: { it.baseName })
         .map { it.text.tokenize('\n').join('\n') }
