@@ -659,8 +659,80 @@ log_tpm_filtered.to_csv('log_tpm.tsv', sep='\\t')
 counts_filtered.to_csv('counts.tsv', sep='\\t')
 
 print("Reading and filtering samplesheet...")
-# Read and filter samplesheet
-samplesheet_df = pd.read_csv('${samplesheet}')
+# Read and filter samplesheet with robust CSV parsing
+try:
+    # First try standard parsing
+    samplesheet_df = pd.read_csv('${samplesheet}')
+except pd.errors.ParserError as e:
+    print(f"CSV parsing error: {e}")
+    print("Attempting to fix CSV parsing issues...")
+    # Try with different parsing options to handle malformed CSV
+    try:
+        # Try with quoting to handle embedded quotes
+        samplesheet_df = pd.read_csv('${samplesheet}', quotechar='"', skipinitialspace=True)
+    except:
+        try:
+            # Try with python engine and different quoting
+            samplesheet_df = pd.read_csv('${samplesheet}', engine='python', quotechar='"', skipinitialspace=True)
+        except:
+            # Last resort: read line by line and fix manually
+            import csv
+            print("Reading CSV manually to handle parsing errors...")
+            rows = []
+            with open('${samplesheet}', 'r') as f:
+                header = f.readline().strip().split(',')
+                expected_cols = len(header)
+                # Clean header
+                header = [col.strip('"') for col in header]
+                print(f"Expected {expected_cols} columns: {header}")
+                
+                for line_num, line in enumerate(f, start=2):
+                    line = line.strip()
+                    if not line:
+                        continue
+                    
+                    # Simple CSV parsing that handles malformed quotes
+                    fields = []
+                    in_quotes = False
+                    current_field = ""
+                    i = 0
+                    while i < len(line):
+                        char = line[i]
+                        if char == '"':
+                            if in_quotes and i + 1 < len(line) and line[i + 1] == '"':
+                                # Escaped quote
+                                current_field += '"'
+                                i += 2
+                                continue
+                            else:
+                                in_quotes = not in_quotes
+                        elif char == ',' and not in_quotes:
+                            fields.append(current_field.strip('"'))
+                            current_field = ""
+                            i += 1
+                            continue
+                        else:
+                            current_field += char
+                        i += 1
+                    
+                    # Add the last field
+                    fields.append(current_field.strip('"'))
+                    
+                    # Handle field count mismatch
+                    if len(fields) == expected_cols:
+                        rows.append(fields)
+                    elif len(fields) > expected_cols:
+                        print(f"Line {line_num}: Found {len(fields)} fields, merging extras")
+                        # Merge extra fields into the last column
+                        fixed_row = fields[:expected_cols-1] + [','.join(fields[expected_cols-1:])]
+                        rows.append(fixed_row)
+                    else:
+                        print(f"Line {line_num}: Found {len(fields)} fields, padding with empty values")
+                        padded_row = fields + [''] * (expected_cols - len(fields))
+                        rows.append(padded_row)
+            
+            samplesheet_df = pd.DataFrame(rows, columns=header)
+
 print(f"Original samplesheet shape: {samplesheet_df.shape}")
 
 if samples_to_remove:
