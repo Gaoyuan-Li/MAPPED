@@ -591,7 +591,7 @@ process FILTER_SAMPLESHEET {
 process FILTER_LOW_EXPRESSION_SAMPLES {
     tag 'filter_low_expression'
     container 'felixlohmeier/pandas:1.3.3'
-    publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "{tpm.csv,log_tpm.csv, log_tpm_norm.csv,counts.csv}"
+    publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "{tpm.csv,log_tpm.csv,counts.csv}"
     publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true, pattern: "samplesheet.csv"
 
     input:
