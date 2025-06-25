@@ -26,47 +26,54 @@ process DOWNLOAD_REFERENCE {
     # First get the summary to find GenBank accession ID
     datasets summary genome taxon '${organism}' --reference --assembly-source refseq > summary.json
     
-    # Parse the JSON to get GCA accession(s)
-    # Extract all GCA accessions with their sizes
-    gca_info=\$(python3 -c "
-import json
-import sys
-
-with open('summary.json', 'r') as f:
-    data = json.load(f)
-
-if 'reports' not in data or len(data['reports']) == 0:
-    print('ERROR: No reference genomes found', file=sys.stderr)
-    sys.exit(1)
-
-# Collect GenBank accessions with their total sequence lengths
-gca_accessions = []
-for report in data['reports']:
-    if 'paired_accession' in report and report['paired_accession'].startswith('GCA_'):
-        gca = report['paired_accession']
-        size = int(report.get('assembly_stats', {}).get('total_sequence_length', 0))
-        gca_accessions.append((gca, size))
-
-if not gca_accessions:
-    print('ERROR: No GenBank (GCA) accessions found', file=sys.stderr)
-    sys.exit(1)
-
-# Sort by size and pick the largest
-gca_accessions.sort(key=lambda x: x[1], reverse=True)
-selected_gca = gca_accessions[0][0]
-
-print(selected_gca)
-")
+    # Check if we got any results
+    total_count=\$(grep '"total_count"' summary.json | sed 's/.*"total_count"[[:space:]]*:[[:space:]]*\\([0-9]*\\).*/\\1/')
     
-    if [ "\$?" -ne 0 ]; then
-        echo "Error parsing datasets summary"
+    if [ -z "\$total_count" ] || [ "\$total_count" -eq 0 ]; then
+        echo "ERROR: No reference genomes found for ${organism}"
         exit 1
     fi
     
-    echo "Selected GenBank accession: \$gca_info"
+    echo "Found \$total_count reference genome(s)"
+    
+    # Extract all GCA accessions with their sizes
+    # Create a temporary file with GCA accession and size pairs
+    > gca_list.txt
+    
+    # Extract paired_accession and total_sequence_length from each report
+    # This handles multiple reports in the JSON
+    grep -B50 -A50 '"paired_accession"' summary.json | \
+    awk '
+        /"paired_accession".*"GCA_/ {
+            match(\$0, /"GCA_[^"]+/)
+            gca = substr(\$0, RSTART+1, RLENGTH-1)
+        }
+        /"total_sequence_length"/ && gca {
+            match(\$0, /[0-9]+/)
+            size = substr(\$0, RSTART, RLENGTH)
+            print gca, size
+            gca = ""
+        }
+    ' >> gca_list.txt
+    
+    # Check if we found any GCA accessions
+    if [ ! -s gca_list.txt ]; then
+        echo "ERROR: No GenBank (GCA) accessions found in the reference genomes"
+        exit 1
+    fi
+    
+    # Sort by size (second column) and get the largest
+    selected_gca=\$(sort -k2 -nr gca_list.txt | head -n1 | awk '{print \$1}')
+    
+    if [ -z "\$selected_gca" ]; then
+        echo "ERROR: Failed to select a GenBank accession"
+        exit 1
+    fi
+    
+    echo "Selected GenBank accession: \$selected_gca (largest genome)"
     
     # Download the specific GenBank accession
-    datasets download genome accession "\$gca_info" --include gff3,genome --filename ref.zip
+    datasets download genome accession "\$selected_gca" --include gff3,genome --filename ref.zip
     
     # Extract and organize files
     unzip ref.zip -d tmp
@@ -104,7 +111,7 @@ print(selected_gca)
     chmod a+r ref_genome/*
     
     # Cleanup
-    rm -rf tmp ref.zip summary.json
+    rm -rf tmp ref.zip summary.json gca_list.txt
     """
 }
 
