@@ -809,7 +809,7 @@ def normalize_csv(csv_path_in: str, csv_path_out: str):
     final_rows = len(df_final)
 
     # Save to CSV
-    df_final.to_csv(csv_path, index=False)
+    df_final.to_csv(csv_path_out, index=False)
 
 # Process the log TPM file
 normalize_csv('${log_tpm_csv}', 'log_tpm_norm.csv')
