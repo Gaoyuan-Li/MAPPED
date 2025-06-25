@@ -19,59 +19,92 @@ process DOWNLOAD_REFERENCE {
     output:
     path 'ref_genome/*.fna'
     path 'ref_genome/*.gff'
+    path 'ref_genome/datasets_summary.json'
 
     script:
     """
-    datasets download genome taxon '${organism}' --reference --include genome,gff3 --filename ref.zip
-    unzip ref.zip -d tmp
-    # find largest GenBank assembly (GCA) subdirectory in data
-    largest=\$(find tmp/ncbi_dataset/data -mindepth 1 -maxdepth 1 -type d -name "GCA_*" -exec du -s {} + | sort -nr | head -n1 | awk '{print \$2}')
+    # First get the summary to find GenBank accession ID
+    datasets summary genome taxon '${organism}' --reference --assembly-source refseq > summary.json
     
-    if [ -z "\$largest" ]; then
-        echo "Error: No GenBank assembly (GCA) found in downloaded data"
+    # Parse the JSON to get GCA accession(s)
+    # Extract all GCA accessions with their sizes
+    gca_info=\$(python3 -c "
+import json
+import sys
+
+with open('summary.json', 'r') as f:
+    data = json.load(f)
+
+if 'reports' not in data or len(data['reports']) == 0:
+    print('ERROR: No reference genomes found', file=sys.stderr)
+    sys.exit(1)
+
+# Collect GenBank accessions with their total sequence lengths
+gca_accessions = []
+for report in data['reports']:
+    if 'paired_accession' in report and report['paired_accession'].startswith('GCA_'):
+        gca = report['paired_accession']
+        size = int(report.get('assembly_stats', {}).get('total_sequence_length', 0))
+        gca_accessions.append((gca, size))
+
+if not gca_accessions:
+    print('ERROR: No GenBank (GCA) accessions found', file=sys.stderr)
+    sys.exit(1)
+
+# Sort by size and pick the largest
+gca_accessions.sort(key=lambda x: x[1], reverse=True)
+selected_gca = gca_accessions[0][0]
+
+print(selected_gca)
+")
+    
+    if [ "\$?" -ne 0 ]; then
+        echo "Error parsing datasets summary"
         exit 1
     fi
     
-    echo "Selected GenBank assembly: \$(basename \$largest)"
+    echo "Selected GenBank accession: \$gca_info"
     
-    mkdir -p ref_genome
-    # Copy fna files - these should begin with GCA
-    for fna in "\$largest"/*_genomic.fna "\$largest"/*.fna; do
-        if [ -f "\$fna" ]; then
-            basename=\$(basename "\$fna")
-            # Prefer GCA-prefixed files
-            if [[ "\$basename" =~ ^GCA_ ]]; then
-                cp "\$fna" "ref_genome/\$basename"
-                break  # Use the first GCA-prefixed fna file found
-            fi
-        fi
-    done
+    # Download the specific GenBank accession
+    datasets download genome accession "\$gca_info" --include gff3,genome --filename ref.zip
     
-    # If no GCA-prefixed fna found, copy the first available fna with GCA prefix added
-    if [ ! -f ref_genome/*.fna ]; then
-        for fna in "\$largest"/*.fna; do
-            if [ -f "\$fna" ]; then
-                assembly=\$(basename "\$largest")
-                basename=\$(basename "\$fna")
-                cp "\$fna" "ref_genome/\${assembly}_\${basename}"
-                break
-            fi
-        done
+    # Extract and organize files
+    unzip ref.zip -d tmp
+    
+    # Find the GCA directory
+    gca_dir=\$(find tmp/ncbi_dataset/data -mindepth 1 -maxdepth 1 -type d -name "GCA_*" | head -n1)
+    
+    if [ -z "\$gca_dir" ]; then
+        echo "Error: GenBank assembly directory not found after download"
+        exit 1
     fi
     
-    # Copy genomic.gff file (doesn't need GCA prefix)
-    for gff in "\$largest"/*genomic.gff "\$largest"/*.gff; do
-        if [ -f "\$gff" ]; then
-            basename=\$(basename "\$gff")
-            cp "\$gff" "ref_genome/\$basename"
-            break  # Use the first gff file found (preferably genomic.gff)
+    mkdir -p ref_genome
+    
+    # Copy fna files
+    for fna in "\$gca_dir"/*_genomic.fna "\$gca_dir"/*.fna; do
+        if [ -f "\$fna" ]; then
+            cp "\$fna" "ref_genome/\$(basename "\$fna")"
+            break
         fi
     done
     
-    # ensure output files are world-readable for publishDir
-    chmod a+r ref_genome/*.fna ref_genome/*.gff
-    # cleanup
-    rm -rf tmp ref.zip
+    # Copy gff files
+    for gff in "\$gca_dir"/*genomic.gff "\$gca_dir"/*.gff; do
+        if [ -f "\$gff" ]; then
+            cp "\$gff" "ref_genome/\$(basename "\$gff")"
+            break
+        fi
+    done
+    
+    # Save the datasets summary
+    cp summary.json ref_genome/datasets_summary.json
+    
+    # Ensure output files are world-readable for publishDir
+    chmod a+r ref_genome/*
+    
+    # Cleanup
+    rm -rf tmp ref.zip summary.json
     """
 }
 
