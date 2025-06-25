@@ -154,9 +154,9 @@ process MERGE_COUNTS {
       path passed_samples_file
 
     output:
-      path 'tpm.tsv'
-      path 'log_tpm.tsv'
-      path 'counts.tsv'
+      path 'tpm.csv'
+      path 'log_tpm.csv'
+      path 'counts.csv'
 
     script:
     """
@@ -275,41 +275,41 @@ if gene_ids and final_counts:
     sorted_experiments = sorted(final_counts.keys())
     
     # Write counts matrix
-    with open('counts.tsv', 'w') as f:
-        f.write('GeneID\\t' + '\\t'.join(sorted_experiments) + '\\n')
+    with open('counts.csv', 'w') as f:
+        f.write('GeneID,' + ','.join(sorted_experiments) + '\\n')
         for i, gene_id in enumerate(gene_ids):
             f.write(gene_id)
             for exp_id in sorted_experiments:
-                f.write(f'\\t{final_counts[exp_id][i]}')
+                f.write(f',{final_counts[exp_id][i]}')
             f.write('\\n')
     
     # Write TPM matrix  
-    with open('tpm.tsv', 'w') as f:
-        f.write('GeneID\\t' + '\\t'.join(sorted_experiments) + '\\n')
+    with open('tpm.csv', 'w') as f:
+        f.write('GeneID,' + ','.join(sorted_experiments) + '\\n')
         for i, gene_id in enumerate(gene_ids):
             f.write(gene_id)
             for exp_id in sorted_experiments:
-                f.write(f'\\t{final_tpm[exp_id][i]:.6f}')
+                f.write(f',{final_tpm[exp_id][i]:.6f}')
             f.write('\\n')
     
     # Write log TPM matrix (log2(TPM + 1))
-    with open('log_tpm.tsv', 'w') as f:
-        f.write('GeneID\\t' + '\\t'.join(sorted_experiments) + '\\n')
+    with open('log_tpm.csv', 'w') as f:
+        f.write('GeneID,' + ','.join(sorted_experiments) + '\\n')
         for i, gene_id in enumerate(gene_ids):
             f.write(gene_id)
             for exp_id in sorted_experiments:
                 log_tpm = np.log2(final_tpm[exp_id][i] + 1)
-                f.write(f'\\t{log_tpm:.6f}')
+                f.write(f',{log_tpm:.6f}')
             f.write('\\n')
     
     print(f"Generated matrices with {len(gene_ids)} genes and {len(sorted_experiments)} experiments")
 else:
     print("No data to process - creating empty files")
-    with open('counts.tsv', 'w') as f:
+    with open('counts.csv', 'w') as f:
         f.write('GeneID\\n')
-    with open('tpm.tsv', 'w') as f:
+    with open('tpm.csv', 'w') as f:
         f.write('GeneID\\n')
-    with open('log_tpm.tsv', 'w') as f:
+    with open('log_tpm.csv', 'w') as f:
         f.write('GeneID\\n')
 
 EOF
@@ -591,7 +591,7 @@ process FILTER_SAMPLESHEET {
 process FILTER_LOW_EXPRESSION_SAMPLES {
     tag 'filter_low_expression'
     container 'felixlohmeier/pandas:1.3.3'
-    publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "*.tsv"
+    publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "*.csv"
     publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true, pattern: "*.csv"
 
     input:
@@ -601,9 +601,9 @@ process FILTER_LOW_EXPRESSION_SAMPLES {
       path samplesheet
 
     output:
-      path 'tpm.tsv', emit: tpm
-      path 'log_tpm.tsv', emit: log_tpm
-      path 'counts.tsv', emit: counts
+      path 'tpm.csv', emit: tpm
+      path 'log_tpm.csv', emit: log_tpm
+      path 'counts.csv', emit: counts
       path 'samplesheet.csv', emit: samplesheet
 
     script:
@@ -614,9 +614,9 @@ import numpy as np
 
 print("Reading expression matrices...")
 # Read the three expression matrices
-tpm_df = pd.read_csv('${tpm_matrix}', sep='\\t', index_col=0)
-log_tpm_df = pd.read_csv('${log_tpm_matrix}', sep='\\t', index_col=0)
-counts_df = pd.read_csv('${counts_matrix}', sep='\\t', index_col=0)
+tpm_df = pd.read_csv('${tpm_matrix}', index_col=0)
+log_tpm_df = pd.read_csv('${log_tpm_matrix}', index_col=0)
+counts_df = pd.read_csv('${counts_matrix}', index_col=0)
 
 print(f"Original matrices shape: {tpm_df.shape}")
 print(f"Sample columns: {list(tpm_df.columns)}")
@@ -654,9 +654,9 @@ else:
     counts_filtered = counts_df
 
 # Save filtered matrices (overwrite originals)
-tpm_filtered.to_csv('tpm.tsv', sep='\\t')
-log_tpm_filtered.to_csv('log_tpm.tsv', sep='\\t')
-counts_filtered.to_csv('counts.tsv', sep='\\t')
+tpm_filtered.to_csv('tpm.csv')
+log_tpm_filtered.to_csv('log_tpm.csv')
+counts_filtered.to_csv('counts.csv')
 
 print("Reading and filtering samplesheet...")
 # Read and filter samplesheet with robust CSV parsing
@@ -763,7 +763,7 @@ process NORMALIZE_LOG_TPM {
     publishDir "${params.outdir}/expression_matrices", mode: 'copy'
 
     input:
-      path log_tpm_tsv
+      path log_tpm_csv
 
     output:
       path 'log_tpm_norm.csv'
@@ -773,21 +773,20 @@ process NORMALIZE_LOG_TPM {
     python3 - << 'EOF'
 import pandas as pd
 
-def convert_tsv_to_csv(tsv_path: str, csv_path: str):
-    # Convert a TSV file to a CSV file after subtracting the row-wise mean of all
+def normalize_csv(csv_path_in: str, csv_path_out: str):
+    # Normalize a CSV file by subtracting the row-wise mean of all
     # numeric columns (excluding the first, GeneID) from every numeric value in
-    # that row. Rows that become entirely zero are removed. The function prints
-    # the initial and final row counts (header excluded) on one line.
+    # that row. Rows that become entirely zero are removed.
 
     # Parameters
     # ----------
-    # tsv_path : str
-    #     Path to the input TSV file.
-    # csv_path : str
+    # csv_path_in : str
+    #     Path to the input CSV file.
+    # csv_path_out : str
     #     Path to save the output CSV file.
 
-    # Read the TSV
-    df = pd.read_csv(tsv_path, sep='\\t')
+    # Read the CSV
+    df = pd.read_csv(csv_path_in)
     input_rows = len(df)                      # header not included
 
     # Separate the GeneID column
@@ -813,7 +812,7 @@ def convert_tsv_to_csv(tsv_path: str, csv_path: str):
     df_final.to_csv(csv_path, index=False)
 
 # Process the log TPM file
-convert_tsv_to_csv('${log_tpm_tsv}', 'log_tpm_norm.csv')
+normalize_csv('${log_tpm_csv}', 'log_tpm_norm.csv')
 EOF
     """
 }
@@ -922,9 +921,9 @@ workflow {
 
     // Filter out samples with >50% zero values from expression matrices and samplesheet
     filtered_results = FILTER_LOW_EXPRESSION_SAMPLES(
-        count_matrix_ch[0],  // tpm.tsv
-        count_matrix_ch[1],  // log_tpm.tsv  
-        count_matrix_ch[2],  // counts.tsv
+        count_matrix_ch[0],  // tpm.csv
+        count_matrix_ch[1],  // log_tpm.csv  
+        count_matrix_ch[2],  // counts.csv
         filtered_samplesheet_ch
     )
 
