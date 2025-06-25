@@ -19,6 +19,7 @@ process DOWNLOAD_REFERENCE {
     output:
     path 'ref_genome/*.fna'
     path 'ref_genome/*.gff'
+    path 'ref_genome/*.faa'
     path 'ref_genome/datasets_summary.json'
 
     script:
@@ -73,7 +74,7 @@ process DOWNLOAD_REFERENCE {
     echo "Selected GenBank accession: \$selected_gca (largest genome)"
     
     # Download the specific GenBank accession
-    datasets download genome accession "\$selected_gca" --include gff3,genome --filename ref.zip
+    datasets download genome accession "\$selected_gca" --include gff3,protein,genome --filename ref.zip
     
     # Extract and organize files
     unzip ref.zip -d tmp
@@ -100,6 +101,14 @@ process DOWNLOAD_REFERENCE {
     for gff in "\$gca_dir"/*genomic.gff "\$gca_dir"/*.gff; do
         if [ -f "\$gff" ]; then
             cp "\$gff" "ref_genome/\$(basename "\$gff")"
+            break
+        fi
+    done
+    
+    # Copy protein files
+    for faa in "\$gca_dir"/*protein.faa "\$gca_dir"/*.faa; do
+        if [ -f "\$faa" ]; then
+            cp "\$faa" "ref_genome/\$(basename "\$faa")"
             break
         fi
     done
