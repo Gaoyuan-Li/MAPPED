@@ -93,6 +93,7 @@ process TRIMGALORE {
     publishDir "${params.outdir}/trimmed", mode: 'copy'
     cpus threads_per_task
     maxForks max_parallel
+    errorStrategy 'ignore'
 
     input:
       tuple val(sample), path(fq1), path(fq2)
@@ -100,7 +101,7 @@ process TRIMGALORE {
     output:
       tuple val(sample),
             path("${sample}_val_1.fq.gz"),
-            path("${sample}_val_2.fq.gz")
+            path("${sample}_val_2.fq.gz"), optional: true
 
     script:
     """
