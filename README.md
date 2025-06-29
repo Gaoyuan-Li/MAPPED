@@ -43,9 +43,6 @@ The pipeline is designed to handle large-scale datasets with built-in error hand
 
 - **[Nextflow](https://www.nextflow.io/)** (version 21.04.0 or later)
 - **[Docker](https://www.docker.com/)** (version 20.10 or later)
-- **Disk space**: Approximately 5-10 GB per sample (varies by organism and sequencing depth)
-- **Memory**: Minimum 8 GB RAM (16 GB or more recommended for large datasets)
-- **Internet connection**: Required for downloading data from NCBI
 
 ## Installation
 
