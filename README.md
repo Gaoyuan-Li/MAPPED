@@ -1,17 +1,6 @@
 # MAPPED - Modular Automated Pipeline for Public Expression Data
 
-MAPPED (Modular Automated Pipeline for Public Expression Data) is a comprehensive Nextflow-based workflow designed to streamline the analysis of public RNA-seq data from NCBI SRA. It automates the entire process from metadata retrieval to expression matrix generation, making large-scale transcriptomics analysis accessible and reproducible.
-
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Usage](#usage)
-- [Pipeline Modules](#pipeline-modules)
-- [Parameters](#parameters)
-- [Output Structure](#output-structure)
+MAPPED (Modular Automated Pipeline for Public Expression Data) is a comprehensive Nextflow-based workflow designed to analyze public RNA-seq data from NCBI SRA. It automates the entire process from metadata retrieval to expression matrix generation, making large-scale transcriptomics analysis accessible and reproducible.
 
 ## Overview
 
