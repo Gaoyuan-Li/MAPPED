@@ -882,10 +882,14 @@ workflow {
     qc_ch = FASTQC(
         trimmed_ch.map { sample, reads ->
             def readsList = reads instanceof List ? reads : [reads]
+            // Handle cases where TRIMGALORE might return empty or incomplete results
+            if (readsList.isEmpty()) {
+                return null  // Skip this sample
+            }
             def fq1 = readsList[0]
             def fq2 = readsList.size() > 1 ? readsList[1] : null
             tuple(sample, fq1, fq2)
-        }
+        }.filter { it != null }  // Remove null entries
     )
 
     // MultiQC on trimmed QC results
