@@ -101,7 +101,7 @@ process TRIMGALORE {
 
     output:
       tuple val(sample),
-            path("*.fq.gz"), emit: trimmed_reads
+            path("*.fq.gz"), optional: true, emit: trimmed_reads
 
     script:
     def is_paired = reads instanceof List && reads.size() == 2
@@ -880,16 +880,17 @@ workflow {
 
     // QC trimmed reads - need to convert back to individual files for FASTQC
     qc_ch = FASTQC(
-        trimmed_ch.map { sample, reads ->
-            def readsList = reads instanceof List ? reads : [reads]
-            // Handle cases where TRIMGALORE might return empty or incomplete results
-            if (readsList.isEmpty()) {
-                return null  // Skip this sample
+        trimmed_ch
+            .filter { sample, reads -> 
+                // Filter out samples where TRIMGALORE didn't produce output
+                reads != null && (reads instanceof List ? !reads.isEmpty() : true)
             }
-            def fq1 = readsList[0]
-            def fq2 = readsList.size() > 1 ? readsList[1] : null
-            tuple(sample, fq1, fq2)
-        }.filter { it != null }  // Remove null entries
+            .map { sample, reads ->
+                def readsList = reads instanceof List ? reads : [reads]
+                def fq1 = readsList[0]
+                def fq2 = readsList.size() > 1 ? readsList[1] : null
+                tuple(sample, fq1, fq2)
+            }
     )
 
     // MultiQC on trimmed QC results
