@@ -3,11 +3,15 @@
 // Workflow to download a reference genome from NCBI and save to outdir
 
 workflow {
-    if (!params.organism) {
-        error "Missing required parameter --organism"
+    if (params.ref_accession) {
+        // If ref_accession is provided, use it directly
+        DOWNLOAD_REFERENCE_BY_ACCESSION(params.ref_accession)
+    } else if (params.organism) {
+        // Otherwise, use organism name to find reference genome
+        DOWNLOAD_REFERENCE(params.organism)
+    } else {
+        error "Missing required parameter: either --organism or --ref_accession must be provided"
     }
-
-    DOWNLOAD_REFERENCE(params.organism)
 }
 
 process DOWNLOAD_REFERENCE {
@@ -121,6 +125,80 @@ process DOWNLOAD_REFERENCE {
     
     # Cleanup
     rm -rf tmp ref.zip summary.json gca_list.txt
+    """
+}
+
+process DOWNLOAD_REFERENCE_BY_ACCESSION {
+    publishDir "${params.outdir}/seqFiles", mode: 'copy', overwrite: true
+
+    input:
+    val accession
+
+    output:
+    path 'ref_genome/*.fna'
+    path 'ref_genome/*.gff'
+    path 'ref_genome/*.faa'
+    path 'ref_genome/datasets_summary.json'
+
+    script:
+    """
+    # Validate accession format
+    if [[ ! "${accession}" =~ ^GCA_[0-9]+\\.[0-9]+\$ ]]; then
+        echo "ERROR: Invalid accession format: ${accession}"
+        echo "Expected format: GCA_XXXXXXXXX.Y (e.g., GCA_008931305.1)"
+        exit 1
+    fi
+    
+    echo "Downloading genome for accession: ${accession}"
+    
+    # Download the specific GenBank accession
+    datasets download genome accession "${accession}" --include gff3,protein,genome --filename ref.zip
+    
+    # Extract and organize files
+    unzip ref.zip -d tmp
+    
+    # Find the GCA directory
+    gca_dir=\$(find tmp/ncbi_dataset/data -mindepth 1 -maxdepth 1 -type d -name "GCA_*" | head -n1)
+    
+    if [ -z "\$gca_dir" ]; then
+        echo "Error: GenBank assembly directory not found after download"
+        exit 1
+    fi
+    
+    mkdir -p ref_genome
+    
+    # Copy fna files
+    for fna in "\$gca_dir"/*_genomic.fna "\$gca_dir"/*.fna; do
+        if [ -f "\$fna" ]; then
+            cp "\$fna" "ref_genome/\$(basename "\$fna")"
+            break
+        fi
+    done
+    
+    # Copy gff files
+    for gff in "\$gca_dir"/*genomic.gff "\$gca_dir"/*.gff; do
+        if [ -f "\$gff" ]; then
+            cp "\$gff" "ref_genome/\$(basename "\$gff")"
+            break
+        fi
+    done
+    
+    # Copy protein files
+    for faa in "\$gca_dir"/*protein.faa "\$gca_dir"/*.faa; do
+        if [ -f "\$faa" ]; then
+            cp "\$faa" "ref_genome/\$(basename "\$faa")"
+            break
+        fi
+    done
+    
+    # Create a summary JSON for compatibility
+    echo '{"ref_accession": "${accession}"}' > ref_genome/datasets_summary.json
+    
+    # Ensure output files are world-readable for publishDir
+    chmod a+r ref_genome/*
+    
+    # Cleanup
+    rm -rf tmp ref.zip
     """
 }
 

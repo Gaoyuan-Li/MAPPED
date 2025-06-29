@@ -3,15 +3,17 @@ set -euo pipefail
 
 function usage() {
   cat <<EOF
-Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --workdir WORKDIR --clean-mode CLEAN_MODE --cpu CPU
+Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --workdir WORKDIR --clean-mode CLEAN_MODE --cpu CPU [--ref-accession REF_ACCESSION]
 
 Options:
-  --organism        Organism name (e.g., "Acinetobacter baylyi")
+  --organism        Organism name (e.g., "Acinetobacter baylyi") - required for metadata download
   --outdir          Output directory for pipeline results
   --workdir         Work directory for Nextflow 'work' files
-  --library_layout  Library layout (e.g., paired or single)
+  --library_layout  Library layout: 'single', 'paired', or 'both'
   --clean-mode      Clean up intermediate files and caches after pipeline completion.
   --cpu             Number of CPUs to allocate per process
+  --ref-accession   Optional: specific reference genome accession (e.g., "GCA_008931305.1"). 
+                    If not provided, automatically selects the reference strain for the organism.
   -h, --help        Show this help message and exit
 EOF
 }
@@ -23,6 +25,7 @@ LIB_LAYOUT=""
 CLEAN_MODE="false"
 CPU=""
 WORKDIR=""
+REF_ACCESSION=""
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -51,6 +54,10 @@ while [[ $# -gt 0 ]]; do
       CPU="$2"
       shift 2
       ;;
+    --ref-accession)
+      REF_ACCESSION="$2"
+      shift 2
+      ;;
     -h|--help)
       usage
       exit 0
@@ -67,6 +74,13 @@ done
 if [[ -z "$ORGANISM" || -z "$OUTDIR" || -z "$LIB_LAYOUT" || -z "$WORKDIR" ]]; then
   echo "Error: Missing required arguments."
   usage
+  exit 1
+fi
+
+# Validate library_layout parameter
+if [[ "$LIB_LAYOUT" != "single" && "$LIB_LAYOUT" != "paired" && "$LIB_LAYOUT" != "both" ]]; then
+  echo "Error: Invalid library_layout value: $LIB_LAYOUT"
+  echo "Valid values are: single, paired, both"
   exit 1
 fi
 
@@ -97,7 +111,11 @@ popd > /dev/null
 # Step 3: Download reference genome
 echo "=== Step 3: Download reference genome ==="
 pushd 3_download_reference_genome > /dev/null
-nextflow run main.nf -work-dir "$WORKDIR" --organism "$ORGANISM" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
+if [[ -n "$REF_ACCESSION" ]]; then
+  nextflow run main.nf -work-dir "$WORKDIR" --ref_accession "$REF_ACCESSION" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
+else
+  nextflow run main.nf -work-dir "$WORKDIR" --organism "$ORGANISM" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
+fi
 popd > /dev/null
 
 # Step 4: Generate count/tpm matrix

@@ -78,8 +78,9 @@ process FASTQC {
       path "*.{zip,html}", emit: fastqc_files
 
     script:
+    def fastq_files = fq2 ? "${fq1} ${fq2}" : "${fq1}"
     """
-    fastqc --threads 4 -o . ${fq1} ${fq2}
+    fastqc --threads 4 -o . ${fastq_files}
     """
 }
 
@@ -100,13 +101,18 @@ process TRIMGALORE {
 
     output:
       tuple val(sample),
-            path("${sample}_val_1.fq.gz"),
-            path("${sample}_val_2.fq.gz"), optional: true
+            path("*.fq.gz"), emit: trimmed_reads
 
     script:
-    """
-    trim_galore --cores 4 --paired --basename ${sample} --output_dir . ${fq1} ${fq2}
-    """
+    if (fq2) {
+        """
+        trim_galore --cores 4 --paired --basename ${sample} --output_dir . ${fq1} ${fq2}
+        """
+    } else {
+        """
+        trim_galore --cores 4 --basename ${sample} --output_dir . ${fq1}
+        """
+    }
 }
 
 //
@@ -122,17 +128,18 @@ process SALMON_QUANT {
     errorStrategy 'ignore'
 
     input:
-      tuple val(sample), path(fq1), path(fq2)
+      tuple val(sample), path(reads)
       path index
 
     output:
       path "${sample}_quant", optional: true
 
     script:
+    def read_input = reads.size() == 2 ? "-1 ${reads[0]} -2 ${reads[1]}" : "-r ${reads[0]}"
     """
     salmon quant \
       -i ${index} -l A \
-      -1 ${fq1} -2 ${fq2} \
+      ${read_input} \
       -o ${sample}_quant \
       --validateMappings \
       --minAssignedFrags 10 \
@@ -207,8 +214,8 @@ for quant_dir in quant_dirs:
     # This handles SRX_SRR, DRX_DRR, and ERX_ERR patterns
     experiment_id = sample_name.split('_')[0]
     
-    # Get base sample name (remove _val_1/_val_2 suffixes)
-    base_sample_name = sample_name.replace('_val_1', '').replace('_val_2', '')
+    # Get base sample name (remove _val_1/_val_2 suffixes for paired-end or _trimmed for single-end)
+    base_sample_name = sample_name.replace('_val_1', '').replace('_val_2', '').replace('_trimmed', '')
     
     # Only process samples from passed experiments
     if base_sample_name not in passed_sample_ids:
@@ -426,8 +433,8 @@ try:
         # This handles SRX_SRR, DRX_DRR, and ERX_ERR patterns
         experiment_id = sample_name.split('_')[0]
         
-        # Remove _val_1/_val_2 suffix to get base sample name
-        base_sample_name = sample_name.replace('_val_1', '').replace('_val_2', '')
+        # Remove _val_1/_val_2 suffix for paired-end or _trimmed suffix for single-end to get base sample name
+        base_sample_name = sample_name.replace('_val_1', '').replace('_val_2', '').replace('_trimmed', '')
         
         ok = True
         failed_metrics = []
@@ -561,13 +568,20 @@ process FILTER_SAMPLESHEET {
         head -n1 tmp.csv > samplesheet.csv
         
         # Filter rows based on passed sample IDs
-        # The id column (4th column) contains the full sample ID (SRX_SRR, DRX_DRR, or ERX_ERR format)
+        # First, find which column contains 'id' in the header
+        id_col=\$(head -n1 tmp.csv | tr ',' '\n' | grep -n '^"\\?id"\\?\$' | cut -d: -f1)
+        
+        if [ -z "\$id_col" ]; then
+            echo "ERROR: Could not find 'id' column in samplesheet"
+            exit 1
+        fi
+        
         while IFS= read -r sample_id; do
             if [ -n "\$sample_id" ]; then
-                # Look for lines where the id column (4th field) matches the sample ID exactly
-                # Use awk to properly parse CSV and check the id column
-                awk -F',' -v sample="\$sample_id" '
-                    NR > 1 && \$4 == "\\"" sample "\\"" { print }
+                # Look for lines where the id column matches the sample ID exactly
+                # Use awk to properly parse CSV and check the id column dynamically
+                awk -F',' -v col="\$id_col" -v sample="\$sample_id" '
+                    NR > 1 && \$col == "\\"" sample "\\"" { print }
                 ' tmp.csv >> samplesheet.csv || true
             fi
         done < ${passedlist}
@@ -837,21 +851,22 @@ workflow {
         }
         // keep only rows that have all required fields
         .filter { row ->
-            row.id && row.fastq_1 && row.fastq_2 && row.run_accession
+            row.id && row.fastq_1 && row.run_accession
         }
         .ifEmpty {
             error """
     No valid samples found after filtering.
     Make sure your CSV has columns exactly named:
-    id, fastq_1, fastq_2, run_accession.
+    id, fastq_1, run_accession.
     """
         }
         // build the tuple for each sample using the id column which has SRX_SRR, DRX_DRR, or ERX_ERR format
         .map { row ->
+            def fastq2File = (row.fastq_2 && row.fastq_2.trim()) ? file("${params.outdir}/${row.fastq_2}") : null
             tuple(
                 row.id,
                 file("${params.outdir}/${row.fastq_1}"),
-                file("${params.outdir}/${row.fastq_2}")
+                fastq2File
             )
         }
 
@@ -861,9 +876,20 @@ workflow {
 
     // trim
     trimmed_ch = TRIMGALORE(samples_ch)
+        .map { sample, reads ->
+            // Ensure reads is a list (handles both single and paired-end)
+            def readsList = reads instanceof List ? reads : [reads]
+            tuple(sample, readsList)
+        }
 
-    // QC trimmed reads
-    qc_ch = FASTQC(trimmed_ch)
+    // QC trimmed reads - need to convert back to individual files for FASTQC
+    qc_ch = FASTQC(
+        trimmed_ch.map { sample, reads ->
+            def fq1 = reads[0]
+            def fq2 = reads.size() > 1 ? reads[1] : null
+            tuple(sample, fq1, fq2)
+        }
+    )
 
     // MultiQC on trimmed QC results
     multiqc = MULTIQC( qc_ch.collect() )
@@ -901,8 +927,8 @@ workflow {
     trimmed_with_sample_ch = trimmed_ch
         .map { sample_tuple ->
             def sample_id = sample_tuple[0]
-            // Remove _val_1/_val_2 suffixes to get base sample name
-            def base_sample_id = sample_id.replace('_val_1', '').replace('_val_2', '')
+            // Remove _val_1/_val_2 suffixes for paired-end or _trimmed for single-end to get base sample name
+            def base_sample_id = sample_id.replace('_val_1', '').replace('_val_2', '').replace('_trimmed', '')
             tuple(base_sample_id, sample_tuple)
         }
 

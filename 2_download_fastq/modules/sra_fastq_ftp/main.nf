@@ -43,13 +43,15 @@ process SRA_FASTQ_FTP {
         echo "${meta.md5_1}  ${meta.id}_1.fastq.gz" > ${meta.id}_1.fastq.gz.md5
         md5sum -c ${meta.id}_1.fastq.gz.md5
 
-        wget \\
-            $args \\
-            -O ${meta.id}_2.fastq.gz \\
-            ${fastq[1]}
+        if [ "${fastq.size()}" -gt 1 ] && [ -n "${fastq[1]}" ]; then
+            wget \\
+                $args \\
+                -O ${meta.id}_2.fastq.gz \\
+                ${fastq[1]}
 
-        echo "${meta.md5_2}  ${meta.id}_2.fastq.gz" > ${meta.id}_2.fastq.gz.md5
-        md5sum -c ${meta.id}_2.fastq.gz.md5
+            echo "${meta.md5_2}  ${meta.id}_2.fastq.gz" > ${meta.id}_2.fastq.gz.md5
+            md5sum -c ${meta.id}_2.fastq.gz.md5
+        fi
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

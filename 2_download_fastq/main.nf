@@ -84,9 +84,9 @@ workflow {
                     }
 
                     aspera: download_method == 'aspera'
-                        return [ meta, meta.fastq_aspera.tokenize(';').take(2) ]
+                        return [ meta, meta.fastq_aspera.tokenize(';').take(meta.single_end ? 1 : 2) ]
                     ftp: download_method == 'ftp'
-                        return [ meta, [ meta.fastq_1, meta.fastq_2 ] ]
+                        return [ meta, meta.single_end ? [ meta.fastq_1 ] : [ meta.fastq_1, meta.fastq_2 ] ]
                     sratools: download_method == 'sratools'
                         return [ meta, meta.run_accession ]
             }
