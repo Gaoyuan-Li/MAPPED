@@ -98,31 +98,31 @@ mkdir -p "$WORKDIR"
 
 # Step 1: Download metadata
 echo "=== Step 1: Download metadata ==="
-pushd 1_download_metadata_efetch > /dev/null
+pushd 1_download_metadata_efetch > /dev/null 2>&1
 nextflow run main.nf -work-dir "$WORKDIR" --organism "$ORGANISM" --outdir "$OUTDIR" --library_layout "$LIB_LAYOUT" -resume
-popd > /dev/null
+popd > /dev/null 2>&1
 
 # Step 2: Download FASTQ
 echo "=== Step 2: Download FASTQ ==="
-pushd 2_download_fastq > /dev/null
+pushd 2_download_fastq > /dev/null 2>&1
 nextflow run main.nf -work-dir "$WORKDIR" --outdir "$OUTDIR" -resume
-popd > /dev/null
+popd > /dev/null 2>&1
 
 # Step 3: Download reference genome
 echo "=== Step 3: Download reference genome ==="
-pushd 3_download_reference_genome > /dev/null
+pushd 3_download_reference_genome > /dev/null 2>&1
 if [[ -n "$REF_ACCESSION" ]]; then
   nextflow run main.nf -work-dir "$WORKDIR" --ref_accession "$REF_ACCESSION" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
 else
   nextflow run main.nf -work-dir "$WORKDIR" --organism "$ORGANISM" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
 fi
-popd > /dev/null
+popd > /dev/null 2>&1
 
 # Step 4: Generate count/tpm matrix
 echo "=== Step 4: Generate count/tpm matrix ==="
-pushd 4_generate_count_matrix > /dev/null
+pushd 4_generate_count_matrix > /dev/null 2>&1
 nextflow run main.nf -work-dir "$WORKDIR" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
-popd > /dev/null
+popd > /dev/null 2>&1
 
 echo "All steps completed successfully!"
 
