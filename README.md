@@ -162,34 +162,35 @@ The pipeline creates a well-organized output directory structure:
 
 ```
 ${outdir}/
-├── metadata/                 # Downloaded and formatted metadata
-│   ├── all_samples.csv      # Complete metadata for all samples
-│   └── sample_id.csv        # List of SRA accessions
-├── samplesheet/             # Sample information for processing
-│   └── samplesheet.csv      # Formatted samplesheet with file paths
-├── seqFiles/                # Reference genome files
+├── metadata/                    # Downloaded and formatted metadata
+│   ├── all_samples.csv          # Complete metadata for all samples
+│   └── sample_id.csv            # List of SRA accessions
+├── samplesheet/                 # Sample information for processing
+│   ├── samplesheet_download.csv # metadata for all the available samples from NCBI
+│   └── samplesheet.csv          # metadata for the samples that passed QC and quantified in the workflow
+├── seqFiles/                    # Reference genome files
 │   └── ref_genome/
-│       ├── *.fna            # Genome sequence (FASTA)
-│       ├── *.gff            # Gene annotations (GFF3)
-│       ├── *.faa            # Protein sequences (FASTA)
+│       ├── *.fna                # Genome sequence (FASTA)
+│       ├── *.gff                # Gene annotations (GFF3)
+│       ├── *.faa                # Protein sequences (FASTA)
 │       └── datasets_summary.json
-├── fastqc/                  # Quality control reports
-│   ├── *_fastqc.html        # Per-sample QC reports
-│   └── *_fastqc.zip         # QC data files
-├── trimmed/                 # Adapter-trimmed FASTQ files
-│   ├── *_trimmed.fq.gz      # Trimmed sequences
+├── fastqc/                      # Quality control reports
+│   ├── *_fastqc.html            # Per-sample QC reports
+│   └── *_fastqc.zip             # QC data files
+├── trimmed/                     # Adapter-trimmed FASTQ files
+│   ├── *_trimmed.fq.gz          # Trimmed sequences
 │   └── *_trimming_report.txt
-├── salmon/                  # Expression quantification
+├── salmon/                      # Expression quantification
 │   └── <sample_id>/
-│       └── quant.sf         # Quantification results
-├── expression_matrices/     # Final expression data
-│   ├── counts.csv           # Raw count matrix
-│   ├── tpm.csv              # TPM normalized matrix
-│   ├── log_tpm.csv          # Log-transformed TPM
-│   └── log_tpm_norm.csv     # Log-transformed normalized TPM
-└── multiqc/                 # Aggregated quality reports
-    ├── multiqc_report.html  # Interactive report
-    └── multiqc_data/        # Raw MultiQC data
+│       └── quant.sf             # Quantification results
+├── expression_matrices/         # Final expression data
+│   ├── counts.csv               # Raw count matrix
+│   ├── tpm.csv                  # TPM normalized matrix
+│   ├── log_tpm.csv              # Log-transformed TPM
+│   └── log_tpm_norm.csv         # Log-transformed normalized TPM
+└── multiqc/                     # Aggregated quality reports
+    ├── multiqc_report.html      # Interactive report
+    └── multiqc_data/            # Raw MultiQC data
 ```
 
 ### Clean Mode Output
