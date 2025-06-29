@@ -27,13 +27,14 @@ params.ref_gff = "${refDir}/${gffFiles[0]}"
 process EXTRACT_CDS {
     tag 'extract_cds'
     container 'quay.io/biocontainers/gffread:0.9.12--0'
+    errorStrategy 'ignore'
 
     input:
       path genome
       path annotation
 
     output:
-      path 'cds.fa'
+      path 'cds.fa', optional: true
 
     script:
     """
@@ -47,12 +48,13 @@ process EXTRACT_CDS {
 process SALMON_INDEX {
     tag 'salmon_index'
     container 'quay.io/biocontainers/salmon:1.10.3--h45fbf2d_4'
+    errorStrategy 'ignore'
 
     input:
       path cds_fa
 
     output:
-      path 'salmon_index'
+      path 'salmon_index', optional: true
 
     script:
     """
@@ -70,17 +72,22 @@ process FASTQC {
     publishDir "${params.outdir}/fastqc", mode: 'copy'
     cpus threads_per_task
     maxForks max_parallel
+    errorStrategy 'ignore'
 
     input:
       tuple val(sample), path(fq1), path(fq2)
 
     output:
-      path "*.{zip,html}", emit: fastqc_files
+      path "*.{zip,html}", optional: true, emit: fastqc_files
 
     script:
     def fastq_files = fq2 ? "${fq1} ${fq2}" : "${fq1}"
     """
-    fastqc --threads 4 -o . ${fastq_files}
+    fastqc --threads 4 -o . ${fastq_files} || true
+    # Check if FastQC produced output
+    if ! ls *.zip 1> /dev/null 2>&1; then
+        echo "FastQC failed for sample ${sample}" >&2
+    fi
     """
 }
 
@@ -107,12 +114,20 @@ process TRIMGALORE {
     def is_paired = reads instanceof List && reads.size() == 2
     if (is_paired) {
         """
-        trim_galore --cores 4 --paired --basename ${sample} --output_dir . ${reads[0]} ${reads[1]}
+        trim_galore --cores 4 --paired --basename ${sample} --output_dir . ${reads[0]} ${reads[1]} || true
+        # Check if trimming succeeded and create dummy files if not
+        if ! ls *.fq.gz 1> /dev/null 2>&1; then
+            echo "TRIMGALORE failed for sample ${sample}" >&2
+        fi
         """
     } else {
         def read_file = reads instanceof List ? reads[0] : reads
         """
-        trim_galore --cores 4 --basename ${sample} --output_dir . ${read_file}
+        trim_galore --cores 4 --basename ${sample} --output_dir . ${read_file} || true
+        # Check if trimming succeeded and create dummy files if not  
+        if ! ls *.fq.gz 1> /dev/null 2>&1; then
+            echo "TRIMGALORE failed for sample ${sample}" >&2
+        fi
         """
     }
 }
@@ -134,7 +149,7 @@ process SALMON_QUANT {
       path index
 
     output:
-      path "${sample}_quant", optional: true
+      path "${sample}_quant", optional: true, emit: quant_dir
 
     script:
     def read_input = reads.size() == 2 ? "-1 ${reads[0]} -2 ${reads[1]}" : "-r ${reads[0]}"
@@ -158,15 +173,16 @@ process SALMON_QUANT {
 process MERGE_COUNTS {
     publishDir "${params.outdir}/expression_matrices", mode: 'copy'
     container 'felixlohmeier/pandas:1.3.3'
+    errorStrategy 'ignore'
 
     input:
       path quant_dirs
       path passed_samples_file
 
     output:
-      path 'tpm.csv'
-      path 'log_tpm.csv'
-      path 'counts.csv'
+      path 'tpm.csv', optional: true
+      path 'log_tpm.csv', optional: true
+      path 'counts.csv', optional: true
 
     script:
     """
@@ -332,13 +348,14 @@ EOF
 process MULTIQC {
     container 'quay.io/biocontainers/multiqc:1.12--pyhdfd78af_0'
     publishDir "${params.outdir}/multiqc", mode: 'copy'
+    errorStrategy 'ignore'
 
     input:
       path qc_files
 
     output:
-      path 'multiqc_report.html', emit: html
-      path 'multiqc_data.json', emit: json
+      path 'multiqc_report.html', optional: true, emit: html
+      path 'multiqc_data.json', optional: true, emit: json
 
     script:
     """
@@ -379,14 +396,15 @@ process MULTIQC {
 process PARSE_QC {
     tag 'parse_multiqc'
     container 'python:3.9-slim'
+    errorStrategy 'ignore'
 
     input:
       path multiqc_json
 
     output:
-      path 'passed_samples.txt', emit: passlist
-      path 'qc_summary.csv', emit: qc_summary
-      path 'qc_summary.txt', emit: qc_summary_txt
+      path 'passed_samples.txt', optional: true, emit: passlist
+      path 'qc_summary.csv', optional: true, emit: qc_summary
+      path 'qc_summary.txt', optional: true, emit: qc_summary_txt
 
     script:
     """
@@ -547,13 +565,14 @@ process FILTER_SAMPLESHEET {
     tag 'filter_samplesheet'
     container 'ubuntu:22.04'
     publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true
+    errorStrategy 'ignore'
 
     input:
       path samplesheet
       path passedlist
 
     output:
-      path 'samplesheet.csv'
+      path 'samplesheet.csv', optional: true
 
     script:
     """
@@ -610,6 +629,7 @@ process FILTER_LOW_EXPRESSION_SAMPLES {
     container 'felixlohmeier/pandas:1.3.3'
     publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "{tpm.csv,log_tpm.csv,counts.csv}"
     publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true, pattern: "samplesheet.csv"
+    errorStrategy 'ignore'
 
     input:
       path tpm_matrix
@@ -618,10 +638,10 @@ process FILTER_LOW_EXPRESSION_SAMPLES {
       path samplesheet
 
     output:
-      path 'tpm.csv', emit: tpm
-      path 'log_tpm.csv', emit: log_tpm
-      path 'counts.csv', emit: counts
-      path 'samplesheet.csv', emit: samplesheet
+      path 'tpm.csv', optional: true, emit: tpm
+      path 'log_tpm.csv', optional: true, emit: log_tpm
+      path 'counts.csv', optional: true, emit: counts
+      path 'samplesheet.csv', optional: true, emit: samplesheet
 
     script:
     """
@@ -778,12 +798,13 @@ process NORMALIZE_LOG_TPM {
     tag 'normalize_log_tpm'
     container 'felixlohmeier/pandas:1.3.3'
     publishDir "${params.outdir}/expression_matrices", mode: 'copy'
+    errorStrategy 'ignore'
 
     input:
       path log_tpm_csv
 
     output:
-      path 'log_tpm_norm.csv'
+      path 'log_tpm_norm.csv', optional: true
 
     script:
     """
@@ -878,41 +899,81 @@ workflow {
     // trim
     trimmed_ch = TRIMGALORE(samples_ch)
 
+    // Filter successful TRIMGALORE outputs - simpler approach
+    trimmed_success_ch = trimmed_ch
+        .filter { sample, reads ->
+            // With optional: true, empty glob matches return an empty collection
+            if (!reads || (reads instanceof Collection && reads.isEmpty())) {
+                println "Sample ${sample}: No output from TRIMGALORE - filtering out"
+                return false
+            }
+            return true
+        }
+
     // QC trimmed reads - need to convert back to individual files for FASTQC
     qc_ch = FASTQC(
-        trimmed_ch
-            .filter { sample, reads -> 
-                // Filter out samples where TRIMGALORE didn't produce output
-                reads != null && (reads instanceof List ? !reads.isEmpty() : true)
-            }
+        trimmed_success_ch
             .map { sample, reads ->
-                def readsList = reads instanceof List ? reads : [reads]
-                def fq1 = readsList[0]
+                // Convert collection to list
+                def readsList = reads instanceof Collection ? reads.toList() : [reads]
+                // FASTQC expects (sample, fq1, fq2) where fq2 can be null
+                def fq1 = readsList.size() > 0 ? readsList[0] : null
                 def fq2 = readsList.size() > 1 ? readsList[1] : null
+                if (!fq1) {
+                    println "Warning: No reads for sample ${sample} after mapping"
+                    return null
+                }
                 tuple(sample, fq1, fq2)
             }
+            .filter { it != null }
     )
 
-    // MultiQC on trimmed QC results
-    multiqc = MULTIQC( qc_ch.collect() )
+    // Filter successful FASTQC outputs
+    qc_success_ch = qc_ch
+        .filter { files ->
+            // With optional: true, empty outputs return empty collection
+            files != null && !files.isEmpty()
+        }
+
+    // MultiQC on trimmed QC results - only successful ones
+    multiqc = MULTIQC( qc_success_ch.collect() )
     multiqc_json_ch = multiqc.json
+        .filter { it != null }
+        .ifEmpty { 
+            // Create empty JSON file if MultiQC fails
+            file("${params.outdir}/multiqc/empty_multiqc.json").text = '{}'
+            file("${params.outdir}/multiqc/empty_multiqc.json")
+        }
+    
     // Parse MultiQC JSON for passed samples
     parse_qc_result = PARSE_QC( multiqc_json_ch )
     passed_ch = parse_qc_result.passlist
+        .filter { it != null }
+        .ifEmpty { 
+            // Create empty passlist if parsing fails
+            file("${params.outdir}/multiqc/empty_passlist.txt").text = ''
+            file("${params.outdir}/multiqc/empty_passlist.txt")
+        }
     qc_summary_ch = parse_qc_result.qc_summary
+        .filter { it != null }
     qc_summary_txt_ch = parse_qc_result.qc_summary_txt
+        .filter { it != null }
 
-    // Copy QC summary files to multiqc folder
+    // Copy QC summary files to multiqc folder if they exist
     qc_summary_ch.subscribe { qc_file ->
-        def target_dir = file("${params.outdir}/multiqc")
-        target_dir.mkdirs()
-        qc_file.copyTo(target_dir.resolve("qc_summary.csv"))
+        if (qc_file && qc_file.exists()) {
+            def target_dir = file("${params.outdir}/multiqc")
+            target_dir.mkdirs()
+            qc_file.copyTo(target_dir.resolve("qc_summary.csv"))
+        }
     }
     
     qc_summary_txt_ch.subscribe { qc_file ->
-        def target_dir = file("${params.outdir}/multiqc")
-        target_dir.mkdirs()
-        qc_file.copyTo(target_dir.resolve("qc_summary.txt"))
+        if (qc_file && qc_file.exists()) {
+            def target_dir = file("${params.outdir}/multiqc")
+            target_dir.mkdirs()
+            qc_file.copyTo(target_dir.resolve("qc_summary.txt"))
+        }
     }
 
     // Filter original sample sheet based on passed samples
@@ -925,8 +986,8 @@ workflow {
         .filter { it }
         .map { sample_id -> tuple(sample_id, sample_id) }
 
-    // Transform trimmed channel to include sample ID as key
-    trimmed_with_sample_ch = trimmed_ch
+    // Transform trimmed channel to include sample ID as key - use only successful samples
+    trimmed_with_sample_ch = trimmed_success_ch
         .map { sample_tuple ->
             def sample_id = sample_tuple[0]
             // Remove _val_1/_val_2 suffixes for paired-end or _trimmed for single-end to get base sample name
@@ -942,22 +1003,40 @@ workflow {
     // Run Salmon quantification only on QC-passed samples
     quant_ch = SALMON_QUANT(filtered_trimmed_ch, salmon_index_ch)
 
+    // Filter successful Salmon outputs
+    quant_success_ch = quant_ch
+        .filter { quant_dir ->
+            quant_dir != null
+        }
+
     // merge count matrices - wait for both quantification and samplesheet filtering
     count_matrix_ch = MERGE_COUNTS( 
-        quant_ch.collect(), 
+        quant_success_ch.collect(), 
         passed_ch
     )
 
     // Filter out samples with >50% zero values from expression matrices and samplesheet
+    // Only run if we have valid count matrices
+    count_matrix_ch
+        .filter { tpm, log_tpm, counts ->
+            tpm != null && log_tpm != null && counts != null
+        }
+        .combine(filtered_samplesheet_ch.filter { it != null })
+        .set { filter_input_ch }
+    
     filtered_results = FILTER_LOW_EXPRESSION_SAMPLES(
-        count_matrix_ch[0],  // tpm.csv
-        count_matrix_ch[1],  // log_tpm.csv  
-        count_matrix_ch[2],  // counts.csv
-        filtered_samplesheet_ch
+        filter_input_ch.map { tpm, log_tpm, counts, samplesheet -> tpm },
+        filter_input_ch.map { tpm, log_tpm, counts, samplesheet -> log_tpm },
+        filter_input_ch.map { tpm, log_tpm, counts, samplesheet -> counts },
+        filter_input_ch.map { tpm, log_tpm, counts, samplesheet -> samplesheet }
     )
 
-    // Normalize log TPM data
-    NORMALIZE_LOG_TPM(filtered_results.log_tpm)
+    // Normalize log TPM data if available
+    filtered_results.log_tpm
+        .filter { it != null }
+        .set { log_tpm_to_normalize }
+    
+    NORMALIZE_LOG_TPM(log_tpm_to_normalize)
 }
 
 // Add an onComplete event handler to always delete rotated Nextflow log files
