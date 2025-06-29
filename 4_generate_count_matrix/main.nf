@@ -1016,27 +1016,15 @@ workflow {
     )
 
     // Filter out samples with >50% zero values from expression matrices and samplesheet
-    // Only run if we have valid count matrices
-    count_matrix_ch
-        .filter { tpm, log_tpm, counts ->
-            tpm != null && log_tpm != null && counts != null
-        }
-        .combine(filtered_samplesheet_ch.filter { it != null })
-        .set { filter_input_ch }
-    
     filtered_results = FILTER_LOW_EXPRESSION_SAMPLES(
-        filter_input_ch.map { tpm, log_tpm, counts, samplesheet -> tpm },
-        filter_input_ch.map { tpm, log_tpm, counts, samplesheet -> log_tpm },
-        filter_input_ch.map { tpm, log_tpm, counts, samplesheet -> counts },
-        filter_input_ch.map { tpm, log_tpm, counts, samplesheet -> samplesheet }
+        count_matrix_ch[0],  // tpm.csv
+        count_matrix_ch[1],  // log_tpm.csv  
+        count_matrix_ch[2],  // counts.csv
+        filtered_samplesheet_ch
     )
 
     // Normalize log TPM data if available
-    filtered_results.log_tpm
-        .filter { it != null }
-        .set { log_tpm_to_normalize }
-    
-    NORMALIZE_LOG_TPM(log_tpm_to_normalize)
+    NORMALIZE_LOG_TPM(filtered_results.log_tpm)
 }
 
 // Add an onComplete event handler to always delete rotated Nextflow log files
