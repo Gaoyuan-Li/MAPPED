@@ -12,10 +12,6 @@ MAPPED (Modular Automated Pipeline for Public Expression Data) is a comprehensiv
 - [Pipeline Modules](#pipeline-modules)
 - [Parameters](#parameters)
 - [Output Structure](#output-structure)
-- [Examples](#examples)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Overview
 
@@ -73,7 +69,7 @@ Process RNA-seq data for an organism using the default reference genome:
     --outdir ./results \
     --workdir ./work \
     --library_layout paired \
-    --cpu 8
+    --cpu 48
 ```
 
 ## Usage
@@ -92,12 +88,12 @@ To use a specific genome assembly instead of the default reference strain:
 
 ```bash
 ./run_MAPPED.sh \
-    --organism "Acinetobacter baylyi" \
+    --organism "Streptomyces coelicolor" \
     --ref-accession GCA_008931305.1 \
     --outdir ./results \
     --workdir ./work \
     --library_layout paired \
-    --cpu 16
+    --cpu 24
 ```
 
 ### Clean Mode
@@ -122,7 +118,7 @@ To automatically clean up intermediate files after successful completion:
 - Generates formatted metadata files for downstream processing
 
 ### 2. Download FASTQ (Module 2)
-- Downloads raw sequencing data using optimized protocols (ENA when available, SRA fallback)
+- Downloads raw sequencing data
 - Validates downloaded files
 - Creates a samplesheet for downstream analysis
 
@@ -205,112 +201,3 @@ ${outdir}/
 ├── samplesheet/            # Sample metadata
 └── ref_genome/             # Reference genome files
 ```
-
-## Examples
-
-### Example 1: Basic E. coli Analysis
-```bash
-./run_MAPPED.sh \
-    --organism "Escherichia coli" \
-    --outdir ./ecoli_results \
-    --workdir ./ecoli_work \
-    --library_layout paired \
-    --cpu 8
-```
-
-### Example 2: Specific Strain Analysis
-```bash
-# Use a specific P. aeruginosa strain
-./run_MAPPED.sh \
-    --organism "Pseudomonas aeruginosa" \
-    --ref-accession GCA_000006765.1 \
-    --outdir ./pa_pa01_results \
-    --workdir ./pa_work \
-    --library_layout paired \
-    --cpu 16
-```
-
-### Example 3: Large-Scale Analysis with Cleanup
-```bash
-# Process all available samples and clean up afterwards
-./run_MAPPED.sh \
-    --organism "Salmonella enterica" \
-    --outdir ./salmonella_results \
-    --workdir ./salmonella_work \
-    --library_layout both \
-    --cpu 32 \
-    --clean-mode
-```
-
-### Example 4: Resume an Interrupted Run
-```bash
-# Simply re-run the same command - Nextflow will resume automatically
-./run_MAPPED.sh \
-    --organism "Mycobacterium tuberculosis" \
-    --outdir ./mtb_results \
-    --workdir ./mtb_work \
-    --library_layout paired \
-    --cpu 16
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **"No reference genomes found" error**
-   - Verify the organism name matches NCBI taxonomy exactly
-   - Check if the organism has reference genomes available in NCBI
-
-2. **Docker permission errors**
-   - Ensure your user is in the docker group: `sudo usermod -aG docker $USER`
-   - Log out and back in for changes to take effect
-
-3. **Disk space issues**
-   - Use `--clean-mode` to reduce storage requirements
-   - Ensure sufficient space in both `--outdir` and `--workdir`
-
-4. **Memory errors during Salmon quantification**
-   - Reduce the number of CPUs with `--cpu` parameter
-   - Close other memory-intensive applications
-
-5. **Network timeouts during download**
-   - The pipeline will automatically retry failed downloads
-   - For persistent issues, check your internet connection and firewall settings
-
-### Debug Mode
-
-For detailed debugging information, run individual modules:
-```bash
-# Run only the metadata download module
-cd 1_download_metadata_efetch
-nextflow run main.nf -with-trace -with-report
-```
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on:
-- Reporting bugs
-- Suggesting enhancements
-- Submitting pull requests
-- Code style guidelines
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Citation
-
-If you use MAPPED in your research, please cite:
-```
-[Citation information to be added]
-```
-
-## Contact
-
-For questions, issues, or suggestions:
-- Open an issue on [GitHub](https://github.com/your-org/MAPPED/issues)
-- Email: [contact information]
-
----
-
-**Note**: MAPPED is under active development. Please check for updates regularly and report any issues you encounter.
