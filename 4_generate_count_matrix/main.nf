@@ -97,20 +97,22 @@ process TRIMGALORE {
     errorStrategy 'ignore'
 
     input:
-      tuple val(sample), path(fq1), path(fq2)
+      tuple val(sample), path(reads)
 
     output:
       tuple val(sample),
             path("*.fq.gz"), emit: trimmed_reads
 
     script:
-    if (fq2) {
+    def is_paired = reads instanceof List && reads.size() == 2
+    if (is_paired) {
         """
-        trim_galore --cores 4 --paired --basename ${sample} --output_dir . ${fq1} ${fq2}
+        trim_galore --cores 4 --paired --basename ${sample} --output_dir . ${reads[0]} ${reads[1]}
         """
     } else {
+        def read_file = reads instanceof List ? reads[0] : reads
         """
-        trim_galore --cores 4 --basename ${sample} --output_dir . ${fq1}
+        trim_galore --cores 4 --basename ${sample} --output_dir . ${read_file}
         """
     }
 }
@@ -862,12 +864,11 @@ workflow {
         }
         // build the tuple for each sample using the id column which has SRX_SRR, DRX_DRR, or ERX_ERR format
         .map { row ->
-            def fastq2File = (row.fastq_2 && row.fastq_2.trim()) ? file("${params.outdir}/${row.fastq_2}") : null
-            tuple(
-                row.id,
-                file("${params.outdir}/${row.fastq_1}"),
-                fastq2File
-            )
+            def reads = [file("${params.outdir}/${row.fastq_1}")]
+            if (row.fastq_2 && row.fastq_2.trim()) {
+                reads.add(file("${params.outdir}/${row.fastq_2}"))
+            }
+            tuple(row.id, reads)
         }
 
     // build index
@@ -876,17 +877,13 @@ workflow {
 
     // trim
     trimmed_ch = TRIMGALORE(samples_ch)
-        .map { sample, reads ->
-            // Ensure reads is a list (handles both single and paired-end)
-            def readsList = reads instanceof List ? reads : [reads]
-            tuple(sample, readsList)
-        }
 
     // QC trimmed reads - need to convert back to individual files for FASTQC
     qc_ch = FASTQC(
         trimmed_ch.map { sample, reads ->
-            def fq1 = reads[0]
-            def fq2 = reads.size() > 1 ? reads[1] : null
+            def readsList = reads instanceof List ? reads : [reads]
+            def fq1 = readsList[0]
+            def fq2 = readsList.size() > 1 ? readsList[1] : null
             tuple(sample, fq1, fq2)
         }
     )
