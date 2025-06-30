@@ -83,11 +83,20 @@ process FASTQC {
     script:
     def fastq_files = fq2 ? "${fq1} ${fq2}" : "${fq1}"
     """
+    # Ensure sample name is not null or empty
+    if [ -z "${sample}" ] || [ "${sample}" = "null" ]; then
+        echo "ERROR: Invalid sample name: ${sample}" >&2
+        exit 0  # Exit gracefully to not break the pipeline
+    fi
+    
     fastqc --threads 4 -o . ${fastq_files} || true
     # Check if FastQC produced output
     if ! ls *.zip 1> /dev/null 2>&1; then
         echo "FastQC failed for sample ${sample}" >&2
     fi
+    
+    # Remove any files with 'null' in the name to prevent downstream issues
+    rm -f *null* 2>/dev/null || true
     """
 }
 
@@ -928,6 +937,12 @@ workflow {
     qc_ch = FASTQC(
         trimmed_success_ch
             .map { sample, reads ->
+                // Check for valid sample name first
+                if (!sample || sample == "null" || sample.toString().trim().isEmpty()) {
+                    println "Warning: Invalid sample name '${sample}' - skipping FASTQC"
+                    return null
+                }
+                
                 // Ensure we have valid file paths for FASTQC
                 if (!reads) {
                     println "Warning: No reads for sample ${sample} - skipping FASTQC"
@@ -958,6 +973,7 @@ workflow {
                 tuple(sample, fq1, fq2)
             }
             .filter { it != null }  // Remove any null entries
+            .filter { sample, fq1, fq2 -> sample && sample != "null" }  // Double-check sample names
     )
 
     // Filter successful FASTQC outputs
@@ -967,8 +983,17 @@ workflow {
             files != null && !files.isEmpty()
         }
 
-    // MultiQC on trimmed QC results - only successful ones
-    multiqc = MULTIQC( qc_success_ch.collect() )
+    // MultiQC on trimmed QC results - only successful ones, filter out null-named files
+    multiqc = MULTIQC( 
+        qc_success_ch
+            .collect()
+            .map { files ->
+                // Filter out any files with 'null' in the name
+                files.findAll { file ->
+                    !file.getName().contains('null')
+                }
+            }
+    )
     multiqc_json_ch = multiqc.json
         .filter { it != null }
         .ifEmpty { 
