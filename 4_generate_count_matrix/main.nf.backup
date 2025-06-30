@@ -899,65 +899,33 @@ workflow {
     // trim
     trimmed_ch = TRIMGALORE(samples_ch)
 
-    // Filter successful TRIMGALORE outputs - robust filtering
+    // Filter successful TRIMGALORE outputs - simpler approach
     trimmed_success_ch = trimmed_ch
         .filter { sample, reads ->
-            // Check if we have valid reads output
-            if (!reads) {
+            // With optional: true, empty glob matches return an empty collection
+            if (!reads || (reads instanceof Collection && reads.isEmpty())) {
                 println "Sample ${sample}: No output from TRIMGALORE - filtering out"
                 return false
-            }
-            // Handle case where reads is a collection/list
-            if (reads instanceof Collection) {
-                def readsList = reads.toList()
-                if (readsList.isEmpty()) {
-                    println "Sample ${sample}: Empty reads collection from TRIMGALORE - filtering out"
-                    return false
-                }
-                // Check if all elements are valid files
-                def validFiles = readsList.findAll { it && it.exists() }
-                if (validFiles.isEmpty()) {
-                    println "Sample ${sample}: No valid files in reads collection - filtering out"
-                    return false
-                }
             }
             return true
         }
 
-    // QC trimmed reads - more robust handling
+    // QC trimmed reads - need to convert back to individual files for FASTQC
     qc_ch = FASTQC(
         trimmed_success_ch
             .map { sample, reads ->
-                // Ensure we have valid file paths for FASTQC
-                if (!reads) {
-                    println "Warning: No reads for sample ${sample} - skipping FASTQC"
-                    return null
-                }
-                
-                // Convert to list if needed
+                // Convert collection to list
                 def readsList = reads instanceof Collection ? reads.toList() : [reads]
-                
-                // Filter out any null or non-existent files
-                def validReads = readsList.findAll { it && it.exists() }
-                
-                if (validReads.isEmpty()) {
-                    println "Warning: No valid read files for sample ${sample} - skipping FASTQC"
+                // FASTQC expects (sample, fq1, fq2) where fq2 can be null
+                def fq1 = readsList.size() > 0 ? readsList[0] : null
+                def fq2 = readsList.size() > 1 ? readsList[1] : null
+                if (!fq1) {
+                    println "Warning: No reads for sample ${sample} after mapping"
                     return null
                 }
-                
-                // FASTQC expects (sample, fq1, fq2) where fq2 can be null
-                def fq1 = validReads[0]
-                def fq2 = validReads.size() > 1 ? validReads[1] : null
-                
-                // Create a null file placeholder for fq2 if it doesn't exist
-                if (!fq2) {
-                    // Use a special marker to indicate single-end
-                    fq2 = file('/dev/null')
-                }
-                
                 tuple(sample, fq1, fq2)
             }
-            .filter { it != null }  // Remove any null entries
+            .filter { it != null }
     )
 
     // Filter successful FASTQC outputs
