@@ -1,4 +1,5 @@
 process SRA_FASTQ_FTP {
+    maxForks params.max_concurrent_downloads ?: 20
     maxRetries 5
     errorStrategy { task.attempt < 5 ? 'retry' : 'ignore' }
     tag "$meta.id"

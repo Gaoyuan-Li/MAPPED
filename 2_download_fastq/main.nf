@@ -35,6 +35,9 @@ workflow {
 
     main:
     ch_versions = Channel.empty()
+    
+    // Log concurrent download limit
+    log.info "Download concurrency limit set to: ${params.max_concurrent_downloads ?: 20}"
 
     //
     // MODULE: Get SRA run information for public database ids
