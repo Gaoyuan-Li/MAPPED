@@ -142,6 +142,7 @@ To automatically clean up intermediate files after successful completion:
 |-----------|-------------|---------|---------|
 | `--cpu` | Number of CPUs to allocate per process | System dependent | `16` |
 | `--ref-accession` | Specific reference genome accession | Auto-selected | `GCA_008931305.1` |
+| `--max_concurrent_downloads` | Maximum number of concurrent FASTQ downloads | `20` | `10` |
 | `--clean-mode` | Remove intermediate files after completion | `false` | (flag) |
 | `-h, --help` | Display help message | - | (flag) |
 

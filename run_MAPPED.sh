@@ -3,7 +3,7 @@ set -euo pipefail
 
 function usage() {
   cat <<EOF
-Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --workdir WORKDIR --clean-mode CLEAN_MODE --cpu CPU [--ref-accession REF_ACCESSION]
+Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --workdir WORKDIR --clean-mode CLEAN_MODE --cpu CPU [--ref-accession REF_ACCESSION] [--max_concurrent_downloads N]
 
 Options:
   --organism        Organism name (e.g., "Acinetobacter baylyi") - required for metadata download
@@ -14,6 +14,7 @@ Options:
   --cpu             Number of CPUs to allocate per process
   --ref-accession   Optional: specific reference genome accession (e.g., "GCA_008931305.1"). 
                     If not provided, automatically selects the reference strain for the organism.
+  --max_concurrent_downloads  Optional: Maximum number of concurrent downloads (default: 20)
   -h, --help        Show this help message and exit
 EOF
 }
@@ -26,6 +27,7 @@ CLEAN_MODE="false"
 CPU=""
 WORKDIR=""
 REF_ACCESSION=""
+MAX_CONCURRENT_DOWNLOADS=""
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -56,6 +58,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --ref-accession)
       REF_ACCESSION="$2"
+      shift 2
+      ;;
+    --max_concurrent_downloads)
+      MAX_CONCURRENT_DOWNLOADS="$2"
       shift 2
       ;;
     -h|--help)
@@ -105,7 +111,7 @@ popd > /dev/null 2>&1
 # Step 2: Download FASTQ
 echo "=== Step 2: Download FASTQ ==="
 pushd 2_download_fastq > /dev/null 2>&1
-nextflow run main.nf -work-dir "$WORKDIR" --outdir "$OUTDIR" -resume
+nextflow run main.nf -work-dir "$WORKDIR" --outdir "$OUTDIR" ${MAX_CONCURRENT_DOWNLOADS:+--max_concurrent_downloads $MAX_CONCURRENT_DOWNLOADS} -resume
 popd > /dev/null 2>&1
 
 # Step 3: Download reference genome
