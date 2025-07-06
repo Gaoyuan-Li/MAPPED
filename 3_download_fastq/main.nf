@@ -14,11 +14,21 @@ include { SRA_TO_SAMPLESHEET      } from './modules/sra_to_samplesheet'
 "chmod +x ${projectDir}/bin/sra_runinfo_to_ftp.py".execute().waitFor()
 
 // Define input channel for sample IDs from metadata CSV in workdir
-Channel
-    .fromPath("${params.outdir}/metadata/sample_id.csv")
-    .splitCsv(header:true)
-    .map { row -> row.values().first() }
-    .set { ids }
+// If custom input is provided, use that instead
+if (params.input) {
+    Channel
+        .fromPath(params.input)
+        .splitCsv(header:true, quote:'"')
+        .map { row -> row.experiment_accession }
+        .unique()
+        .set { ids }
+} else {
+    Channel
+        .fromPath("${params.outdir}/metadata/sample_id.csv")
+        .splitCsv(header:true)
+        .map { row -> row.values().first() }
+        .set { ids }
+}
 
 // Add process to clean rotated Nextflow logs
 process CLEAN_NEXTFLOW_LOG {
