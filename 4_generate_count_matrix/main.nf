@@ -865,11 +865,12 @@ EOF
 }
 
 //
-// Process: Validate and fix samplesheet to match expression matrix columns exactly
+// Process: Validate data consistency and fix gene ID prefixes
 // This ensures the 'sample' column in samplesheet matches the column names in expression matrices
+// Also removes 'gene-' prefix from gene IDs if present
 //
-process VALIDATION_SAMPLESHEET {
-    tag 'validation_samplesheet'
+process DATA_VALIDATION {
+    tag 'data_validation'
     container 'felixlohmeier/pandas:1.3.3'
     publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true
     publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "{tpm.csv,log_tpm.csv,counts.csv,log_tpm_norm.csv}"
@@ -895,8 +896,9 @@ process VALIDATION_SAMPLESHEET {
 import pandas as pd
 import sys
 
-print("=== VALIDATION_SAMPLESHEET ===")
+print("=== DATA_VALIDATION ===")
 print("Ensuring samplesheet 'sample' column matches expression matrix columns exactly...")
+print("Also checking and fixing gene ID prefixes...")
 
 # Read expression matrices to get column names
 print("\\nReading expression matrices...")
@@ -1019,9 +1021,21 @@ if 'sample' in cols:
 filtered_samplesheet.to_csv('samplesheet.csv', index=False)
 print(f"\\nUpdated samplesheet: {len(samplesheet_df)} → {len(filtered_samplesheet)} rows")
 
-# Copy expression matrices to output (they remain unchanged)
+# Process expression matrices - check for 'gene-' prefix and remove if present
+print("\\n=== PROCESSING GENE IDs ===")
 for matrix_name in matrix_files.keys():
     df = pd.read_csv(matrix_files[matrix_name], index_col=0)
+    
+    # Check if gene IDs start with 'gene-'
+    if df.index[0].startswith('gene-'):
+        print(f"{matrix_name}: Found 'gene-' prefix in gene IDs, removing...")
+        # Remove 'gene-' prefix from all gene IDs
+        df.index = df.index.str.replace('^gene-', '', regex=True)
+        print(f"  Example: gene-WMS_00296 → WMS_00296")
+    else:
+        print(f"{matrix_name}: No 'gene-' prefix found in gene IDs")
+    
+    # Save the processed matrix
     df.to_csv(matrix_name)
 
 # Final verification
@@ -1269,7 +1283,8 @@ workflow {
     log_tpm_norm_ch = NORMALIZE_LOG_TPM(filtered_results.log_tpm)
     
     // Validate and ensure samplesheet matches expression matrices exactly
-    validated_results = VALIDATION_SAMPLESHEET(
+    // Also remove 'gene-' prefix from gene IDs if present
+    validated_results = DATA_VALIDATION(
         filtered_results.samplesheet,
         filtered_results.tpm,
         filtered_results.log_tpm,
