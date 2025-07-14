@@ -872,7 +872,7 @@ EOF
 process DATA_VALIDATION {
     tag 'data_validation'
     container 'felixlohmeier/pandas:1.3.3'
-    publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true
+    publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true, pattern: "samplesheet.csv"
     publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "{tpm.csv,log_tpm.csv,counts.csv,log_tpm_norm.csv}"
     errorStrategy 'terminate'
 

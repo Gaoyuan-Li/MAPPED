@@ -130,6 +130,23 @@ pushd 4_generate_count_matrix > /dev/null 2>&1
 nextflow run main.nf -work-dir "$WORKDIR" --outdir "$OUTDIR" ${CPU:+--cpu $CPU} -resume
 popd > /dev/null 2>&1
 
+# Print sample counts after Step 4
+echo "=== Sample Count Summary ==="
+if [[ -f "$OUTDIR/samplesheet/samplesheet_download.csv" ]]; then
+  download_count=$(tail -n +2 "$OUTDIR/samplesheet/samplesheet_download.csv" | grep -c '^')
+  echo "Downloaded samples (samplesheet_download.csv): $download_count"
+else
+  echo "samplesheet_download.csv not found"
+fi
+
+if [[ -f "$OUTDIR/samplesheet/samplesheet.csv" ]]; then
+  filtered_count=$(tail -n +2 "$OUTDIR/samplesheet/samplesheet.csv" | grep -c '^')
+  echo "Samples passing filtration (samplesheet.csv): $filtered_count"
+else
+  echo "samplesheet.csv not found"
+fi
+echo "============================="
+
 echo "All steps completed successfully!"
 
 if [[ "$CLEAN_MODE" == "true" ]]; then
