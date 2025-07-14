@@ -865,6 +865,191 @@ EOF
 }
 
 //
+// Process: Validate and fix samplesheet to match expression matrix columns exactly
+// This ensures the 'sample' column in samplesheet matches the column names in expression matrices
+//
+process VALIDATION_SAMPLESHEET {
+    tag 'validation_samplesheet'
+    container 'felixlohmeier/pandas:1.3.3'
+    publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true
+    publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "{tpm.csv,log_tpm.csv,counts.csv,log_tpm_norm.csv}"
+    errorStrategy 'terminate'
+
+    input:
+      path samplesheet
+      path tpm_matrix
+      path log_tpm_matrix
+      path counts_matrix
+      path log_tpm_norm_matrix
+
+    output:
+      path 'samplesheet.csv', emit: samplesheet
+      path 'tpm.csv', emit: tpm
+      path 'log_tpm.csv', emit: log_tpm
+      path 'counts.csv', emit: counts
+      path 'log_tpm_norm.csv', emit: log_tpm_norm
+
+    script:
+    """
+    python3 - << 'EOF'
+import pandas as pd
+import sys
+
+print("=== VALIDATION_SAMPLESHEET ===")
+print("Ensuring samplesheet 'sample' column matches expression matrix columns exactly...")
+
+# Read expression matrices to get column names
+print("\\nReading expression matrices...")
+matrix_files = {
+    'counts.csv': '${counts_matrix}',
+    'tpm.csv': '${tpm_matrix}',
+    'log_tpm.csv': '${log_tpm_matrix}',
+    'log_tpm_norm.csv': '${log_tpm_norm_matrix}'
+}
+
+matrix_columns = {}
+for matrix_name, matrix_file in matrix_files.items():
+    df = pd.read_csv(matrix_file, index_col=0)
+    matrix_columns[matrix_name] = list(df.columns)
+    print(f"  {matrix_name}: {len(df.columns)} samples")
+
+# Check if all matrices have the same columns
+all_columns = list(matrix_columns.values())
+reference_cols = all_columns[0]
+
+if len(all_columns) > 1:
+    matrices_consistent = all(cols == reference_cols for cols in all_columns[1:])
+    if not matrices_consistent:
+        print("ERROR: Expression matrices have inconsistent columns!")
+        sys.exit(1)
+
+expression_samples = set(reference_cols)
+expression_samples_ordered = reference_cols
+print(f"\\nExpression matrices: {len(expression_samples)} samples found")
+
+# Read samplesheet
+print("\\nReading samplesheet...")
+samplesheet_df = pd.read_csv('${samplesheet}')
+print(f"Original samplesheet: {len(samplesheet_df)} rows")
+
+# Find sample ID column - prioritize 'sample' column, then try other common names
+sample_col = None
+if 'sample' in samplesheet_df.columns:
+    sample_col = 'sample'
+else:
+    for col in ['Sample', 'experiment_accession', 'sample_id', 'Sample_ID', 'id']:
+        if col in samplesheet_df.columns:
+            sample_col = col
+            break
+
+if sample_col is None:
+    print("ERROR: Could not identify sample ID column in samplesheet")
+    print(f"Available columns: {list(samplesheet_df.columns)}")
+    sys.exit(1)
+
+print(f"Using column '{sample_col}' as sample ID")
+
+# Merge duplicate samples (multiple runs for same experiment)
+print("\\nChecking for duplicate samples...")
+duplicates = samplesheet_df[samplesheet_df.duplicated(subset=[sample_col], keep=False)]
+if len(duplicates) > 0:
+    print(f"Found {samplesheet_df[sample_col].nunique()} unique samples from {len(samplesheet_df)} rows")
+    
+    # Columns that should be concatenated with semicolons when merging
+    concat_columns = ['run_accession', 'id', 'fastq_1', 'fastq_2', 'fastq_md5', 
+                      'fastq_bytes', 'fastq_ftp', 'fastq_galaxy', 'fastq_aspera',
+                      'run_alias', 'base_count', 'read_count']
+    
+    # Group by sample column and merge
+    merged_rows = []
+    grouped = samplesheet_df.groupby(sample_col)
+    
+    for sample_id, group in grouped:
+        if len(group) == 1:
+            merged_rows.append(group.iloc[0].to_dict())
+        else:
+            # Merge duplicate rows
+            merged_row = {}
+            for col in samplesheet_df.columns:
+                if col in concat_columns:
+                    # Concatenate these columns with semicolon
+                    values = group[col].dropna().astype(str).tolist()
+                    merged_row[col] = ';'.join(values) if values else ''
+                else:
+                    # For other columns, take the first non-null value
+                    non_null_values = group[col].dropna()
+                    if len(non_null_values) > 0:
+                        merged_row[col] = non_null_values.iloc[0]
+                    else:
+                        merged_row[col] = ''
+            merged_rows.append(merged_row)
+    
+    samplesheet_df = pd.DataFrame(merged_rows)
+    print(f"After merging: {len(samplesheet_df)} rows")
+
+# Get current samples in samplesheet
+samplesheet_samples = set(samplesheet_df[sample_col].astype(str).unique())
+
+# Check what needs to be updated
+samples_to_keep = samplesheet_samples.intersection(expression_samples)
+samples_to_remove = samplesheet_samples - expression_samples
+missing_samples = expression_samples - samplesheet_samples
+
+print(f"\\nAnalysis:")
+print(f"  - Samples in both: {len(samples_to_keep)}")
+print(f"  - Samples to remove from samplesheet: {len(samples_to_remove)}")
+print(f"  - Samples missing from samplesheet: {len(missing_samples)}")
+
+# Filter samplesheet to keep only samples in expression matrix
+filtered_samplesheet = samplesheet_df[samplesheet_df[sample_col].astype(str).isin(expression_samples)]
+
+# If the sample column is not named 'sample', rename it
+if sample_col != 'sample':
+    filtered_samplesheet = filtered_samplesheet.rename(columns={sample_col: 'sample'})
+    print(f"\\nRenamed column '{sample_col}' to 'sample'")
+
+# Ensure column order makes sense (sample column first)
+cols = filtered_samplesheet.columns.tolist()
+if 'sample' in cols:
+    cols.remove('sample')
+    cols = ['sample'] + cols
+    filtered_samplesheet = filtered_samplesheet[cols]
+
+# Save updated samplesheet
+filtered_samplesheet.to_csv('samplesheet.csv', index=False)
+print(f"\\nUpdated samplesheet: {len(samplesheet_df)} → {len(filtered_samplesheet)} rows")
+
+# Copy expression matrices to output (they remain unchanged)
+for matrix_name in matrix_files.keys():
+    df = pd.read_csv(matrix_files[matrix_name], index_col=0)
+    df.to_csv(matrix_name)
+
+# Final verification
+print("\\n=== FINAL VERIFICATION ===")
+final_samplesheet_samples = set(filtered_samplesheet['sample'].astype(str).unique())
+matrix_samples = set(reference_cols)
+
+if final_samplesheet_samples == matrix_samples:
+    print("✅ SUCCESS: Samplesheet 'sample' column now matches expression matrix columns exactly!")
+    print(f"   Both contain {len(matrix_samples)} samples")
+else:
+    # This should not happen, but check anyway
+    in_samplesheet_not_matrix = final_samplesheet_samples - matrix_samples
+    in_matrix_not_samplesheet = matrix_samples - final_samplesheet_samples
+    
+    if in_samplesheet_not_matrix:
+        print(f"❌ ERROR: {len(in_samplesheet_not_matrix)} samples in samplesheet but not in matrices")
+    if in_matrix_not_samplesheet:
+        print(f"❌ ERROR: {len(in_matrix_not_samplesheet)} samples in matrices but not in samplesheet")
+        if len(in_matrix_not_samplesheet) <= 10:
+            print(f"   Missing samples: {sorted(in_matrix_not_samplesheet)}")
+    sys.exit(1)
+
+EOF
+    """
+}
+
+//
 // Main workflow
 //
 workflow {
@@ -1081,7 +1266,16 @@ workflow {
     )
 
     // Normalize log TPM data if available
-    NORMALIZE_LOG_TPM(filtered_results.log_tpm)
+    log_tpm_norm_ch = NORMALIZE_LOG_TPM(filtered_results.log_tpm)
+    
+    // Validate and ensure samplesheet matches expression matrices exactly
+    validated_results = VALIDATION_SAMPLESHEET(
+        filtered_results.samplesheet,
+        filtered_results.tpm,
+        filtered_results.log_tpm,
+        filtered_results.counts,
+        log_tpm_norm_ch
+    )
 }
 
 // Add an onComplete event handler to always delete rotated Nextflow log files
