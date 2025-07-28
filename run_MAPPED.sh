@@ -133,15 +133,17 @@ popd > /dev/null 2>&1
 # Print sample counts after Step 4
 echo "=== Sample Count Summary ==="
 if [[ -f "$OUTDIR/samplesheet/samplesheet_download.csv" ]]; then
+  # Count rows (which are now unique experiments after merging in DATA_VALIDATION)
   download_count=$(tail -n +2 "$OUTDIR/samplesheet/samplesheet_download.csv" | grep -c '^')
-  echo "Downloaded samples (samplesheet_download.csv): $download_count"
+  echo "Downloaded experiments (samplesheet_download.csv): $download_count"
 else
   echo "samplesheet_download.csv not found"
 fi
 
 if [[ -f "$OUTDIR/samplesheet/samplesheet.csv" ]]; then
+  # Count rows (which are unique experiments after DATA_VALIDATION merging)
   filtered_count=$(tail -n +2 "$OUTDIR/samplesheet/samplesheet.csv" | grep -c '^')
-  echo "Samples passing filtration (samplesheet.csv): $filtered_count"
+  echo "Experiments passing filtration (samplesheet.csv): $filtered_count"
 else
   echo "samplesheet.csv not found"
 fi

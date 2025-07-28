@@ -872,7 +872,7 @@ EOF
 process DATA_VALIDATION {
     tag 'data_validation'
     container 'felixlohmeier/pandas:1.3.3'
-    publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true, pattern: "samplesheet.csv"
+    publishDir "${params.outdir}/samplesheet", mode: 'copy', overwrite: true, pattern: "{samplesheet.csv,samplesheet_download.csv}"
     publishDir "${params.outdir}/expression_matrices", mode: 'copy', overwrite: true, pattern: "{tpm.csv,log_tpm.csv,counts.csv,log_tpm_norm.csv}"
     errorStrategy 'terminate'
 
@@ -885,6 +885,7 @@ process DATA_VALIDATION {
 
     output:
       path 'samplesheet.csv', emit: samplesheet
+      path 'samplesheet_download.csv', emit: samplesheet_download, optional: true
       path 'tpm.csv', emit: tpm
       path 'log_tpm.csv', emit: log_tpm
       path 'counts.csv', emit: counts
@@ -895,10 +896,89 @@ process DATA_VALIDATION {
     python3 - << 'EOF'
 import pandas as pd
 import sys
+import os
 
 print("=== DATA_VALIDATION ===")
 print("Ensuring samplesheet 'sample' column matches expression matrix columns exactly...")
 print("Also checking and fixing gene ID prefixes...")
+
+# First, process samplesheet_download.csv if it exists
+samplesheet_download_path = "${params.outdir}/samplesheet/samplesheet_download.csv"
+if os.path.exists(samplesheet_download_path):
+    print("\\n=== PROCESSING SAMPLESHEET_DOWNLOAD.CSV ===")
+    try:
+        download_df = pd.read_csv(samplesheet_download_path)
+        print(f"Original samplesheet_download.csv: {len(download_df)} rows")
+        
+        if 'id' in download_df.columns:
+            # Extract experiment ID (everything before first underscore)
+            download_df['experiment_id'] = download_df['id'].str.split('_').str[0]
+            
+            # Check for duplicates
+            duplicates = download_df[download_df.duplicated(subset=['experiment_id'], keep=False)]
+            if len(duplicates) > 0:
+                print(f"Found {download_df['experiment_id'].nunique()} unique experiments from {len(download_df)} rows")
+                
+                # Columns that should be concatenated with semicolons when merging
+                concat_columns = ['run_accession', 'id', 'fastq_1', 'fastq_2', 'fastq_md5', 
+                                  'fastq_bytes', 'fastq_ftp', 'fastq_galaxy', 'fastq_aspera',
+                                  'run_alias', 'base_count', 'read_count']
+                
+                # Group by experiment_id and merge
+                merged_rows = []
+                grouped = download_df.groupby('experiment_id')
+                
+                for exp_id, group in grouped:
+                    if len(group) == 1:
+                        row = group.iloc[0].to_dict()
+                        # Use experiment_id as the new id
+                        row['id'] = exp_id
+                        merged_rows.append(row)
+                    else:
+                        # Merge duplicate rows
+                        merged_row = {'id': exp_id, 'experiment_id': exp_id}
+                        for col in download_df.columns:
+                            if col in ['id', 'experiment_id']:
+                                continue  # Already set above
+                            elif col in concat_columns:
+                                # Concatenate these columns with semicolon
+                                values = group[col].dropna().astype(str).tolist()
+                                merged_row[col] = ';'.join(values) if values else ''
+                            else:
+                                # For other columns, take the first non-null value
+                                non_null_values = group[col].dropna()
+                                if len(non_null_values) > 0:
+                                    merged_row[col] = non_null_values.iloc[0]
+                                else:
+                                    merged_row[col] = ''
+                        merged_rows.append(merged_row)
+                
+                download_df = pd.DataFrame(merged_rows)
+                # Remove the experiment_id column as it's now redundant with id
+                if 'experiment_id' in download_df.columns:
+                    download_df = download_df.drop('experiment_id', axis=1)
+                print(f"After merging by experiment: {len(download_df)} rows")
+            else:
+                # No duplicates, just update id to be experiment_id
+                download_df['id'] = download_df['experiment_id']
+                download_df = download_df.drop('experiment_id', axis=1)
+                print("No duplicate experiments found")
+            
+            # Save the merged samplesheet_download.csv
+            download_df.to_csv('samplesheet_download.csv', index=False)
+            print("Updated samplesheet_download.csv with merged experiments")
+        else:
+            print("ERROR: 'id' column not found in samplesheet_download.csv")
+            # Just copy the original file
+            import shutil
+            shutil.copy(samplesheet_download_path, 'samplesheet_download.csv')
+            
+    except Exception as e:
+        print(f"ERROR processing samplesheet_download.csv: {e}")
+        # Copy original file on error
+        import shutil
+        if os.path.exists(samplesheet_download_path):
+            shutil.copy(samplesheet_download_path, 'samplesheet_download.csv')
 
 # Read expression matrices to get column names
 print("\\nReading expression matrices...")
