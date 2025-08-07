@@ -1,0 +1,162 @@
+MAPPED WORKFLOW DESCRIPTION
+===========================
+
+OVERVIEW
+--------
+MAPPED (Multi-organism Automated Processing Pipeline for Expression Data) is a comprehensive Nextflow-based workflow for downloading and processing RNA-seq data from public repositories. The pipeline automates the entire process from metadata fetching to gene expression quantification, implementing quality control and data filtering at multiple stages.
+
+WORKFLOW STEPS
+--------------
+
+STEP 1: DOWNLOAD METADATA (1_download_metadata_efetch)
+------------------------------------------------------
+Purpose: Fetch RNA-seq metadata from NCBI SRA for a specified organism
+
+Processes:
+1. FETCH_METADATA
+   - Queries NCBI SRA database for RNA-seq transcriptomic data
+   - Uses esearch/efetch from Entrez Direct tools
+   - Filters for specified organism, "rna seq" strategy, and "transcriptomic" source
+
+2. FORMAT_METADATA
+   - Cleans and formats the raw metadata
+   - Filters by library layout (single, paired, or both)
+   - Creates sample_id.csv for downstream processing
+   - Outputs formatted metadata TSV file
+
+STEP 2: DOWNLOAD FASTQ FILES (2_download_fastq)
+------------------------------------------------
+Purpose: Download FASTQ files from SRA/ENA based on metadata
+
+Processes:
+1. SRA_IDS_TO_RUNINFO
+   - Converts sample IDs to detailed run information
+   - Fetches metadata fields from ENA
+
+2. SRA_RUNINFO_TO_FTP
+   - Parses run information to extract FTP download links
+   - Creates metadata for each sample
+
+3. SRA_FASTQ_FTP
+   - Downloads FASTQ files via FTP
+   - Validates downloads with MD5 checksums
+   - Supports concurrent downloads with configurable limit
+
+4. SRA_TO_SAMPLESHEET
+   - Creates standardized samplesheet for downstream analysis
+   - Maps sample metadata fields
+
+STEP 3: DOWNLOAD REFERENCE GENOME (3_download_reference_genome)
+---------------------------------------------------------------
+Purpose: Download reference genome and annotations from NCBI
+
+Processes:
+1. DOWNLOAD_REFERENCE or DOWNLOAD_REFERENCE_BY_ACCESSION
+   - If organism name provided: searches for reference genomes, selects largest
+   - If accession provided: downloads specific genome
+   - Downloads genome (FASTA), annotations (GFF), and proteins (FAA)
+   - Uses NCBI datasets tool
+
+STEP 4: GENERATE COUNT MATRIX (4_generate_count_matrix)
+-------------------------------------------------------
+Purpose: Process FASTQ files to generate gene expression matrices
+
+Processes:
+1. EXTRACT_CDS
+   - Extracts coding sequences from reference genome using GFF annotations
+   - Uses gffread tool
+
+2. SALMON_INDEX
+   - Builds Salmon index from CDS sequences
+   - Enables fast transcript quantification
+
+3. TRIMGALORE
+   - Quality and adapter trimming of raw FASTQ files
+   - Automatic adapter detection
+
+4. FASTQC
+   - Quality control analysis of trimmed reads
+   - Generates QC reports for each sample
+
+5. SALMON_QUANT
+   - Quantifies transcript expression using Salmon
+   - Validates mappings and applies minimum fragment threshold
+
+6. MULTIQC
+   - Aggregates QC reports from all samples
+   - Creates comprehensive quality report
+
+7. PARSE_QC
+   - Parses MultiQC JSON to identify samples passing QC
+   - Filters based on:
+     * Per base sequence quality
+     * Per sequence quality scores
+     * Per base N content
+   - Groups samples by experiment ID
+
+8. FILTER_SAMPLESHEET
+   - Filters samplesheet to keep only QC-passed samples
+
+9. MERGE_COUNTS
+   - Merges quantification results across samples
+   - For multi-run experiments: sums counts and recalculates TPM
+   - Generates three matrices:
+     * counts.csv: Raw read counts
+     * tpm.csv: Transcripts Per Million
+     * log_tpm.csv: Log2(TPM + 1)
+
+10. FILTER_LOW_EXPRESSION_SAMPLES
+    - Removes samples with >50% zero expression values
+    - Updates all expression matrices and samplesheet
+
+11. NORMALIZE_LOG_TPM
+    - Normalizes log TPM values by subtracting row-wise means
+    - Creates log_tpm_norm.csv
+
+12. DATA_VALIDATION
+    - Ensures consistency between samplesheet and expression matrices
+    - Merges duplicate samples (multiple runs per experiment)
+    - Removes 'gene-' prefix from gene IDs if present
+    - Validates that sample columns match exactly
+
+QUALITY CONTROL FEATURES
+------------------------
+- Multi-level quality filtering:
+  * FastQC metrics (per-base quality, N content)
+  * Salmon mapping validation
+  * Low expression sample removal
+- Automatic handling of technical replicates
+- Experiment-level QC (all runs for an experiment must pass)
+
+OUTPUT STRUCTURE
+----------------
+outdir/
+├── expression_matrices/
+│   ├── counts.csv         # Raw read counts
+│   ├── tpm.csv           # TPM values
+│   ├── log_tpm.csv       # Log2(TPM + 1)
+│   └── log_tpm_norm.csv  # Normalized log TPM
+├── samplesheet/
+│   ├── samplesheet.csv          # Final filtered samples
+│   └── samplesheet_download.csv # All downloaded samples
+├── ref_genome/           # Reference genome files (when clean mode used)
+└── multiqc/             # QC reports and summaries
+
+EXECUTION
+---------
+The workflow is orchestrated by run_MAPPED.sh, which:
+1. Validates input parameters
+2. Executes each step sequentially
+3. Supports resume functionality
+4. Optional clean mode to remove intermediate files
+5. Reports sample count summaries
+
+KEY FEATURES
+------------
+- Automated end-to-end RNA-seq data processing
+- Robust error handling and optional process retry
+- Configurable for different organisms and library types
+- Comprehensive quality control and filtering
+- Support for both single-end and paired-end data
+- Handles technical replicates automatically
+- Clean, standardized output format
