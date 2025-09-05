@@ -4,6 +4,7 @@ def runStartTime = System.currentTimeMillis()
 
 params.organism = null
 params.outdir = null
+params.strain = null
 
 process FETCH_METADATA {
 
@@ -36,6 +37,7 @@ process FORMAT_METADATA {
         path clean_script
         val  organism
         val  library_layout
+        val  strain
 
     output:
         path "*_metadata.tsv"                 // ⬅ any metadata file
@@ -44,9 +46,10 @@ process FORMAT_METADATA {
     script:
         def safe_name = organism.replaceAll(/\s+/, '_')
         def outfile   = "${safe_name}_metadata.tsv"
+        def strain_opt = strain ? "--strain \"${strain}\"" : ""
 
         """
-        python3 ${clean_script} -i ${raw_tsv} -o ${outfile} -l ${library_layout}
+        python3 ${clean_script} -i ${raw_tsv} -o ${outfile} -l ${library_layout} ${strain_opt}
         """
 }
 
@@ -63,7 +66,8 @@ workflow {
         raw_metadata,
         clean_script,
         params.organism,
-        params.library_layout
+        params.library_layout,
+        params.strain
     )
 
 }

@@ -20,6 +20,7 @@ nextflow run main.nf \
 - `--organism <String>`: Scientific name of the organism (in quotes if containing spaces).
 - `--outdir <Path>`: Directory where output will be saved (created if it does not exist).
 - `--library-layout <paired|single|both>`: Filter runs by library layout (default: both).
+- `--strain <String>`: Optional strain filter. Splits `ScientificName` on spaces and keeps rows where any token equals or contains the provided string (case-insensitive).
 
 ## Outputs
 
@@ -34,8 +35,8 @@ nextflow run main.nf \
 ## Example
 
 ```bash
-nextflow run main.nf --organism 'Acinetobacter baylyi' --outdir ../test_results --library_layout paired -resume
-# Output: ../test_results/Acinetobacter_baylyi_metadata.tsv and sample_id.csv
+nextflow run main.nf --organism 'Acinetobacter baylyi' --outdir ../test_results --library_layout paired --strain 'baylyi' -resume
+# Output: ../test_results/metadata/Acinetobacter_baylyi_metadata.tsv and sample_id.csv (filtered)
 ```
 
 ## Notes

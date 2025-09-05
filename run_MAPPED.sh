@@ -3,7 +3,7 @@ set -euo pipefail
 
 function usage() {
   cat <<EOF
-Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --workdir WORKDIR --clean-mode CLEAN_MODE --cpu CPU [--ref-accession REF_ACCESSION] [--max_concurrent_downloads N]
+Usage: $0 --organism ORGANISM --outdir OUTDIR --library_layout LIB_LAYOUT --workdir WORKDIR --clean-mode CLEAN_MODE --cpu CPU [--ref-accession REF_ACCESSION] [--max_concurrent_downloads N] [--strain STRAIN]
 
 Options:
   --organism        Organism name (e.g., "Acinetobacter baylyi") - required for metadata download
@@ -14,6 +14,9 @@ Options:
   --cpu             Number of CPUs to allocate per process
   --ref-accession   Optional: specific reference genome accession (e.g., "GCA_008931305.1"). 
                     If not provided, automatically selects the reference strain for the organism.
+  --strain          Optional: filter metadata by strain token in 'ScientificName'.
+                    Splits ScientificName on spaces and keeps rows where any token equals
+                    or contains the provided string (case-insensitive).
   --max_concurrent_downloads  Optional: Maximum number of concurrent downloads (default: 20)
   -h, --help        Show this help message and exit
 EOF
@@ -28,6 +31,7 @@ CPU=""
 WORKDIR=""
 REF_ACCESSION=""
 MAX_CONCURRENT_DOWNLOADS=""
+STRAIN=""
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -62,6 +66,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --max_concurrent_downloads)
       MAX_CONCURRENT_DOWNLOADS="$2"
+      shift 2
+      ;;
+    --strain)
+      STRAIN="$2"
       shift 2
       ;;
     -h|--help)
@@ -105,7 +113,7 @@ mkdir -p "$WORKDIR"
 # Step 1: Download metadata
 echo "=== Step 1: Download metadata ==="
 pushd 1_download_metadata_efetch > /dev/null 2>&1
-nextflow run main.nf -work-dir "$WORKDIR" --organism "$ORGANISM" --outdir "$OUTDIR" --library_layout "$LIB_LAYOUT" -resume
+nextflow run main.nf -work-dir "$WORKDIR" --organism "$ORGANISM" --outdir "$OUTDIR" --library_layout "$LIB_LAYOUT" ${STRAIN:+--strain "$STRAIN"} -resume
 popd > /dev/null 2>&1
 
 # Step 2: Download FASTQ

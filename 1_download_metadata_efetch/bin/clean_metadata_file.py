@@ -3,7 +3,7 @@ import argparse
 import pandas as pd
 
 
-def main(infile, outfile, layout):
+def main(infile, outfile, layout, strain=None):
 
     # Read in metadata with one SRR as row
     DF_SRR = pd.read_csv(infile, header=0)
@@ -36,6 +36,26 @@ def main(infile, outfile, layout):
         else:
             DF_SRX = DF_SRX[ lib_vals.isin(['PAIRED','SINGLE']) ]
 
+    # Optional: Filter by strain using ScientificName column
+    # - Split ScientificName by spaces and keep rows where any token equals
+    #   or contains the provided strain string (case-insensitive)
+    if strain:
+        col = 'ScientificName'
+        if col in DF_SRX.columns:
+            s = DF_SRX[col].fillna("").astype(str)
+            query = str(strain).strip()
+            if query:
+                qlower = query.lower()
+                def match_tokens(name: str) -> bool:
+                    tokens = name.split()
+                    for t in tokens:
+                        tlower = t.lower()
+                        if tlower == qlower or (qlower in tlower):
+                            return True
+                    return False
+                mask = s.apply(match_tokens)
+                DF_SRX = DF_SRX[mask]
+
     # Save to file
     DF_SRX.to_csv(outfile, sep="\t")
 
@@ -49,6 +69,7 @@ if __name__ == "__main__":
     p.add_argument("-i", "--input", help="Input filename")
     p.add_argument("-o", "--output", help="Output filename")
     p.add_argument("-l", "--layout", choices=['paired','single','both'], default='both', help="Library layout to include: paired, single, or both")
+    p.add_argument("--strain", default=None, help="Optional strain filter applied to ScientificName; matches if any space-delimited token equals or contains the provided string (case-insensitive)")
     args = p.parse_args()
 
-    main(args.input, args.output, args.layout)
+    main(args.input, args.output, args.layout, args.strain)

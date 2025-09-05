@@ -23,6 +23,7 @@ The pipeline is designed to handle large-scale datasets with built-in error hand
 - **Clean mode**: Automatic cleanup of intermediate files to save disk space
 - **Docker integration**: No manual dependency installation required
 - **Comprehensive quality control**: FastQC and MultiQC reports included
+- **Strain filtering**: Optionally restrict samples by strain token in ScientificName
 
 ## Prerequisites
 
@@ -143,6 +144,7 @@ To automatically clean up intermediate files after successful completion:
 | `--cpu` | Number of CPUs to allocate per process | System dependent | `16` |
 | `--ref-accession` | Specific reference genome accession | Auto-selected | `GCA_008931305.1` |
 | `--max_concurrent_downloads` | Maximum number of concurrent FASTQ downloads | `20` | `10` |
+| `--strain` | Filter by strain token in `ScientificName` (case-insensitive token equals/contains) | none | `K-12` |
 | `--clean-mode` | Remove intermediate files after completion | `false` | (flag) |
 | `-h, --help` | Display help message | - | (flag) |
 
@@ -153,8 +155,8 @@ The pipeline creates a well-organized output directory structure:
 ```
 ${outdir}/
 ├── metadata/                    # Downloaded and formatted metadata
-│   ├── all_samples.csv          # Complete metadata for all samples
-│   └── sample_id.csv            # List of SRA accessions
+│   ├── <Organism>_metadata.tsv  # Cleaned metadata (optionally strain-filtered)
+│   └── sample_id.csv            # List of SRA accessions (optionally strain-filtered)
 ├── samplesheet/                 # Sample information for processing
 │   ├── samplesheet_download.csv # metadata for all the available samples from NCBI
 │   └── samplesheet.csv          # metadata for the samples that passed QC and quantified in the workflow
@@ -191,4 +193,22 @@ ${outdir}/
 ├── expression_matrices/     # Final expression matrices
 ├── samplesheet/            # Sample metadata
 └── ref_genome/             # Reference genome files
+### Strain Filtering
+
+Restrict analysis to samples whose `ScientificName` contains a specific strain token. The value is matched case-insensitively against space-delimited tokens of `ScientificName`; a row is kept if any token equals or contains the provided string.
+
+Example:
+
+```bash
+./run_MAPPED.sh \
+    --organism "Escherichia coli" \
+    --strain "K-12" \
+    --outdir ./results \
+    --workdir ./work \
+    --library_layout paired \
+    --cpu 24
+```
+
+This filters metadata to samples whose `ScientificName` tokens match `K-12` (e.g., token equals `K-12` or contains `K-12`). The filtered set propagates to `metadata/sample_id.csv` and all downstream steps.
+
 ```
