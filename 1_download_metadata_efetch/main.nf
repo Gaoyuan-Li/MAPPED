@@ -4,7 +4,8 @@ def runStartTime = System.currentTimeMillis()
 
 params.organism = null
 params.outdir = null
-params.strain = null
+// Ensure optional 'strain' is never null to satisfy 'val' input
+params.strain = ''
 
 process FETCH_METADATA {
 
@@ -67,7 +68,7 @@ workflow {
         clean_script,
         params.organism,
         params.library_layout,
-        params.strain
+        (params.strain ?: '')
     )
 
 }

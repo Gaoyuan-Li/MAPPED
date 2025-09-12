@@ -17,6 +17,7 @@ Options:
   --strain          Optional: filter metadata by strain token in 'ScientificName'.
                     Splits ScientificName on spaces and keeps rows where any token equals
                     or contains the provided string (case-insensitive).
+                    Alias: '-strain' also accepted.
   --max_concurrent_downloads  Optional: Maximum number of concurrent downloads (default: 20)
   -h, --help        Show this help message and exit
 EOF
@@ -68,7 +69,7 @@ while [[ $# -gt 0 ]]; do
       MAX_CONCURRENT_DOWNLOADS="$2"
       shift 2
       ;;
-    --strain)
+    --strain|-strain)
       STRAIN="$2"
       shift 2
       ;;
